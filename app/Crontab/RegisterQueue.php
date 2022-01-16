@@ -6,6 +6,8 @@ namespace App\Crontab;
 use App\Mapping\RedisClient;
 use App\Mapping\UUID;
 use App\Model\Shell\StorePlatformScore;
+use App\Model\Shell\StorePlatformUser;
+use App\Model\Shell\StorePlatformUserGroup;
 use App\Repository\User\User\ScoreHistoryRepository;
 use Hyperf\Crontab\Annotation\Crontab;
 use Hyperf\Di\Annotation\Inject;
@@ -33,6 +35,7 @@ class RegisterQueue
                 $registerUser = json_decode($registerUser, true);
                 // 1. 查询对应的商户平台是否存在用户注册赠送积分
                 $scoreConfig = (new StorePlatformScore())->getScoreConfig((array)[["key", "=", "wechat_register"], ["store_uuid", "=", $registerUser["store_uuid"]]]);
+                $groupConfig = (new StorePlatformUserGroup())->getGroup((array)[["store_uuid", "=", $registerUser["store_uuid"]]]);
                 var_dump("积分配置", $scoreConfig);
                 if (!empty($scoreConfig)) {
                     $requestParams['title']       = $scoreConfig['title'];
@@ -48,6 +51,8 @@ class RegisterQueue
                     if (!$this->scoreHistoryRepository->repositoryCreate((array)$requestParams)) {
                         (new RedisClient())->redisClient->rPush("register_queue", json_encode($registerUser));
                     } else {
+                        // 更新用户分组信息
+                        (new StorePlatformUser())::query()->where([["uuid", "=", $registerUser["user_uuid"]]])->update(["store_platform_user_group_uuid" => $groupConfig["uuid"]]);
                         var_dump("积分创建成功");
                     }
                 } else {
