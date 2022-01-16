@@ -19,6 +19,7 @@
     "hyperf/command": "~2.1.0",
     "hyperf/config": "~2.1.0",
     "hyperf/constants": "~2.1.0",
+    "hyperf/crontab": "v2.0.0",
     "hyperf/database": "~2.1.0",
     "hyperf/db-connection": "^2.1",
     "hyperf/framework": "~2.1.0",

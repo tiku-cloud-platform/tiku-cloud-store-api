@@ -1,6 +1,7 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
+
 /**
  * This file is part of api.
  *
@@ -9,5 +10,9 @@ declare(strict_types=1);
  * @contact  2665274677@qq.com
  * @license  Apache2.0
  */
+
+use Hyperf\Crontab\Process\CrontabDispatcherProcess;
+
 return [
+    CrontabDispatcherProcess::class
 ];
