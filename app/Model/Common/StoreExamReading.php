@@ -24,6 +24,8 @@ class StoreExamReading extends BaseModel
         'answer_income_score',
         'analysis',
         'level',
-        'is_show'
+        'is_show',
+        'source_url',
+        'source_author',
     ];
 }

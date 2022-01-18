@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace App\Request\Store\Exam;
 
-
 use Hyperf\Validation\Request\FormRequest;
 use Hyperf\Validation\Rule;
 
@@ -31,6 +30,8 @@ class ReadingValidate extends FormRequest
             'category'            => 'sometimes',
             'tag'                 => 'sometimes',
             'collection'          => 'sometimes',
+            'source_url'          => 'nullable',
+            'source_author'       => 'nullable',
         ];
     }
 
