@@ -11,10 +11,8 @@ declare(strict_types = 1);
  * @license  Apache2.0
  */
 
-use Hyperf\HttpServer\Router\Router;
+//Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\DemoController@index');
 
-Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\DemoController@index');
-
-Router::get('/favicon.ico', function () {
-    return '';
-});
+//Router::get('/favicon.ico', function () {
+//    return '';
+//});
