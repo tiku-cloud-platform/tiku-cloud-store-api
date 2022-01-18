@@ -69,4 +69,9 @@ class StoreExamReading extends \App\Model\Common\StoreExamReading
 
         return [];
     }
+
+    public function getSourceUrlAttribute($key)
+    {
+        return empty($key) ? '' : $key;
+    }
 }
