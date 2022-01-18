@@ -36,7 +36,6 @@ class CorsMiddleware implements MiddlewareInterface
         $this->container = $container;
     }
 
-    // 设置跨域
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response = Context::get(ResponseInterface::class);
