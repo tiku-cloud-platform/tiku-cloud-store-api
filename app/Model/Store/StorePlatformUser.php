@@ -24,22 +24,8 @@ class StorePlatformUser extends StorePlatformUserModel
 {
     public $searchFields = [
         'uuid',
-        'openid',
-        'nickname',
-        'avatar_url',
-        'gender',
-        'country',
-        'province',
-        'city',
-        'is_forbidden',
-        'language',
         'real_name',
         'mobile',
-        'address',
-        'longitude',
-        'latitude',
-        'district',
-        'birthday',
         'created_at',
         'updated_at',
         'store_platform_user_group_uuid'
