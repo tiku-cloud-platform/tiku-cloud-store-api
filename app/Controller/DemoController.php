@@ -80,4 +80,12 @@ class DemoController
             echo $value . PHP_EOL;
         }
     }
+
+    /**
+     * @GetMapping(path="score")
+     */
+    public function userScore()
+    {
+
+    }
 }

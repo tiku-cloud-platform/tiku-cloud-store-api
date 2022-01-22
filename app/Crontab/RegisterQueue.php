@@ -5,6 +5,7 @@ namespace App\Crontab;
 
 use App\Mapping\RedisClient;
 use App\Mapping\UUID;
+use App\Model\Common\StoreUserScoreCollection;
 use App\Model\Shell\StorePlatformScore;
 use App\Model\Shell\StorePlatformUser;
 use App\Model\Shell\StorePlatformUserGroup;
@@ -33,8 +34,9 @@ class RegisterQueue
         if ($registerUser) {
             try {
                 $registerUser = json_decode($registerUser, true);
-                // 1. 查询对应的商户平台是否存在用户注册赠送积分
+                //  查询对应的商户平台是否存在用户注册赠送积分
                 $scoreConfig = (new StorePlatformScore())->getScoreConfig((array)[["key", "=", "wechat_register"], ["store_uuid", "=", $registerUser["store_uuid"]]]);
+                // 查询对应的商户平台是否存在用户分组信息
                 $groupConfig = (new StorePlatformUserGroup())->getGroup((array)[["store_uuid", "=", $registerUser["store_uuid"]]]);
                 var_dump("积分配置", $scoreConfig);
                 if (!empty($scoreConfig)) {
@@ -49,11 +51,19 @@ class RegisterQueue
                     $requestParams['user_uuid']   = $registerUser["user_uuid"];
                     var_dump("插入的数据是", $requestParams);
                     if (!$this->scoreHistoryRepository->repositoryCreate((array)$requestParams)) {
+                        // 创建成功之后，重新将注册用户的信息放回Redis队列中
                         (new RedisClient())->redisClient->rPush("register_queue", json_encode($registerUser));
                     } else {
-                        // 更新用户分组信息
+                        // 更新用户的分组信息
                         (new StorePlatformUser())::query()->where([["uuid", "=", $registerUser["user_uuid"]]])->update(["store_platform_user_group_uuid" => $groupConfig["uuid"]]);
-                        var_dump("积分创建成功");
+                        // 创建用户积分汇总信息
+                        $userScoreCollectionModel = new StoreUserScoreCollection();
+                        $userScoreCollectionModel::query()->insert([
+                            "uuid"       => UUID::getUUID(),
+                            "user_uuid"  => $registerUser["user_uuid"],
+                            "score"      => $scoreConfig['score'],
+                            "store_uuid" => $registerUser["store_uuid"],
+                        ]);
                     }
                 } else {
                     var_dump("未配置积分");
