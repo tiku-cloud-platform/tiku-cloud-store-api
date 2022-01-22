@@ -34,7 +34,7 @@ class RegisterQueue
             try {
                 $registerUser = json_decode($registerUser, true);
                 //  查询对应的商户平台是否存在用户注册赠送积分
-                $scoreConfig = (new StorePlatformScore())->getScoreConfig((array)[["key", "=", "wechat_register"], ["store_uuid", "=", $registerUser["store_uuid"]]]);
+                $scoreConfig = (new StorePlatformScore())->getScoreConfig((array)[["key", "=", $registerUser["register_type"]], ["store_uuid", "=", $registerUser["store_uuid"]]]);
                 // 查询对应的商户平台是否存在用户分组信息
                 $groupConfig = (new StorePlatformUserGroup())->getGroup((array)[["store_uuid", "=", $registerUser["store_uuid"]]]);
                 if (!empty($scoreConfig)) {
@@ -58,23 +58,29 @@ class RegisterQueue
                             ->update([
                                 "store_platform_user_group_uuid" => $groupConfig["uuid"]
                             ]);
-
-                        // 创建用户积分汇总信息
+                        // 先查询用户是否存在积分汇总的记录，不存在则创建，存在则更新
                         $userScoreCollectionModel = new StoreUserScoreCollection();
-                        $userScoreCollectionModel::query()->create([
-                            "uuid"       => UUID::getUUID(),
-                            "user_uuid"  => $registerUser["user_uuid"],
-                            "score"      => $scoreConfig['score'],
-                            "store_uuid" => $registerUser["store_uuid"],
-                        ]);
+                        $bean                     = $userScoreCollectionModel::query()->where([
+                            ["user_uuid", "=", $registerUser["user_uuid"]],
+                            ["store_uuid", "=", $registerUser["store_uuid"]],
+                        ])->first(["id"]);
+                        if (empty($bean)) {
+                            $userScoreCollectionModel::query()->create([
+                                "uuid"       => UUID::getUUID(),
+                                "user_uuid"  => $registerUser["user_uuid"],
+                                "score"      => $scoreConfig['score'],
+                                "store_uuid" => $registerUser["store_uuid"],
+                            ]);
+                        } else {
+                            $userScoreCollectionModel::query()->where([
+                                ["user_uuid", "=", $registerUser["user_uuid"]],
+                                ["store_uuid", "=", $registerUser["store_uuid"]],
+                            ])->increment("score", $scoreConfig["score"]);
+                        }
                     }
                 }
             } catch (\Throwable $throwable) {
-                preg_match("/Duplicate entry/", $throwable->getMessage(), $msg);
-                var_dump($throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
-                if (empty($msg)) {
-                    (new RedisClient())->redisClient->lPush("register_queue", json_encode($registerUser, JSON_UNESCAPED_UNICODE));
-                }
+                (new RedisClient())->redisClient->lPush("register_queue", json_encode($registerUser, JSON_UNESCAPED_UNICODE));
             }
         }
     }
