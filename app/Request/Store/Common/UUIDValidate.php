@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 /**
  * This file is part of api.
  *
@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  2665274677@qq.com
  * @license  Apache2.0
  */
+
 namespace App\Request\Store\Common;
 
 use Hyperf\Validation\Request\FormRequest;
@@ -28,7 +29,7 @@ class UUIDValidate extends FormRequest
     public function rules(): array
     {
         return [
-            'uuid' => 'required|uuid',
+            'uuid' => 'required',
         ];
     }
 
@@ -36,7 +37,6 @@ class UUIDValidate extends FormRequest
     {
         return [
             'uuid.required' => '数据编号不能为空',
-            'uuid.uuid' => '数据编号不合法',
         ];
     }
 }
