@@ -36,7 +36,7 @@ class ScoreHistoryRepository implements StoreRepositoryInterface
     {
         $items = $this->scoreHistoryModel::query()
             ->with(['keyInfo:uuid,title,describe,value'])
-            ->with(['user:uuid,nickname'])
+            ->with(['user:uuid,real_name'])
             ->where($closure)
             ->select($this->scoreHistoryModel->searchFileds)
             ->orderByDesc('id')

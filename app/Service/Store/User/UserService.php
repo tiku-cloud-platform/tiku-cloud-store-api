@@ -43,7 +43,7 @@ class UserService implements StoreServiceInterface
                 $query->where('store_platform_user_group_uuid', '=', $group_uuid);
             }
             if (!empty($nickname)) {
-                $query->where('nickname', 'like', '%' . $nickname . '%');
+                //$query->where('nickname', 'like', '%' . $nickname . '%');
             }
             if (!empty($mobile)) {
                 $query->where('mobile', 'like', '%' . $mobile . '%');
