@@ -23,7 +23,7 @@ class CollectionValidate extends FormRequest
     public function rules(): array
     {
         return [
-            'title'              => 'required|max:32',
+            'title'              => 'required|max:100',
             'is_show'            => ['required', Rule::in([1, 2])],
             'is_recommend'       => ['required', Rule::in([1, 2])],
             'file_uuid'          => 'sometimes|uuid|exists:store_platform_file,uuid',
@@ -38,7 +38,7 @@ class CollectionValidate extends FormRequest
     {
         return [
             'title.required'              => '名称不能为空',
-            'title.max'                   => '名称不能超过10个字符',
+            'title.max'                   => '名称不能超过100个字符',
             'is_show.required'            => '显示状态不能为空',
             'is_show.in'                  => '显示状态错误',
             'is_recommend.required'       => '推荐状态不能为空',
