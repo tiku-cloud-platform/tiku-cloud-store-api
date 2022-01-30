@@ -27,7 +27,7 @@ return [
             'callbacks'             => [
                 Event::ON_REQUEST => [Hyperf\HttpServer\Server::class, 'onRequest'],
             ],
-            'daemonize'             => 1,
+            'daemonize'             => 0,
             'task_worker_num'       => swoole_cpu_num(),
             'task_enable_coroutine' => false,
         ],
