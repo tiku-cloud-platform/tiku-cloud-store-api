@@ -55,6 +55,10 @@ class SignQueue
                         var_dump("插入积分汇总", $result3);
                         var_dump("插入积分历史", $result4);
                     } catch (\Throwable $throwable) {
+                        preg_match("/Duplicate entry/", $throwable->getMessage(), $result);
+                        if (!empty($result)) {
+                            ++$successNumber;
+                        }
                         var_dump("插入失败，失败信息如下", $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
                     }
                 }

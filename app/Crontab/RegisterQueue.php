@@ -68,7 +68,7 @@ class RegisterQueue
                                 ["store_uuid", "=", $registerUser["store_uuid"]],
                             ])->increment("score", $scoreConfig["score"]);
                         }
-                        // 先查询机会
+                        // 先查询积分
                     }
                 }
             } catch (\Throwable $throwable) {

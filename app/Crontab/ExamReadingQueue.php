@@ -31,13 +31,13 @@ class ExamReadingQueue
             foreach ($cacheInfo as $value) {
                 $uuidArray[] = json_decode($value, true)["uuid"];
             }
-            $res = 0;
+            $res                      = 0;
+            $collectionItemsUuidArray = [];
             if (count($uuidArray) > 0) {
                 // 先查询出对应的试卷编号, 在更新试卷
                 $uuidArray       = array_unique($uuidArray);
                 $collectionItems = (new StoreExamReadingCollectionRelation())::query()->whereIn("exam_uuid", $uuidArray)->get(["collection_uuid"]);
                 var_dump($collectionItems);
-                $collectionItemsUuidArray = [];
                 foreach ($collectionItems as $value) {
                     array_push($collectionItemsUuidArray, $value->collection_uuid);
                 }
