@@ -9,9 +9,8 @@ use App\Model\Shell\StorePlatformScore;
 use App\Model\Shell\StorePlatformUser;
 use App\Model\Shell\StorePlatformUserGroup;
 use App\Model\Shell\StoreUserScoreCollection;
-use App\Repository\User\User\ScoreHistoryRepository;
+use App\Model\Shell\StoreUserScoreHistory;
 use Hyperf\Crontab\Annotation\Crontab;
-use Hyperf\Di\Annotation\Inject;
 
 /**
  * 微信小程序用户注册队列
@@ -21,12 +20,6 @@ use Hyperf\Di\Annotation\Inject;
  */
 class RegisterQueue
 {
-    /**
-     * @Inject()
-     * @var ScoreHistoryRepository
-     */
-    protected $scoreHistoryRepository;
-
     public function execute()
     {
         $registerUser = (new RedisClient())->redisClient->rPop("register_queue");
@@ -47,12 +40,10 @@ class RegisterQueue
                     $requestParams['uuid']        = UUID::getUUID();
                     $requestParams['store_uuid']  = $registerUser["store_uuid"];
                     $requestParams['user_uuid']   = $registerUser["user_uuid"];
-                    if (!$this->scoreHistoryRepository->repositoryCreate((array)$requestParams)) {
-                        // 创建成功之后，重新将注册用户的信息放回Redis队列中
+                    if (!(new StoreUserScoreHistory())::query()->create($requestParams)) {
+                        // 创建失败之后，重新将注册用户的信息放回Redis队列中
                         (new RedisClient())->redisClient->rPush("register_queue", json_encode($registerUser));
                     } else {
-
-
                         // 更新用户的分组信息
                         (new StorePlatformUser())::query()->where([["uuid", "=", $registerUser["user_uuid"]]])
                             ->update([
@@ -77,6 +68,7 @@ class RegisterQueue
                                 ["store_uuid", "=", $registerUser["store_uuid"]],
                             ])->increment("score", $scoreConfig["score"]);
                         }
+                        // 先查询机会
                     }
                 }
             } catch (\Throwable $throwable) {
