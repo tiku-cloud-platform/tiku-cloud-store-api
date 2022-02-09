@@ -31,6 +31,7 @@ class ReadingValidate extends FormRequest
             'tag'                 => 'sometimes',
             'collection'          => 'sometimes',
             'source_url'          => 'nullable',
+            'video_url'           => 'nullable|max:255',
             'source_author'       => 'nullable',
         ];
     }
@@ -40,6 +41,7 @@ class ReadingValidate extends FormRequest
         return [
             'title.required'               => '题目不能为空',
             'title.max'                    => '题目不能超过1000个字符',
+            'video_url.max'                => '视频链接不能超过500个字符',
             'tips_expend_score.required'   => '解析消耗积分不能为空',
             'answer_income_score.required' => '答案奖励积分不能为空',
             'is_show.required'             => '显示状态不能为空',
