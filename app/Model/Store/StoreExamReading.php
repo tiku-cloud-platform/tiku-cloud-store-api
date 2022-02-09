@@ -23,6 +23,7 @@ class StoreExamReading extends \App\Model\Common\StoreExamReading
         'is_show',
         'source_url',
         'source_author',
+        'video_url',
     ];
 
     protected $appends = [

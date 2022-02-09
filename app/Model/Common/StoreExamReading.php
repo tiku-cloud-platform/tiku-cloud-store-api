@@ -27,5 +27,6 @@ class StoreExamReading extends BaseModel
         'is_show',
         'source_url',
         'source_author',
+        "video_url",
     ];
 }
