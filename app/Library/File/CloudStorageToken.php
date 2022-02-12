@@ -3,6 +3,9 @@ declare(strict_types = 1);
 
 namespace App\Library\File;
 
+use App\Constants\CacheKey;
+use Hyperf\Redis\Redis;
+use Hyperf\Utils\ApplicationContext;
 use Qiniu\Auth;
 
 /**
@@ -16,8 +19,8 @@ class CloudStorageToken
     /**
      * 获取第三方对象存储token信息
      *
-     * @param string $driver
-     * @param array $config
+     * @param string $driver 文件上传方式
+     * @param array $config 云存储配置信息，包含一些key，secret等信息。
      * @return array
      * @author kert
      */
@@ -42,8 +45,17 @@ class CloudStorageToken
      */
     public function qiNiuCloud(array $config): string
     {
-        $auth = new Auth($config['app_key'], $config['app_secret']);
+        // 检测Redis配置信息
+        $container = ApplicationContext::getContainer();
+        $redis     = $container->get(Redis::class);
+        $token     = $redis->get(CacheKey::CLOUD_PLATFORM_FILE_TOKEN . $config["app_key"]);
 
-        return $auth->uploadToken($config['bucket']);
+        if (empty($token)) {
+            $auth  = new Auth($config['app_key'], $config['app_secret']);
+            $token = $auth->uploadToken($config['bucket']);
+            $redis->set(CacheKey::CLOUD_PLATFORM_FILE_TOKEN . $config["app_key"], $token, 7000);
+        }
+
+        return $token;
     }
 }

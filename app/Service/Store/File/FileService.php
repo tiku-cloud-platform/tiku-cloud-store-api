@@ -99,6 +99,7 @@ class FileService implements StoreServiceInterface
             $fileInfoArray[$key]['file_size']       = $value['file_size'];
             $fileInfoArray[$key]['file_type']       = $value['file_type'];
             $fileInfoArray[$key]['extension']       = $value['extension'];
+            $fileInfoArray[$key]['file_hash']       = $value['hash_name'];
             $fileInfoArray[$key]['file_group_uuid'] = $requestParams['file_group_uuid'];
         }
 

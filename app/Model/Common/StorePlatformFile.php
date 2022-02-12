@@ -22,6 +22,7 @@ class StorePlatformFile extends BaseModel
         'storage',
         'file_url',
         'file_name',
+        'file_hash',
         'file_size',
         'file_type',
         'extension',
