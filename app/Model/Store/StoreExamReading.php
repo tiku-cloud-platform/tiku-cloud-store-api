@@ -24,6 +24,10 @@ class StoreExamReading extends \App\Model\Common\StoreExamReading
         'source_url',
         'source_author',
         'video_url',
+<<<<<<< HEAD
+        "is_search",
+=======
+>>>>>>> master
     ];
 
     protected $appends = [

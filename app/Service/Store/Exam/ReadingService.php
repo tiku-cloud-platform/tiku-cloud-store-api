@@ -41,6 +41,9 @@ class ReadingService implements StoreServiceInterface
             if (!empty($is_show)) {
                 $query->where('is_show', '=', $is_show);
             }
+            if (!empty($is_search)) {
+                $query->where("is_search", "=", $is_search);
+            }
             if (!empty($title)) {
                 $query->where('title', 'like', '%' . $title . '%');
             };
