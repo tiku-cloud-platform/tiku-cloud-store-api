@@ -52,4 +52,9 @@ class CacheKey extends AbstractConstants
      * @Message("微信小程序用户积分排行")
      */
     const WECHAT_RANK_SCORE = 'wechat_rank_score:';
+
+    /**
+     * @Message("云文件存储token前缀")
+     */
+    const  CLOUD_PLATFORM_FILE_TOKEN = "cloud_platform_file_token:";
 }

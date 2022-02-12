@@ -3,6 +3,8 @@ declare(strict_types = 1);
 
 namespace App\Service\Store\Exam;
 
+use App\Library\File\FileUpload;
+use App\Library\File\ImageSrcSearch;
 use App\Mapping\UserInfo;
 use App\Mapping\UUID;
 use App\Repository\Store\Exam\ReadingRepository;
@@ -65,6 +67,12 @@ class ReadingService implements StoreServiceInterface
      */
     public function serviceCreate(array $requestParams): bool
     {
+        $imageArray = ImageSrcSearch::searchImageUrl((string)$requestParams['content']);
+        if (!empty($imageArray)) {
+            $remoteFileArray          = (new FileUpload())->fileUpload((array)$imageArray);
+            $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], (array)$remoteFileArray);
+        }
+
         $userInfo                    = UserInfo::getStoreUserInfo();
         $requestParams['store_uuid'] = $userInfo['store_uuid'];
         $requestParams['uuid']       = UUID::getUUID();
@@ -80,6 +88,12 @@ class ReadingService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
+        $imageArray = ImageSrcSearch::searchImageUrl((string)$requestParams['content']);
+        if (!empty($imageArray)) {
+            $remoteFileArray          = (new FileUpload())->fileUpload((array)$imageArray);
+            $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], (array)$remoteFileArray);
+        }
+
         return $this->readingRepository->repositoryUpdate((array)[
             ['uuid', '=', $requestParams['uuid']],
             ['store_uuid', '=', UserInfo::getStoreUserInfo()['store_uuid']]// 绑定关联使用

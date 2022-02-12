@@ -68,15 +68,33 @@ class FileUpload
         $uploadManager = new UploadManager();
         $result        = [];
         foreach ($fileArray as $value) {
-            $fileInfo     = pathinfo($value);
-            $fileResource = fopen($value, 'rb');
-            $uploadResult = $uploadManager->putFile($this->token, md5((string)microtime() . $fileInfo['filename']) . '.' . $fileInfo['extension'],
-                $value);
-            $result[]     = [
-                'remote' => $this->configArray['domain'] . $uploadResult[0]['key'],
-                'origin' => $value,
-            ];
+            // 检测云平台的配置域名是否和文件的域名一致，如果一致的不进行重传，直接返回。
+            if (parse_url($value)["host"] == parse_url($this->configArray["domain"])["host"]) {
+                $result[] = [
+                    'remote' => $value,
+                    'origin' => $value,
+                ];
+            } else {
+                $fileInfo = pathinfo($value);
+                // 使用文件流形式上传，否则gitee上的图片会上传不完整。
+                $fileResource = file_get_contents($value);
+                $uploadResult = $uploadManager->put($this->token, md5((string)microtime() . $fileInfo['filename']) . '.' . $fileInfo['extension'], $fileResource);
+                // 上传失败时，则默认为原图片链接地址。
+                if (!empty($uploadResult) && count($uploadResult) > 1 && $uploadResult[1] == null) {
+                    $result[] = [
+                        'remote' => $this->configArray['domain'] . $uploadResult[0]['key'],
+                        'origin' => $value,
+                    ];
+                } else {
+                    $result[] = [
+                        'remote' => $value,
+                        'origin' => $value,
+                    ];
+                }
+            }
+
         }
+        var_dump("上传结果", $result);
         return $result;
     }
 }

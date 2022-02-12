@@ -4,6 +4,8 @@ declare(strict_types = 1);
 namespace App\Service\Store\Article;
 
 
+use App\Library\File\FileUpload;
+use App\Library\File\ImageSrcSearch;
 use App\Mapping\UserInfo;
 use App\Mapping\UUID;
 use App\Mapping\WeChatRequest;
@@ -73,13 +75,12 @@ class ArticleService implements StoreServiceInterface
      */
     public function serviceCreate(array $requestParams): bool
     {
-//        $imageArray = ImageSrcSearch::searchImageUrl((string)$requestParams['content']);
-//        if (!empty($imageArray)) {
-//            $remoteFileArray          = (new FileUpload())->fileUpload((array)$imageArray);
-//            $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], (array)$remoteFileArray);
-//        }
-//
-//        var_dump($requestParams, $imageArray);
+        $imageArray = ImageSrcSearch::searchImageUrl((string)$requestParams['content']);
+        if (!empty($imageArray)) {
+            $remoteFileArray          = (new FileUpload())->fileUpload((array)$imageArray);
+            $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], (array)$remoteFileArray);
+        }
+
         $requestParams['uuid']       = UUID::getUUID();
         $requestParams['store_uuid'] = UserInfo::getStoreUserInfo()['store_uuid'];
 
@@ -94,12 +95,11 @@ class ArticleService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
-//        $imageArray = ImageSrcSearch::searchImageUrl((string)$requestParams['content']);
-//        if (!empty($imageArray)) {
-//            $remoteFileArray          = (new FileUpload())->fileUpload((array)$imageArray);
-//            $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], (array)$remoteFileArray);
-//        }
-//        var_dump('更新', $requestParams, $imageArray);
+        $imageArray = ImageSrcSearch::searchImageUrl((string)$requestParams['content']);
+        if (!empty($imageArray)) {
+            $remoteFileArray          = (new FileUpload())->fileUpload((array)$imageArray);
+            $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], (array)$remoteFileArray);
+        }
         return $this->articleRepository->repositoryUpdate((array)[
             ['uuid', '=', trim($requestParams['uuid'])],
         ], (array)[

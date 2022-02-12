@@ -22,6 +22,7 @@ use Hyperf\Redis\Redis;
 use Hyperf\Task\Task;
 use Hyperf\Task\TaskExecutor;
 use Hyperf\Utils\ApplicationContext;
+use Qiniu\Storage\UploadManager;
 
 /**
  * 演示控制器
@@ -72,20 +73,28 @@ class DemoController
      */
     public function create()
     {
-        $container = ApplicationContext::getContainer();
-        $redis     = $container->get(Redis::class);
-
-        for ($i = 1; $i < 1001; $i++) {
-            $value = $redis->lPush('aaa', $i);
-            echo $value . PHP_EOL;
+        $token         = "YWwjHxwQxD-wWl4nlNT_U01t__0pOQliNX5_I_A2:gLRaSAB_S8c5f0_GL3V6koB7tLo=:eyJzY29wZSI6ImRvY3VtZW50ZXMiLCJkZWFkbGluZSI6MTY0NDY0Mzc2MX0=";
+        $fileArray     = [
+            "https://gitee.com/bruce_qiq/picture/raw/master/2021-12-5/1638677669159-Snipaste_2021-12-05_12-14-03.png",
+            "https://gitee.com/bruce_qiq/picture/raw/master/2021-12-5/1638677740749-Snipaste_2021-12-05_12-15-31.png",
+            "https://gitee.com/bruce_qiq/picture/raw/master/2021-12-5/1638686190182-Snipaste_2021-12-05_14-36-02.png",
+        ];
+        $uploadManager = new UploadManager();
+        $result        = [];
+        foreach ($fileArray as $value) {
+            $fileInfo = pathinfo($value);
+            var_dump("文件信息", $fileInfo);
+//            $fileResource = fopen($value, 'rb');
+            $fileResource = file_get_contents($value);
+//            var_dump($fileResource);
+            $uploadResult = $uploadManager->put($token, md5((string)microtime() . $fileInfo['filename']) . '.' . $fileInfo['extension'], $fileResource);
+//            $uploadResult = $uploadManager->putFile($token, $fileInfo['filename'] . '.' . $fileInfo['extension'],
+//                $value);
+//            $uploadResult = $uploadManager->putFile($token, md5((string)microtime() . $fileInfo['filename']) . '.' . $fileInfo['extension'],
+//                $value);
+            var_dump("上传结果", $uploadResult);
         }
+        return $result;
     }
 
-    /**
-     * @GetMapping(path="score")
-     */
-    public function userScore()
-    {
-
-    }
 }

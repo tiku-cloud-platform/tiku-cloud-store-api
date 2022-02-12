@@ -4,6 +4,8 @@ declare(strict_types = 1);
 namespace App\Service\Store\Message;
 
 
+use App\Library\File\FileUpload;
+use App\Library\File\ImageSrcSearch;
 use App\Mapping\UserInfo;
 use App\Mapping\UUID;
 use App\Repository\Store\Message\ContentRepository;
@@ -72,6 +74,12 @@ class ContentService implements StoreServiceInterface
      */
     public function serviceCreate(array $requestParams): bool
     {
+        $imageArray = ImageSrcSearch::searchImageUrl((string)$requestParams['content']);
+        if (!empty($imageArray)) {
+            $remoteFileArray          = (new FileUpload())->fileUpload((array)$imageArray);
+            $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], (array)$remoteFileArray);
+        }
+
         $requestParams['uuid']       = UUID::getUUID();
         $requestParams['store_uuid'] = UserInfo::getStoreUserInfo()['store_uuid'];
 
@@ -86,13 +94,19 @@ class ContentService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
+        $imageArray = ImageSrcSearch::searchImageUrl((string)$requestParams['content']);
+        if (!empty($imageArray)) {
+            $remoteFileArray          = (new FileUpload())->fileUpload((array)$imageArray);
+            $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], (array)$remoteFileArray);
+        }
+
         return $this->contentRepository->repositoryUpdate((array)[
             ['uuid', '=', trim($requestParams['uuid'])],
         ], (array)[
             'title'                          => trim($requestParams['title']),
             'platform_message_category_uuid' => trim($requestParams['platform_message_category_uuid']),
-            'content'                        => trim($requestParams['content']),
-            'is_show'                        => trim($requestParams['is_show']),
+            'content'                        => $requestParams['content'],
+            'is_show'                        => in_array($requestParams['is_show'], [1, 2]) ? $requestParams["is_show"] : 2,
         ]);
     }
 

@@ -4,6 +4,8 @@ declare(strict_types = 1);
 namespace App\Service\Store\Config;
 
 
+use App\Library\File\FileUpload;
+use App\Library\File\ImageSrcSearch;
 use App\Mapping\UserInfo;
 use App\Mapping\UUID;
 use App\Repository\Store\Config\PlatformContentRepository;
@@ -72,6 +74,12 @@ class PlatformContentService implements StoreServiceInterface
      */
     public function serviceCreate(array $requestParams): bool
     {
+        $imageArray = ImageSrcSearch::searchImageUrl((string)$requestParams['content']);
+        if (!empty($imageArray)) {
+            $remoteFileArray          = (new FileUpload())->fileUpload((array)$imageArray);
+            $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], (array)$remoteFileArray);
+        }
+
         $requestParams['uuid']       = UUID::getUUID();
         $requestParams['store_uuid'] = UserInfo::getStoreUserInfo()['store_uuid'];
 
@@ -86,11 +94,17 @@ class PlatformContentService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
+        $imageArray = ImageSrcSearch::searchImageUrl((string)$requestParams['content']);
+        if (!empty($imageArray)) {
+            $remoteFileArray          = (new FileUpload())->fileUpload((array)$imageArray);
+            $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], (array)$remoteFileArray);
+        }
+
         return $this->contentRepository->repositoryUpdate((array)[
             ['uuid', '=', trim($requestParams['uuid'])],
         ], (array)[
             'title'    => trim($requestParams['title']),
-            'is_show'  => $requestParams['is_show'],
+            'is_show'  => in_array($requestParams['is_show'], [1, 2]) ? $requestParams["is_show"] : 2,
             'position' => $requestParams['position'],
             'content'  => $requestParams['content'],
         ]);
