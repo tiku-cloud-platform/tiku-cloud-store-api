@@ -5,6 +5,8 @@ namespace App\Crontab;
 
 use App\Mapping\RedisClient;
 use App\Mapping\UUID;
+use App\Model\Shell\StoreChannel;
+use App\Model\Shell\StoreMiNiWeChatUser;
 use App\Model\Shell\StorePlatformScore;
 use App\Model\Shell\StorePlatformUser;
 use App\Model\Shell\StorePlatformUserGroup;
@@ -26,6 +28,7 @@ class RegisterQueue
         if ($registerUser) {
             try {
                 $registerUser = json_decode($registerUser, true);
+
                 //  查询对应的商户平台是否存在用户注册赠送积分
                 $scoreConfig = (new StorePlatformScore())->getScoreConfig((array)[["key", "=", $registerUser["register_type"]], ["store_uuid", "=", $registerUser["store_uuid"]]]);
                 // 查询对应的商户平台是否存在用户分组信息
@@ -68,7 +71,17 @@ class RegisterQueue
                                 ["store_uuid", "=", $registerUser["store_uuid"]],
                             ])->increment("score", $scoreConfig["score"]);
                         }
-                        // 先查询积分
+                        // 更新用户注册渠道
+                        if (!empty($registerUser["channel_id"])) {
+                            $bean = (new StoreChannel())::query()->where([["id", "=", $registerUser["channel_id"]]])->first(["uuid"]);
+                            if (!empty($bean)) {
+                                // 1微信小程序2微信公众号3iOS客户端4Android客户端5PC端
+                                if ($registerUser["client_type"] == 1) {
+                                    (new StoreMiNiWeChatUser())::query()->where([["user_uuid", "=", $registerUser["user_uuid"]]])
+                                        ->update(["channel_uuid" => $bean->uuid]);
+                                }
+                            }
+                        }
                     }
                 }
             } catch (\Throwable $throwable) {
