@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Repository\Store\User;
 
@@ -26,6 +26,7 @@ class WeChatUserRepository implements StoreRepositoryInterface
     public function repositorySelect(\Closure $closure, int $perSize): array
     {
         $items = $this->userModel::query()
+            ->with(["channel:uuid,title"])
             ->where($closure)
             ->select($this->userModel->listSearchFields)
             ->orderByDesc('id')

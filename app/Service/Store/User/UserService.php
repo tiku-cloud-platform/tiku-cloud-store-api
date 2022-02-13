@@ -184,6 +184,7 @@ class UserService implements StoreServiceInterface
                 'mobile'       => $value->mobile,
                 'gender'       => $value->gender,
                 'user_uuid'    => $value->user_uuid,
+                'channel'      => empty($value->channel->title) ? "无" : $value->channel->title,
                 'platform'     => '微信小程序',
                 'created_at'   => date('Y-m-d H:i:s', strtotime((string)$value->created_at)),
             ];

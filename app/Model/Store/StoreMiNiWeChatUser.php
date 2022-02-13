@@ -33,5 +33,6 @@ class StoreMiNiWeChatUser extends \App\Model\Common\StoreMiNiWeChatUser
         'birthday',
         'is_show',
         'created_at',
+        "channel_uuid",
     ];
 }

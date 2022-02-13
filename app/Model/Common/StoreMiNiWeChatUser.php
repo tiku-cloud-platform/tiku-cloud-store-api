@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace App\Model\Common;
 
 use App\Model\BaseModel;
+use Hyperf\Database\Model\Relations\HasOne;
 
 /**
  * 微信小程序
@@ -36,5 +37,15 @@ class StoreMiNiWeChatUser extends BaseModel
         'district',
         'birthday',
         'is_show',
+        "channel_uuid",
     ];
+
+    /**
+     * 注册渠道
+     * @return HasOne
+     */
+    public function channel(): HasOne
+    {
+        return $this->hasOne(StoreChannel::class, "uuid", "channel_uuid");
+    }
 }

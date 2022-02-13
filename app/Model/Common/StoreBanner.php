@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Model\Common;
 
@@ -15,33 +15,33 @@ use Hyperf\Database\Model\Relations\BelongsTo;
  */
 class StoreBanner extends BaseModel
 {
-	protected $table = 'store_banner';
+    protected $table = 'store_banner';
 
-	protected $fillable = [
-		'uuid',
-		'title',
-		'file_uuid',
-		'orders',
-		'url',
-		'position',
-		'is_show',
-		'store_uuid',
-		'type',
-	];
+    protected $fillable = [
+        'uuid',
+        'title',
+        'file_uuid',
+        'orders',
+        'url',
+        'position',
+        'is_show',
+        'store_uuid',
+        'type',
+    ];
 
-	/**
-	 * 菜单图标地址
-	 *
-	 * @return BelongsTo
-	 * @author kert
-	 */
-	public function coverFileInfo()
-	{
-		return $this->belongsTo(StorePlatformFile::class, 'file_uuid', 'uuid');
-	}
+    /**
+     * 菜单图标地址
+     *
+     * @return BelongsTo
+     * @author kert
+     */
+    public function coverFileInfo(): BelongsTo
+    {
+        return $this->belongsTo(StorePlatformFile::class, 'file_uuid', 'uuid');
+    }
 
-	public function getTitleAttribute($key)
-	{
-		return empty($key) ? '' : $key;
-	}
+    public function getTitleAttribute($key): string
+    {
+        return empty($key) ? '' : $key;
+    }
 }
