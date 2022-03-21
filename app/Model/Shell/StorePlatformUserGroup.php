@@ -29,7 +29,9 @@ class StorePlatformUserGroup extends Model
     {
         array_push($searchWhere, ["is_default", "=", 1], ["is_show", "=", 1]);
         $bean = self::query()->where($searchWhere)->first(["uuid"]);
-        if (!empty($bean)) return $bean->toArray();
+        if (!empty($bean)) {
+            return $bean->toArray();
+        }
         return [];
     }
 }

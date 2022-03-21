@@ -38,7 +38,6 @@ class RegisterQueue
                     $requestParams['score_key']   = $scoreConfig['key'];
                     $requestParams["client_type"] = $registerUser["client_type"];
                     $requestParams['score']       = $scoreConfig['score'];
-                    $requestParams['score_key']   = $scoreConfig['key'];
                     $requestParams["type"]        = 1;
                     $requestParams['uuid']        = UUID::getUUID();
                     $requestParams['store_uuid']  = $registerUser["store_uuid"];
