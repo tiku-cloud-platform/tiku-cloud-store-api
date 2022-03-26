@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace App\Service\Store\Exam;
 
 
+use App\Mapping\RedisClient;
 use App\Mapping\UserInfo;
 use App\Mapping\UUID;
 use App\Repository\Store\Exam\CategoryRepository;
@@ -23,10 +24,6 @@ class CategoryService implements StoreServiceInterface
      * @var CategoryRepository
      */
     protected $categoryRepository;
-
-    public function __construct()
-    {
-    }
 
     /**
      * 格式化查询条件
@@ -49,7 +46,7 @@ class CategoryService implements StoreServiceInterface
             }
             if (!empty($title)) {
                 $query->where('title', 'like', '%' . $title . '%');
-            };
+            }
         };
     }
 
@@ -90,8 +87,10 @@ class CategoryService implements StoreServiceInterface
         $requestParams['uuid']        = UUID::getUUID();
         $requestParams['parent_uuid'] = empty($requestParams['parent_uuid']) ? null : $requestParams['parent_uuid'];
 
-        return $this->categoryRepository->repositoryCreate((array)$requestParams);
+        $insertResult = $this->categoryRepository->repositoryCreate((array)$requestParams);
+        $this->updateApi();
 
+        return $insertResult;
     }
 
     /**
@@ -103,9 +102,12 @@ class CategoryService implements StoreServiceInterface
     public function serviceUpdate(array $requestParams): int
     {
         $requestParams['parent_uuid'] = empty($requestParams['parent_uuid']) ? null : $requestParams['parent_uuid'];
-        return $this->categoryRepository->repositoryUpdate((array)[
+        $updateRows                   = $this->categoryRepository->repositoryUpdate((array)[
             ['uuid', '=', $requestParams['uuid']]
         ], (array)$requestParams);
+
+        $this->updateApi();
+        return $updateRows;
     }
 
     /**
@@ -121,7 +123,7 @@ class CategoryService implements StoreServiceInterface
         foreach ($uuidArray as $value) {
             array_push($deleteWhere, $value);
         }
-
+        $this->updateApi();
         return $this->categoryRepository->repositoryWhereInDelete((array)$deleteWhere, (string)'uuid');
     }
 
@@ -146,5 +148,50 @@ class CategoryService implements StoreServiceInterface
     {
         return $this->categoryRepository->repositorySecond(self::searchWhere((array)$requestParams),
             (int)$requestParams['size'] ?? 20);
+    }
+
+    /**
+     * 更新api端的分类缓存
+     * @return bool
+     */
+    private function updateApi(): bool
+    {
+        $items          = $this->categoryRepository->repositoryAllSelect((array)[["is_show", "=", 1]], (int)1000);
+        $items['items'] = $this->recursionData((array)$items['items']);
+        $userInfo       = UserInfo::getStoreUserInfo();
+
+        return RedisClient::create((string)"exam_category:", (string)$userInfo['store_uuid'], (array)$items);
+    }
+
+    /**
+     * 格式化数据
+     * @param array $info
+     * @return array
+     */
+    private function recursionData(array $info): array
+    {
+        $tree = [];
+        $info = json_decode(json_encode($info), true);// 序列化一次，否则使用对象调用的方式循环，会重复查询数据库一次。
+
+        foreach ($info as $value) {
+            $children = [];
+            if (!empty($value["all_children"])) {
+                foreach ($value["all_children"] as $v) {
+                    $children[] = [
+                        "title" => $v["title"],
+                        "image" => (empty($v["small_file_info"]["file_url"]) ? "" : $v["small_file_info"]["file_url"]) .
+                            (empty($v["small_file_info"]["file_name"]) ? "" : $v["small_file_info"]["file_name"]),
+                        "uuid"  => $v["uuid"],
+                    ];
+                }
+            }
+            $tree[] = [
+                "title"    => $value["title"],
+                "uuid"     => $value["uuid"],
+                "children" => $children
+            ];
+        }
+
+        return $tree;
     }
 }

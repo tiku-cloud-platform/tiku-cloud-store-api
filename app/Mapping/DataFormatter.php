@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 /**
  * This file is part of api.
  *
@@ -8,6 +8,7 @@ declare(strict_types=1);
  * @contact  2665274677@qq.com
  * @license  Apache2.0
  */
+
 namespace App\Mapping;
 
 /**
@@ -20,6 +21,7 @@ class DataFormatter
     /**
      * 递归数据.
      *
+     * @param array $info
      * @param string $pid
      * @return array
      */
@@ -28,7 +30,7 @@ class DataFormatter
         $tree = [];
         foreach ($info as $value) {
             if ($value['parent_uuid'] == $pid) {
-                $value['children'] = self::recursionData((array) $info, (string) $value['uuid']);
+                $value['children'] = self::recursionData((array)$info, (string)$value['uuid']);
                 if ($value['children'] == null) {
                     unset($value['children']);
                 }
@@ -51,7 +53,7 @@ class DataFormatter
         $endDate = empty($endDate) ? date('Y-m-d') : $endDate;
 
         $startTimeStamp = strtotime($startDate);
-        $endTimeStamp = strtotime($endDate);
+        $endTimeStamp   = strtotime($endDate);
 
         if ($startTimeStamp == $endTimeStamp) {
             return '今天';
@@ -74,7 +76,7 @@ class DataFormatter
      * @param array $requestParams
      * @return string
      */
-    public static function getClientIp(array $requestParams):string
+    public static function getClientIp(array $requestParams): string
     {
         if (isset($res['http_client_ip'])) {
             return $res['http_client_ip'];
