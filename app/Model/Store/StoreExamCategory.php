@@ -25,6 +25,14 @@ class StoreExamCategory extends \App\Model\Common\StoreExamCategory
 
     public function children()
     {
-        return $this->hasMany(StoreExamCategory::class,'parent_uuid','uuid');
+        return $this->hasMany(StoreExamCategory::class, 'parent_uuid', 'uuid');
+    }
+
+    public function allChildren()
+    {
+        return $this->hasMany(StoreExamCategory::class, 'parent_uuid', 'uuid')
+            ->with(['smallFileInfo:uuid,file_name,file_url'])
+            ->where("is_show", "=", 1)
+            ->orderByDesc("orders");
     }
 }

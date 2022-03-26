@@ -34,14 +34,10 @@ class ClientScope implements Scope
 
     public function apply(Builder $builder, Model $model)
     {
-        $header    = $this->request->header('Client-Type', '');
-        $storeUUID = $this->request->header('Store', '');
-        $router    = $this->request->getRequestUri();
+        $header = $this->request->header('Client-Type', '');
+        $router = $this->request->getRequestUri();
 
-        // TODO 验证store_uuid是否存在Redis缓存中
-        if (!empty($header) && in_array($header, ['wechat'])) {
-            $builder->where('store_uuid', '=', $storeUUID);
-        } else if (!empty($header) && in_array($header, ['web_store'])) {
+        if (!empty($header) && in_array($header, ['web_store'])) {
             if ($router !== '/store/user/login') {
                 $builder->where('store_uuid', '=', UserInfo::getStoreUserInfo()['store_uuid']);
             } else {

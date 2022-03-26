@@ -22,10 +22,6 @@ class CategoryRepository implements StoreRepositoryInterface
      */
     protected $categoryModel;
 
-    public function __construct()
-    {
-    }
-
     /**
      * 查询数据
      *
@@ -44,6 +40,30 @@ class CategoryRepository implements StoreRepositoryInterface
             ->select($this->categoryModel->searchFields)
             ->orderByDesc('id')
             ->paginate((int)$perSize);
+
+        return [
+            'items' => $items->items(),
+            'total' => $items->total(),
+            'size'  => $items->perPage(),
+            'page'  => $items->currentPage(),
+        ];
+    }
+
+    /**
+     * 用于api端查询
+     * @param array $searchWhere
+     * @param int $perSize
+     * @return array
+     */
+    public function repositoryAllSelect(array $searchWhere, int $perSize): array
+    {
+        $items = $this->categoryModel::query()
+            ->with(['allChildren:uuid,title,parent_uuid,file_uuid,big_file_uuid'])
+            ->where($searchWhere)
+            ->whereNull('parent_uuid')
+            ->select(['uuid', 'title', 'parent_uuid', 'file_uuid', 'big_file_uuid'])
+            ->orderByDesc('orders')
+            ->paginate($perSize);
 
         return [
             'items' => $items->items(),

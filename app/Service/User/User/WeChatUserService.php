@@ -46,10 +46,6 @@ class WeChatUserService implements UserServiceInterface
      */
     protected $request;
 
-    public function __construct()
-    {
-    }
-
     /**
      * 格式化查询条件.
      *
