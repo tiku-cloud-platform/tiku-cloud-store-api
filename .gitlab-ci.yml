@@ -14,4 +14,4 @@ sonarcloud-check:
   only:
     - merge_requests
     - master
-    - develop
+    - dev
