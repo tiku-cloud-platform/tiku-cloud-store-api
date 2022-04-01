@@ -1,57 +1,17 @@
-# usermod -aG docker gitlab-runner
-
-stages:
-  - build
-  - deploy
-
 variables:
-  PROJECT_NAME: hyperf
-  REGISTRY_URL: registry-docker.org
-
-build_test_docker:
-  stage: build
-  before_script:
-#    - git submodule sync --recursive
-#    - git submodule update --init --recursive
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+  GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+sonarcloud-check:
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
   script:
-    - docker build . -t $PROJECT_NAME
-    - docker tag $PROJECT_NAME $REGISTRY_URL/$PROJECT_NAME:test
-    - docker push $REGISTRY_URL/$PROJECT_NAME:test
+    - sonar-scanner
   only:
-    - test
-  tags:
-    - builder
-
-deploy_test_docker:
-  stage: deploy
-  script:
-    - docker stack deploy -c deploy.test.yml --with-registry-auth $PROJECT_NAME
-  only:
-    - test
-  tags:
-    - test
-
-build_docker:
-  stage: build
-  before_script:
-#    - git submodule sync --recursive
-#    - git submodule update --init --recursive
-  script:
-    - docker build . -t $PROJECT_NAME
-    - docker tag $PROJECT_NAME $REGISTRY_URL/$PROJECT_NAME:$CI_COMMIT_REF_NAME
-    - docker tag $PROJECT_NAME $REGISTRY_URL/$PROJECT_NAME:latest
-    - docker push $REGISTRY_URL/$PROJECT_NAME:$CI_COMMIT_REF_NAME
-    - docker push $REGISTRY_URL/$PROJECT_NAME:latest
-  only:
-    - tags
-  tags:
-    - builder
-
-deploy_docker:
-  stage: deploy
-  script:
-    - echo SUCCESS
-  only:
-    - tags
-  tags:
-    - builder
+    - merge_requests
+    - master
+    - develop
