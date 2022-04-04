@@ -31,8 +31,10 @@ class SignQueue
     {
         $redis         = (new RedisClient())->redisClient;
         $redisPipeLine = $redis->pipeline();
-        $redisPipeLine->lRange("user_sign:queue", 0, 10);
-        $redisPipeLine->lTrim("user_sign:queue", 11, -1);
+        /** @var string $queueName 签到队列名称 */
+        $queueName = "user_sign:queue";
+        $redisPipeLine->lRange($queueName, 0, 10);
+        $redisPipeLine->lTrim($queueName, 11, -1);
 
         $execResult = $redisPipeLine->exec();
         if (isset($execResult) && $execResult[1] === true) {
@@ -50,16 +52,11 @@ class SignQueue
                         if ($result1 && $result2 && $result3 && $result4) {
                             ++$successNumber;
                         }
-                        var_dump("插入签到汇总", $result1);
-                        var_dump("插入签到历史记录", $result2);
-                        var_dump("插入积分汇总", $result3);
-                        var_dump("插入积分历史", $result4);
                     } catch (\Throwable $throwable) {
                         preg_match("/Duplicate entry/", $throwable->getMessage(), $result);
                         if (!empty($result)) {
                             ++$successNumber;
                         }
-                        var_dump("插入失败，失败信息如下", $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
                     }
                 }
                 if ($successNumber == count($signCacheInfo)) {
@@ -90,6 +87,7 @@ class SignQueue
             $history    = (new StoreUserSignHistory())::query()->where([
                 "user_uuid"  => $cacheInfo["user_uuid"],
                 "store_uuid" => $cacheInfo["store_uuid"],
+                "sign_date"  => date("Y-m-d"),
             ])->first(["id"]);
             $signNumber = 1;
             if (!empty($history)) {
