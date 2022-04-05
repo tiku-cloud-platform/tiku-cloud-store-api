@@ -83,8 +83,8 @@ class GroupService implements StoreServiceInterface
         return $this->groupRepository->repositoryUpdate((array)[
             ['uuid', '=', $requestParams['uuid'] ?? ""],
         ], (array)[
-            'title'   => empty($requestParams['title']) ? null : trim($requestParams['title']),
-            'is_show' => trim($requestParams['is_show']),
+            'title'   => trim($requestParams['title']),
+            'is_show' => $requestParams['is_show'],
         ]);
     }
 

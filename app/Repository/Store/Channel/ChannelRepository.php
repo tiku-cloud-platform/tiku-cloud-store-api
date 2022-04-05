@@ -30,6 +30,7 @@ class ChannelRepository implements StoreRepositoryInterface
     public function repositorySelect(\Closure $closure, int $perSize): array
     {
         $items = $this->channelModel::query()
+            ->with(['fileInfo:uuid,file_url,file_name'])
             ->with(["group:title,uuid"])
             ->where($closure)
             ->select($this->channelModel->searchFields)
@@ -79,6 +80,7 @@ class ChannelRepository implements StoreRepositoryInterface
     public function repositoryFind(\Closure $closure): array
     {
         $bean = $this->channelModel::query()
+            ->with(['fileInfo:uuid,file_url,file_name'])
             ->where($closure)
             ->first($this->channelModel->searchFields);
 

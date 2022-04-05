@@ -84,8 +84,10 @@ class ChannelService implements StoreServiceInterface
             ['uuid', '=', $requestParams['uuid'] ?? ""],
         ], (array)[
             'title'              => trim($requestParams['title']),
-            'is_show'            => trim($requestParams['is_show']),
-            'channel_group_uuid' => trim($requestParams['channel_group_uuid']),
+            'is_show'            => $requestParams['is_show'],
+            'channel_group_uuid' => $requestParams['channel_group_uuid'],
+            'remark'             => $requestParams["remark"],
+            'file_uuid'          => $requestParams["file_uuid"],
         ]);
     }
 
