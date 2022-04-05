@@ -6,11 +6,11 @@ namespace App\Model\Common;
 use App\Model\BaseModel;
 
 /**
- * 注册渠道
+ * 注册渠道分区
  */
 class StoreChannelGroup extends BaseModel
 {
-    protected  $table = "store_channel";
+    protected $table = "store_channel_group";
 
     protected $fillable = [
         'uuid',
