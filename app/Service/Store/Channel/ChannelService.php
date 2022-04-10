@@ -6,6 +6,7 @@ namespace App\Service\Store\Channel;
 use App\Mapping\UserInfo;
 use App\Mapping\UUID;
 use App\Repository\Store\Channel\ChannelRepository;
+use App\Service\Store\User\UserService;
 use App\Service\StoreServiceInterface;
 use Hyperf\Di\Annotation\Inject;
 
@@ -52,10 +53,30 @@ class ChannelService implements StoreServiceInterface
      */
     public function serviceSelect(array $requestParams): array
     {
-        return $this->channelModel->repositorySelect(
+        $items = $this->channelModel->repositorySelect(
             self::searchWhere((array)$requestParams),
             (int)$requestParams['size'] ?? 20
         );
+        // 查询系统总注册人数
+        // 查询系统渠道总注册人数
+        // 查询系统今日注册总人数
+        // 查询系统渠道今日注册人数
+        $userService                      = new UserService();
+        $items["systemCount"]             = $userService->serviceCount();
+        $items["todaySystemTotal"]        = $userService->serviceCount((array)[
+            "start_time" => date("Y-m-d 00:00:00"),
+            "end_time"   => date("Y-m-d 23:59:59")
+        ]);
+        $items["channelSystemCount"]      = $userService->serviceCount((array)[
+            "channel" => 0,
+        ]);
+        $items["todayChannelSystemTotal"] = $userService->serviceCount((array)[
+            "start_time" => date("Y-m-d 00:00:00"),
+            "end_time"   => date("Y-m-d 23:59:59"),
+            "channel"    => 0,
+        ]);
+
+        return $items;
     }
 
     /**

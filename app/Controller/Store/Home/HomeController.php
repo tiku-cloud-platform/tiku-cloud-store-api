@@ -39,7 +39,7 @@ class HomeController extends StoreBaseController
      */
     public function index()
     {
-        $weChatService        = new UserService();
+        $userService          = new UserService();
         $currentDayStartTime  = date('Y-m-d') . ' 00:00:00';
         $currentDayEndTime    = date('Y-m-d') . ' 23:59:59';
         $collectionService    = new CollectionService();
@@ -48,8 +48,8 @@ class HomeController extends StoreBaseController
         $readinigService      = new ReadingService();
 
         $data = [
-            'now_incr_number'             => $weChatService->serviceCount((array)['start_time' => $currentDayStartTime, 'end_time' => $currentDayEndTime]),// 新增人数
-            'register_number'             => $weChatService->serviceCount(),// 注册人数
+            'now_incr_number'             => $userService->serviceCount((array)['start_time' => $currentDayStartTime, 'end_time' => $currentDayEndTime]),// 新增人数
+            'register_number'             => $userService->serviceCount(),// 注册人数
             'exam_number'                 => $optionService->serviceCount() + $readinigService->serviceCount(), // 试题总数
             'exam_submit_number'          => $collectionService->serviceSum(), // 答题人数
             'register_people_number_list' => [
@@ -70,9 +70,9 @@ class HomeController extends StoreBaseController
             'end_time'   => date('Y-m-t') . ' 23:59:59'
         ];
         /** @var array $everyDayArray 每日用户注册 */
-        $everyDayRegisterArray = $weChatService->serviceEveryDayRegister((array)$monthStartAndEnd);
+        $everyDayRegisterArray = $userService->serviceEveryDayRegister((array)$monthStartAndEnd);
         /** @var array $everDateTotal 每日用户总数 */
-        $everDateTotalArray = $weChatService->serviceEveryDayTotal((array)$everyDayRegisterArray);
+        $everDateTotalArray = $userService->serviceEveryDayTotal((array)$everyDayRegisterArray);
         /** @var array $everyDayExamArray 每日答题总数 */
         $everyDayExamArray = $submitHistoryService->serviceEveryDayRegister((array)$monthStartAndEnd);
         /** @var array $everyDayExamTotalArray 每日系统当前总数 */

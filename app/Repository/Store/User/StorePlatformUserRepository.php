@@ -158,7 +158,9 @@ class StorePlatformUserRepository implements StoreRepositoryInterface
                 Db::raw("COUNT(*) AS `number`")
             ])->get();
 
-        if (!empty($items)) return $items->toArray();
+        if (!empty($items)) {
+            return $items->toArray();
+        }
         return [];
     }
 
