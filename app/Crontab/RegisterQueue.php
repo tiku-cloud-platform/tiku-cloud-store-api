@@ -87,6 +87,9 @@ class RegisterQueue
                                     $weChatUserModel::query()->where([["user_uuid", "=", $registerUser["user_uuid"]]])
                                         ->update(["channel_uuid" => $bean->uuid]);
                                 }
+                                // 更新用户注册渠道
+                                $platformUser::query()->where([["uuid", "=", $registerUser["user_uuid"]]])
+                                    ->update(["channel_uuid" => $bean->uuid]);
                             }
                         }
                     }
