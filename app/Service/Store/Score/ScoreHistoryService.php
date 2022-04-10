@@ -71,13 +71,15 @@ class ScoreHistoryService implements StoreServiceInterface
         );
 
         // 查询积分汇总
-        $income = $expend = 0;
         if (!empty($requestParams['user_id'])) {
             $income = $this->scoreRepository->repositorySum((array)[['user_uuid', '=', $requestParams['user_id']], ['type', '=', 1]], (array)['score']);
             $expend = $this->scoreRepository->repositorySum((array)[['user_uuid', '=', $requestParams['user_id']], ['type', '=', 2]], (array)['score']);
+        } else {
+            $income = $this->scoreRepository->repositorySum((array)[['type', '=', 1]], (array)['score']);
+            $expend = $this->scoreRepository->repositorySum((array)[['type', '=', 2]], (array)['score']);
         }
-        $items['income'] = $income['score'];
-        $items['expend'] = $expend['score'];
+        $items['income'] = $income['score'] ?? "0.00";
+        $items['expend'] = $expend['score'] ?? "0.00";
 
         return $items;
     }

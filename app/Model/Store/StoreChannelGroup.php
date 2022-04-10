@@ -17,4 +17,19 @@ class StoreChannelGroup extends \App\Model\Common\StoreChannelGroup
         "is_show",
         "created_at",
     ];
+
+    protected $appends = [
+        "register"
+    ];
+
+    public function getRegisterAttribute(): int
+    {
+        $uuid        = $this->attributes["uuid"];
+        $items       = (new StoreChannel())::query()->where("channel_group_uuid", "=", $uuid)->get(["uuid"])->toArray();
+        $channelUuid = [];
+        foreach ($items as $value) {
+            $channelUuid[] = $value["uuid"];
+        }
+        return (new StorePlatformUser())::query()->whereIn("channel_uuid", $channelUuid)->count();
+    }
 }
