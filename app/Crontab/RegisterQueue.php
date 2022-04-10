@@ -24,15 +24,24 @@ class RegisterQueue
 {
     public function execute()
     {
-        $registerUser = (new RedisClient())->redisClient->rPop("register_queue");
+        $redisClient              = new RedisClient();
+        $platformUser             = new StorePlatformUser();
+        $userScoreCollectionModel = new StoreUserScoreCollection();
+        $weChatUserModel          = new StoreMiNiWeChatUser();
+        $storeChannelModel        = new StoreChannel();
+        $scoreHistoryModel        = new StoreUserScoreHistory();
+        $scoreConfigModel         = new StorePlatformScore();
+        $userGroupModel           = new StorePlatformUserGroup();
+
+        $registerUser = $redisClient->redisClient->rPop("register_queue");
         if ($registerUser) {
             try {
                 $registerUser = json_decode($registerUser, true);
 
                 //  查询对应的商户平台是否存在用户注册赠送积分
-                $scoreConfig = (new StorePlatformScore())->getScoreConfig((array)[["key", "=", $registerUser["register_type"]], ["store_uuid", "=", $registerUser["store_uuid"]]]);
+                $scoreConfig = $scoreConfigModel->getScoreConfig((array)[["key", "=", $registerUser["register_type"]], ["store_uuid", "=", $registerUser["store_uuid"]]]);
                 // 查询对应的商户平台是否存在用户分组信息
-                $groupConfig = (new StorePlatformUserGroup())->getGroup((array)[["store_uuid", "=", $registerUser["store_uuid"]]]);
+                $groupConfig = $userGroupModel->getGroup((array)[["store_uuid", "=", $registerUser["store_uuid"]]]);
                 if (!empty($scoreConfig)) {
                     $requestParams['title']       = $scoreConfig['title'];
                     $requestParams['score_key']   = $scoreConfig['key'];
@@ -42,18 +51,17 @@ class RegisterQueue
                     $requestParams['uuid']        = UUID::getUUID();
                     $requestParams['store_uuid']  = $registerUser["store_uuid"];
                     $requestParams['user_uuid']   = $registerUser["user_uuid"];
-                    if (!(new StoreUserScoreHistory())::query()->create($requestParams)) {
+                    if (!$scoreHistoryModel::query()->create($requestParams)) {
                         // 创建失败之后，重新将注册用户的信息放回Redis队列中
-                        (new RedisClient())->redisClient->rPush("register_queue", json_encode($registerUser));
+                        $redisClient->redisClient->rPush("register_queue", json_encode($registerUser));
                     } else {
                         // 更新用户的分组信息
-                        (new StorePlatformUser())::query()->where([["uuid", "=", $registerUser["user_uuid"]]])
+                        $platformUser::query()->where([["uuid", "=", $registerUser["user_uuid"]]])
                             ->update([
                                 "store_platform_user_group_uuid" => $groupConfig["uuid"]
                             ]);
                         // 先查询用户是否存在积分汇总的记录，不存在则创建，存在则更新
-                        $userScoreCollectionModel = new StoreUserScoreCollection();
-                        $bean                     = $userScoreCollectionModel::query()->where([
+                        $bean = $userScoreCollectionModel::query()->where([
                             ["user_uuid", "=", $registerUser["user_uuid"]],
                             ["store_uuid", "=", $registerUser["store_uuid"]],
                         ])->first(["id"]);
@@ -72,11 +80,11 @@ class RegisterQueue
                         }
                         // 更新用户注册渠道
                         if (!empty($registerUser["channel_id"])) {
-                            $bean = (new StoreChannel())::query()->where([["id", "=", $registerUser["channel_id"]]])->first(["uuid"]);
+                            $bean = $storeChannelModel::query()->where([["id", "=", $registerUser["channel_id"]]])->first(["uuid"]);
                             if (!empty($bean)) {
                                 // 1微信小程序2微信公众号3iOS客户端4Android客户端5PC端
                                 if ($registerUser["client_type"] == 1) {
-                                    (new StoreMiNiWeChatUser())::query()->where([["user_uuid", "=", $registerUser["user_uuid"]]])
+                                    $weChatUserModel::query()->where([["user_uuid", "=", $registerUser["user_uuid"]]])
                                         ->update(["channel_uuid" => $bean->uuid]);
                                 }
                             }
@@ -84,8 +92,10 @@ class RegisterQueue
                     }
                 }
             } catch (\Throwable $throwable) {
-                (new RedisClient())->redisClient->lPush("register_queue", json_encode($registerUser, JSON_UNESCAPED_UNICODE));
+                $redisClient->redisClient->lPush("register_queue", json_encode($registerUser, JSON_UNESCAPED_UNICODE));
             }
+        } else {
+            var_dump("暂无注册用户");
         }
     }
 }

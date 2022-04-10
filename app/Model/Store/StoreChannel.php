@@ -21,4 +21,13 @@ class StoreChannel extends \App\Model\Common\StoreChannel
         "file_uuid",
         "remark",
     ];
+
+    protected $appends = [
+        "register"
+    ];
+
+    public function getRegisterAttribute(): int
+    {
+        return (new StorePlatformUser())::query()->where("channel_uuid", "=", $this->attributes["uuid"])->count();
+    }
 }
