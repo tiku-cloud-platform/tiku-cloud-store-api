@@ -54,6 +54,13 @@ class UserService implements StoreServiceInterface
             if (!empty($end_time)) {
                 $query->where('created_at', '<=', $end_time);
             }
+            if (isset($requestParams["channel"])) {
+                if (!empty($requestParams["channel"])) {
+                    $query->where("store_platform_user_group_uuid", "=", $requestParams["channel"]);
+                } elseif (empty($channel)) {
+                    $query->whereNotNull("store_platform_user_group_uuid");
+                }
+            }
         };
     }
 
