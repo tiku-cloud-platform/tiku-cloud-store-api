@@ -23,13 +23,10 @@ class StorePlatformUserRepository implements StoreRepositoryInterface
      */
     protected $userModel;
 
-    public function __construct()
-    {
-    }
-
     /**
      * 查询数据
      *
+     * @param \Closure $closure
      * @param int $perSize 分页大小
      * @return array
      */
@@ -37,6 +34,7 @@ class StorePlatformUserRepository implements StoreRepositoryInterface
     {
         $items = $this->userModel::query()
             ->with(['group:uuid,title'])
+            ->with(['channel:uuid,title'])
             ->where($closure)
             ->select($this->userModel->searchFields)
             ->orderByDesc('id')

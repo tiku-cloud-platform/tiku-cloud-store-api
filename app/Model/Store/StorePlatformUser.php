@@ -28,11 +28,17 @@ class StorePlatformUser extends StorePlatformUserModel
         'mobile',
         'created_at',
         'updated_at',
-        'store_platform_user_group_uuid'
+        'store_platform_user_group_uuid',
+        'channel_uuid',
     ];
 
     public function group(): BelongsTo
     {
         return $this->belongsTo(StorePlatformUserGroup::class, 'store_platform_user_group_uuid', 'uuid');
+    }
+
+    public function channel(): BelongsTo
+    {
+        return $this->belongsTo(StoreChannel::class, "channel_uuid", "uuid");
     }
 }
