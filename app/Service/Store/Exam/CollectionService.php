@@ -32,7 +32,7 @@ class CollectionService implements StoreServiceInterface
      * 格式化查询条件
      *
      * @param array $requestParams 请求参数
-     * @return mixed 组装的查询条件
+     * @return \Closure 组装的查询条件
      */
     public static function searchWhere(array $requestParams)
     {

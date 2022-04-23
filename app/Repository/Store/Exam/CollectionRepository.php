@@ -39,8 +39,7 @@ class CollectionRepository implements StoreRepositoryInterface
             ->with([
                 'coverFileInfo:uuid,file_name,file_url',
                 'examCategoryInfo:uuid,title'
-            ])
-            ->where($closure)
+            ])->where($closure)
             ->select($this->collectionModel->searchFields)
             ->orderByDesc('id')
             ->paginate((int)$perSize);

@@ -25,5 +25,8 @@ class StoreExamCollection extends \App\Model\Common\StoreExamCollection
         'level',
         'author',
         'audit_author',
+        "max_option_total",
+        "max_judge_total",
+        "max_reading_total",
     ];
 }
