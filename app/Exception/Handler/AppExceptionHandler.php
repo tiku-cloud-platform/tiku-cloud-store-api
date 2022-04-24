@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * This file is part of api.
  *
@@ -45,7 +45,7 @@ class AppExceptionHandler extends ExceptionHandler
 
         $data = json_encode([
             'code'    => ErrorCode::REQUEST_ERROR,
-            'message' => env('APP_ENV') == 'dev' ? $throwable->getMessage() . $throwable->getFile() : ErrorCode::getMessage(ErrorCode::REQUEST_ERROR),
+            'message' => env('APP_ENV') == 'dev' ? $throwable->getMessage() . $throwable->getFile() . $throwable->getLine() : ErrorCode::getMessage(ErrorCode::REQUEST_ERROR),
             'data'    => [],
         ]);
         // 添加数据异常记录

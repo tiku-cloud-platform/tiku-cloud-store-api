@@ -57,4 +57,9 @@ class CacheKey extends AbstractConstants
      * @Message("云文件存储token前缀")
      */
     const  CLOUD_PLATFORM_FILE_TOKEN = "cloud_platform_file_token:";
+
+    /**
+     * @Message("试卷基础数据统计")
+     */
+    const EXAM_COLLECTION_TOTAL = "exam_collection_total:";
 }

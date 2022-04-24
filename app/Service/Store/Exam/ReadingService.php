@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Service\Store\Exam;
 
@@ -7,6 +7,8 @@ use App\Library\File\FileUpload;
 use App\Library\File\ImageSrcSearch;
 use App\Mapping\UserInfo;
 use App\Mapping\UUID;
+use App\Repository\Store\Exam\CollectionRepository;
+use App\Repository\Store\Exam\ReadingCollectionRelationRepository;
 use App\Repository\Store\Exam\ReadingRepository;
 use App\Service\StoreServiceInterface;
 use Hyperf\Di\Annotation\Inject;
@@ -140,5 +142,41 @@ class ReadingService implements StoreServiceInterface
     public function serviceFind(array $requestParams): array
     {
         return $this->readingRepository->repositoryFind(self::searchWhere((array)$requestParams));
+    }
+
+    /**
+     * 验证试卷最大阅读试题
+     * @param array $collectionArray 试卷uuid
+     * @param string $uuid 当前试题uuid, 用户更新时验证排除当前uuid的计算
+     * @return array 试卷信息
+     */
+    public function verifyCollectionSum(array $collectionArray, string $uuid = ""): array
+    {
+        $collectionRelationRepository = new ReadingCollectionRelationRepository();
+        $collectionRepository         = new CollectionRepository();
+        $returnMsg                    = ["uuid" => "", "msg" => ""];
+        if (empty($collectionArray)) {
+            return $returnMsg;
+        }
+        foreach ($collectionArray as $value) {
+            $examSum = $collectionRelationRepository->repositoryWhereInCount((string)"collection_uuid", [$value]);
+            $bean    = $collectionRepository->repositoryFind(function ($query) use ($value) {
+                $query->where("uuid", "=", $value);
+            });
+
+            if (!empty($bean) && $uuid == "" && $bean["max_reading_total"] <= $examSum) {
+                $returnMsg["uuid"]   = $value;
+                $returnMsg["msg"]    = $bean["title"];
+                $returnMsg["status"] = 1;
+                break;
+            } elseif (!empty($bean) && $uuid != "" && $bean["max_reading_total"] < $examSum -1) {
+                $returnMsg["uuid"]   = $value;
+                $returnMsg["msg"]    = $bean["title"];
+                $returnMsg["status"] = 2;
+                break;
+            }
+        }
+
+        return $returnMsg;
     }
 }
