@@ -39,38 +39,26 @@ class StoreExamCollection extends BaseModel
     ];
 
     protected $appends = [
-        'total_score',// 试卷总分
         'use_time',// 试卷答题时间(s)
         'use_time_minutes', // 试卷答题时间(m)
         'option_sum', // 单选试题总数
         'reading_sum', // 简答试题总数
         "jude_sum", // 判断试题总题数
+        "option_score", // 单选试题总分
+        "jude_score", // 判断试题总分
+        "reading_score", // 阅读理解总分
     ];
 
-    /**
-     * 试卷封面
-     *
-     * @return BelongsTo
-     */
     public function coverFileInfo(): BelongsTo
     {
         return $this->belongsTo(StorePlatformFile::class, 'file_uuid', 'uuid');
     }
 
-    /**
-     * 数据类型
-     * @return BelongsTo
-     */
     public function collectionType(): BelongsTo
     {
         return $this->belongsTo(StoreExamCategory::class, 'exam_category_uuid', 'uuid');
     }
 
-    /**
-     * 试卷分类
-     *
-     * @return BelongsTo
-     */
     public function examCategoryInfo(): BelongsTo
     {
         return $this->belongsTo(StoreExamCategory::class, 'exam_category_uuid', 'uuid');
@@ -132,24 +120,39 @@ class StoreExamCollection extends BaseModel
             ->count(['id']);
     }
 
-    public function getTotalScoreAttribute()
+    public function getOptionScoreAttribute()
     {
-        // 单选试题总分
-        $optionScore = Db::table('store_exam_collection_relation')
+       $score =  Db::table('store_exam_collection_relation')
             ->join('store_exam_option', 'store_exam_collection_relation.exam_uuid', '=', 'store_exam_option.uuid')
             ->where('store_exam_collection_relation.exam_collection_uuid', '=', $this->attributes['uuid'])
             ->whereNull('store_exam_collection_relation.deleted_at')
             ->whereNull('store_exam_option.deleted_at')
             ->sum('answer_income_score');
 
-        // 简单试题总分
-        $readingScore = Db::table('store_exam_reading_collection_relation')
+       return empty($score) ? 0.00 : $score;
+    }
+
+    public function getReadingScoreAttribute()
+    {
+        $score = Db::table('store_exam_reading_collection_relation')
             ->join('store_exam_reading', 'store_exam_reading_collection_relation.exam_uuid', '=', 'store_exam_reading.uuid')
             ->where('store_exam_reading_collection_relation.collection_uuid', '=', $this->attributes['uuid'])
             ->whereNull('store_exam_reading_collection_relation.deleted_at')
             ->whereNull('store_exam_reading.deleted_at')
             ->sum('answer_income_score');
 
-        return $optionScore + $readingScore;
+        return empty($score) ? 0.00 : $score;
+    }
+
+    public function getJudeScoreAttribute()
+    {
+        $score = Db::table('store_exam_jude_collection_relation')
+            ->join('store_exam_judge_option', 'store_exam_jude_collection_relation.exam_uuid', '=', 'store_exam_judge_option.uuid')
+            ->where('store_exam_jude_collection_relation.collection_uuid', '=', $this->attributes['uuid'])
+            ->whereNull('store_exam_jude_collection_relation.deleted_at')
+            ->whereNull('store_exam_judge_option.deleted_at')
+            ->sum('answer_income_score');
+
+        return empty($score) ? 0.00 : $score;
     }
 }
