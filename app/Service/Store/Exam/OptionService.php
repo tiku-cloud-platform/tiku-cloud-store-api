@@ -1,13 +1,17 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Service\Store\Exam;
 
+use App\Mapping\HttpDataResponse;
 use App\Mapping\UserInfo;
 use App\Mapping\UUID;
+use App\Repository\Store\Exam\CollectionRelationRepository;
+use App\Repository\Store\Exam\CollectionRepository;
 use App\Repository\Store\Exam\OptionRepository;
 use App\Service\StoreServiceInterface;
 use Hyperf\Di\Annotation\Inject;
+use function Swoole\Coroutine\Http\request;
 
 /**
  * 选择试题
@@ -22,6 +26,12 @@ class OptionService implements StoreServiceInterface
      * @var OptionRepository
      */
     protected $optionRepository;
+
+    /**
+     * @Inject
+     * @var HttpDataResponse
+     */
+    protected $httpResponse;
 
     public function __construct()
     {
@@ -152,5 +162,39 @@ class OptionService implements StoreServiceInterface
         }
 
         return $answerArray;
+    }
+
+    /**
+     * 验证试卷最大选择试题
+     * @param array $collectionArray 试卷uuid
+     * @param string $uuid 当前试题uuid, 用户更新时验证排除当前uuid的计算
+     * @return array 试卷信息
+     */
+    public function verifyCollectionSum(array $collectionArray, string $uuid = ""): array
+    {
+        $collectionRelationRepository = new CollectionRelationRepository();
+        $collectionRepository         = new CollectionRepository();
+        $returnMsg                    = ["uuid" => "", "msg" => ""];
+        if (empty($collectionArray)) {
+            return $returnMsg;
+        }
+        foreach ($collectionArray as $value) {
+            $examSum = $collectionRelationRepository->repositoryWhereInCount((string)"exam_collection_uuid", [$value]);
+            $bean    = $collectionRepository->repositoryFind(function ($query) use ($value) {
+                $query->where("uuid", "=", $value);
+            });
+
+            if (!empty($bean) && $uuid == "" && $bean["max_option_total"] <= $examSum) {
+                $returnMsg["uuid"] = $value;
+                $returnMsg["msg"]  = $bean["title"];
+                break;
+            } elseif (!empty($bean) && $uuid != "" && $bean["max_option_total"] < $examSum - 1) {
+                $returnMsg["uuid"] = $value;
+                $returnMsg["msg"]  = $bean["title"];
+                break;
+            }
+        }
+
+        return $returnMsg;
     }
 }

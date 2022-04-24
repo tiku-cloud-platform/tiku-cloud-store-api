@@ -154,4 +154,16 @@ class ReadingCollectionRelationRepository implements StoreRepositoryInterface
     {
         return $this->relationModel::query()->whereIn($field, $deleteWhere)->delete();
     }
+
+    /**
+     * 查询总数
+     *
+     * @param string $field 查询字段
+     * @param array $values 字段值
+     * @return int 总和
+     */
+    public function repositoryWhereInCount(string $field, array $values):int
+    {
+        return  $this->relationModel::query()->whereIn($field, $values)->count("id");
+    }
 }

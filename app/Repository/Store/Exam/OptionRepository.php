@@ -163,9 +163,9 @@ class OptionRepository implements StoreRepositoryInterface
         $result = 0;
         Db::transaction(function () use ($updateInfo, &$result, $updateWhere) {
             /** @var string $uuid 试题uuid */
-            $uuid = $updateWhere[1][2];
+            $uuid = $updateWhere[0][2];
             /** @var string $storeId 商户id */
-            $storeId = $updateWhere[0][2];
+            $storeId = $updateWhere[1][2];
             // 试题选项
             (new OptionItemRepository())->repositoryUpdate((array)$updateWhere, (array)$updateInfo['option_item']);
             // 试题分类关联
@@ -213,7 +213,9 @@ class OptionRepository implements StoreRepositoryInterface
                         'store_uuid'           => $storeId
                     ];
                 }
-                $collectionRelationRepository->repositoryCreate((array)$examCollectionArray);
+                var_dump("先试卷uuid", $examCollectionArray);
+                $result = $collectionRelationRepository->repositoryCreate((array)$examCollectionArray);
+                var_dump("更新结果", $result);
             }
 
             unset($updateInfo['collection']);

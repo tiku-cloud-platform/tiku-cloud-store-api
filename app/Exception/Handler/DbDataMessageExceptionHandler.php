@@ -32,12 +32,12 @@ class DbDataMessageExceptionHandler extends ExceptionHandler
     {
         if ($throwable instanceof DbDataMessageException) {
             $data = json_encode([
-                'code' => empty($throwable->getCode()) ? ErrorCode::REQUEST_ERROR : $throwable->getCode(),
-                'message' => env('APP_ENV') == 'dev' ? $throwable->getMessage() : ErrorCode::getMessage(ErrorCode::REQUEST_ERROR),
-                'data' => [],
+                'code'    => empty($throwable->getCode()) ? ErrorCode::REQUEST_ERROR : $throwable->getCode(),
+                'message' => env('APP_ENV') == 'dev' ? $throwable->getMessage() . $throwable->getFile() . $throwable->getLine() : ErrorCode::getMessage(ErrorCode::REQUEST_ERROR),
+                'data'    => [],
             ]);
             (new LogServiceFactory())->recordLog((string)LogKey::DB_ERROR_LOG, (array)[
-                'app_error_msg' => $throwable->getMessage(),
+                'app_error_msg'  => $throwable->getMessage(),
                 'app_error_file' => $throwable->getFile(),
                 'app_error_line' => $throwable->getLine(),
             ]);

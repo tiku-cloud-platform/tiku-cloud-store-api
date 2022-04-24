@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Model\Common;
 
@@ -44,6 +44,7 @@ class StoreExamCollection extends BaseModel
         'use_time_minutes', // 试卷答题时间(m)
         'option_sum', // 单选试题总数
         'reading_sum', // 简答试题总数
+        "jude_sum", // 判断试题总题数
     ];
 
     /**
@@ -120,6 +121,13 @@ class StoreExamCollection extends BaseModel
     public function getReadingSumAttribute(): int
     {
         return (new StoreExamReadingCollectionRelation())::query()
+            ->where('collection_uuid', '=', $this->attributes['uuid'])
+            ->count(['id']);
+    }
+
+    public function getJudeSumAttribute(): int
+    {
+        return (new StoreExamJudeCollectionRelation())::query()
             ->where('collection_uuid', '=', $this->attributes['uuid'])
             ->count(['id']);
     }

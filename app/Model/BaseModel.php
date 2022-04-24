@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Model;
 
@@ -70,14 +70,43 @@ class BaseModel extends Model
     public function batchUpdateOrCreate(string $tableName, array $updateInfo, string $relationKeyName = '', string $relationUUID = ''): bool
     {
         $createInfoArray = [];
+        $updateInfoArray = [];
         foreach ($updateInfo as $key => $value) {
-            $value = json_decode($value, true);
             if (empty($value['uuid'])) {
                 $createInfoArray[$key] = $value;
+            } else {
+                $updateInfoArray[$key] = $value;
             }
-        };
+        }
 
-        return $this->batchInsert((string)$tableName, (array)$createInfoArray, (string)$relationKeyName, (string)$relationUUID);
+        $insertResult = $this->batchInsert((string)$tableName, (array)$createInfoArray, (string)$relationKeyName, (string)$relationUUID);
+        $updateRows   = $this->batchUpdate((string)$tableName, (array)$updateInfoArray, (string)"uuid");
+        if ((count($createInfoArray) > 0 && $insertResult) || (count($createInfoArray) < 1)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 数据批量更新
+     *
+     * @param string $tableName 数据表
+     * @param array $updateInfo 插入数据[['字段名称1' => '字段值1', '字段名称2' => '字段值2']]
+     * @param string $updateKey 更新主键名称
+     * @return int
+     */
+    public function batchUpdate(string $tableName, array $updateInfo, string $updateKey): int
+    {
+        $rows = 0;
+        foreach ($updateInfo as $key => $value) {
+            if (isset($value[$updateKey])) {
+                $value["updated_at"] = date('Y-m-d H:i:s');
+                if (Db::table($tableName)->where($updateKey, "=", $value[$updateKey])->update($value)) {
+                    ++$rows;
+                }
+            }
+        }
+        return $rows;
     }
 
     /**
