@@ -7,6 +7,7 @@ use App\Mapping\RedisClient;
 use App\Mapping\UUID;
 use App\Model\Shell\StoreArticle;
 use App\Model\Shell\StoreArticleReadClick;
+use Hyperf\Crontab\Annotation\Crontab;
 
 /**
  * 用户签到处理
