@@ -13,7 +13,7 @@ use Hyperf\Crontab\Annotation\Crontab;
 use Hyperf\DbConnection\Db;
 
 /**
- * 用户签到处理
+ * 用户签到处理(替换为定时器触发)
  * Class SignQueue
  * @package App\Crontab
  * @Crontab(name="sign_queue", rule="*\/1 * * *  *", callback="execute", memo="用户签到处理")
