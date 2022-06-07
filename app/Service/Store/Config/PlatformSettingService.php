@@ -31,7 +31,7 @@ class PlatformSettingService implements StoreServiceInterface
 	 * @Inject
 	 * @var PlatformSettingRepository
 	 */
-	private $settingRepository;
+	protected $settingRepository;
 
 	public function __construct()
 	{
@@ -95,15 +95,15 @@ class PlatformSettingService implements StoreServiceInterface
 	 */
 	public function serviceUpdate(array $requestParams): int
 	{
-		$this->settingRepository->repositoryUpdate((array)[
+		$this->settingRepository->repositoryUpdate([
 			['uuid', '=', trim($requestParams['uuid'])],
-		], (array)[
+		], [
 			'title'  => trim($requestParams['title']),
 			'type'   => trim($requestParams['type']),
 			'values' => trim($requestParams['values']),
 		]);
 
-		if ($this->updateWxSetting((string)UserInfo::getStoreUserInfo()['store_uuid'], (array)$requestParams)) {
+		if ($this->updateWxSetting((string)UserInfo::getStoreUserInfo()['store_uuid'], $requestParams)) {
 			return 1;
 		}
 
@@ -121,10 +121,10 @@ class PlatformSettingService implements StoreServiceInterface
 		$uuidArray   = explode(',', $requestParams['uuid']);
 		$deleteWhere = [];
 		foreach ($uuidArray as $value) {
-			array_push($deleteWhere, $value);
+			$deleteWhere[] = $value;
 		}
 
-		return $this->settingRepository->repositoryWhereInDelete((array)$deleteWhere, (string)'uuid');
+		return $this->settingRepository->repositoryWhereInDelete($deleteWhere, 'uuid');
 	}
 
 	/**
@@ -135,7 +135,7 @@ class PlatformSettingService implements StoreServiceInterface
 	 */
 	public function serviceFind(array $requestParams): array
 	{
-		return $this->settingRepository->repositoryFind(self::searchWhere((array)$requestParams));
+		return $this->settingRepository->repositoryFind(self::searchWhere($requestParams));
 	}
 
 	/**
@@ -148,7 +148,12 @@ class PlatformSettingService implements StoreServiceInterface
 	private function updateWxSetting(string $storeUUID, array $cacheInfo): bool
 	{
 		if ($cacheInfo['type'] == 'wx_setting') {
-			return RedisClient::create((string)CacheKey::STORE_PLATFORM_SETTING, (string)$storeUUID, (array)$cacheInfo);
+			$valueArray              = json_decode($cacheInfo["values"], true);
+			$cacheInfo["name"]       = $valueArray["name"];
+			$cacheInfo["app_key"]    = $valueArray["app_key"];
+			$cacheInfo["app_secret"] = $valueArray["app_secret"];
+			unset($cacheInfo["values"]);
+			return RedisClient::create(CacheKey::STORE_PLATFORM_SETTING, $storeUUID, $cacheInfo);
 		}
 
 		return true;

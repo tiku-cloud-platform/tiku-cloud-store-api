@@ -1,14 +1,5 @@
 <?php
-
 declare(strict_types=1);
-/**
- * This file is part of api.
- *
- * @link     https://www.qqdeveloper.io
- * @document https://www.qqdeveloper.wiki
- * @contact  2665274677@qq.com
- * @license  Apache2.0
- */
 
 namespace App\Controller\Store\Config;
 
@@ -49,9 +40,9 @@ class PlatformSettingController extends StoreBaseController
 	 */
 	public function index()
 	{
-		$items = $this->service->serviceSelect((array)$this->request->all());
+		$items = $this->service->serviceSelect($this->request->all());
 
-		return $this->httpResponse->success((array)$items);
+		return $this->httpResponse->success($items);
 	}
 
 	/**
@@ -61,7 +52,7 @@ class PlatformSettingController extends StoreBaseController
 	 */
 	public function show(UUIDValidate $validate)
 	{
-		$bean = $this->service->serviceFind((array)$this->request->all());
+		$bean = $this->service->serviceFind($this->request->all());
 
 		return $this->httpResponse->success($bean);
 	}
@@ -73,7 +64,7 @@ class PlatformSettingController extends StoreBaseController
 	 */
 	public function create(SettingValidate $validate)
 	{
-		$createResult = $this->service->serviceCreate((array)$this->request->all());
+		$createResult = $this->service->serviceCreate($this->request->all());
 
 		return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
 	}
@@ -85,7 +76,7 @@ class PlatformSettingController extends StoreBaseController
 	 */
 	public function update(SettingValidate $validate)
 	{
-		$updateResult = $this->service->serviceUpdate((array)$this->request->all());
+		$updateResult = $this->service->serviceUpdate($this->request->all());
 
 		return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
 	}
@@ -96,7 +87,7 @@ class PlatformSettingController extends StoreBaseController
 	 */
 	public function destroy()
 	{
-		$deleteResult = $this->service->serviceDelete((array)$this->request->all());
+		$deleteResult = $this->service->serviceDelete($this->request->all());
 
 		return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
 	}

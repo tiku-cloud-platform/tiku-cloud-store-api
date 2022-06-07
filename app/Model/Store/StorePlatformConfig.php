@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 /**
  * This file is part of api.
  *
@@ -19,11 +19,11 @@ namespace App\Model\Store;
  */
 class StorePlatformConfig extends \App\Model\Common\StorePlatformConfig
 {
-    public $searchFields = [
-        'uuid',
-        'title',
-        'type',
-        'values',
-        'created_at',
-    ];
+	public $searchFields = [
+		'uuid',
+		'title',
+		'type',
+		'values',
+		'created_at',
+	];
 }
