@@ -21,6 +21,6 @@ class SettingCache
      */
     public static function getSetting(string $key): array
     {
-        return (new SettingService())->serviceFind((array)['type' => $key]);
+        return (new SettingService())->serviceFind(['type' => $key]);
     }
 }

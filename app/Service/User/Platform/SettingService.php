@@ -55,17 +55,17 @@ class SettingService implements UserServiceInterface
 	public function serviceSelect(array $requestParams): array
 	{
 		$storeUUId     = (new WeChatClient)->getUUIDHeader();
-		$cacheSettInfo = RedisClient::get((string)CacheKey::STORE_PLATFORM_SETTING, (string)$storeUUId);
+		$cacheSettInfo = RedisClient::get(CacheKey::STORE_PLATFORM_SETTING, (string)$storeUUId);
 
 		if (empty($cacheSettInfo)) {
 			$items = $this->settingRepository->repositorySelect(self::searchWhere((array)$requestParams), (int)20000);
 
 			$cacheSettInfo = $items['items'];
 
-			RedisClient::create((string)CacheKey::STORE_PLATFORM_SETTING,
-				(string)$storeUUId,
+			RedisClient::create(CacheKey::STORE_PLATFORM_SETTING,
+				$storeUUId,
 				(array)$cacheSettInfo,
-				(int)CacheTime::STORE_PLATFORM_SETTING_EXPIRE_TIME);
+				CacheTime::STORE_PLATFORM_SETTING_EXPIRE_TIME);
 		}
 
 		return $cacheSettInfo;
@@ -110,11 +110,11 @@ class SettingService implements UserServiceInterface
 	public function serviceFind(array $requestParams): array
 	{
 		$storeUUId     = (new WeChatClient)->getUUIDHeader();
-		$cacheSettInfo = RedisClient::get((string)CacheKey::STORE_PLATFORM_SETTING, (string)$storeUUId);
+		$cacheSettInfo = RedisClient::get(CacheKey::STORE_PLATFORM_SETTING, (string)$storeUUId);
 
 		if (empty($cacheSettInfo)) {
 			$cacheSettInfo = $this->settingRepository->repositoryFind(self::searchWhere((array)$requestParams));
-			RedisClient::create((string)CacheKey::STORE_PLATFORM_SETTING,
+			RedisClient::create(CacheKey::STORE_PLATFORM_SETTING,
 				(string)$storeUUId,
 				(array)$cacheSettInfo,
 				(int)CacheTime::STORE_PLATFORM_SETTING_EXPIRE_TIME,);

@@ -26,8 +26,8 @@ class LoginController extends UserBaseController
 	}
 
 	/**
-     * code和userInfo一并登录
-     *
+	 * code和userInfo一并登录
+	 *
 	 * @PostMapping(path="wechat/login")
 	 * @return ResponseInterface
 	 */
@@ -41,19 +41,20 @@ class LoginController extends UserBaseController
 		return $this->httpResponse->error((array)$userInfo);
 	}
 
-    /**
-     * 静默授权登录
-     *
-     * @PostMapping(path="wechat/quite/login")
-     * @return ResponseInterface
-     */
-    public function quiteWeChatLogin()
-    {
-        $userInfo = $this->service->serviceQuiteWeChatLogin((array)$this->request->all());
+	/**
+	 * 静默授权登录
+	 *
+	 * @PostMapping(path="wechat/quite/login")
+	 * @return ResponseInterface
+	 * @deprecated
+	 */
+	public function quiteWeChatLogin()
+	{
+		$userInfo = $this->service->serviceQuiteWeChatLogin((array)$this->request->all());
 
-        if ($userInfo['code'] == 0) {
-            return $this->httpResponse->success((array)$userInfo['data']);
-        }
-        return $this->httpResponse->error((array)$userInfo);
+		if ($userInfo['code'] == 0) {
+			return $this->httpResponse->success((array)$userInfo['data']);
+		}
+		return $this->httpResponse->error((array)$userInfo);
 	}
 }
