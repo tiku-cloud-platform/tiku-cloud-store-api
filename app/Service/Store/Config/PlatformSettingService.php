@@ -148,10 +148,13 @@ class PlatformSettingService implements StoreServiceInterface
 	private function updateWxSetting(string $storeUUID, array $cacheInfo): bool
 	{
 		if ($cacheInfo['type'] == 'wx_setting') {
-			$valueArray              = json_decode($cacheInfo["values"], true);
-			$cacheInfo["name"]       = $valueArray["name"];
-			$cacheInfo["app_key"]    = $valueArray["app_key"];
-			$cacheInfo["app_secret"] = $valueArray["app_secret"];
+			$valueArray                      = json_decode($cacheInfo["values"], true);
+			$cacheInfo["name"]               = $valueArray["name"];
+			$cacheInfo["app_key"]            = $valueArray["app_key"];
+			$cacheInfo["app_secret"]         = $valueArray["app_secret"];
+			$cacheInfo["offical_name"]       = $valueArray["offical_name"];
+			$cacheInfo["offical_app_key"]    = $valueArray["offical_app_key"];
+			$cacheInfo["offical_app_secret"] = $valueArray["offical_app_secret"];
 			unset($cacheInfo["values"]);
 			return RedisClient::create(CacheKey::STORE_PLATFORM_SETTING, $storeUUID, $cacheInfo);
 		}
