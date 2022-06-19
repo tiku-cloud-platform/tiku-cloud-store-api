@@ -32,7 +32,7 @@ class CollectionValidate extends FormRequest
             'exam_time'          => 'required|time',
             'level'              => 'required|integer',
             'max_judge_total'    => 'required|integer|max:10|min:1',
-            'max_reading_total'  => 'required|integer|max:20|min:1',
+            'max_reading_total'  => 'required|integer|max:50|min:1',
             'max_option_total'   => 'required|integer|max:50|min:1',
         ];
     }
@@ -63,7 +63,7 @@ class CollectionValidate extends FormRequest
             "max_judge_total.min"         => "最大判断题数量不能小于1",
             "max_reading_total.required"  => "最大问答题数量不能为空",
             "max_reading_total.integer"   => "最大问答题数量格式不正确",
-            "max_reading_total.max"       => "最大问答题数量不能超过20",
+            "max_reading_total.max"       => "最大问答题数量不能超过50",
             "max_reading_total.min"       => "最大问答题数量不能小于1",
             "max_option_total.required"   => "最大选择题数量不能为空",
             "max_option_total.integer"    => "最大选择题数量格式不正确",
