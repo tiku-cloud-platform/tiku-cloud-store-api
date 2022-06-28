@@ -27,6 +27,7 @@ class CategoryService implements StoreServiceInterface
 	{
 		return function ($query) use ($requestParams) {
 			extract($requestParams);
+			$query->where("store_book_uuid", "=", $store_book_uuid);
 			if (!empty($uuid)) {
 				$query->where('uuid', '=', $uuid);
 			}
