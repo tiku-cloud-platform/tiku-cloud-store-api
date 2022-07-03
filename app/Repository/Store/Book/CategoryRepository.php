@@ -35,7 +35,7 @@ class CategoryRepository implements StoreRepositoryInterface
 				"created_at",
 				"updated_at",
 			])
-			->orderByDesc('id')
+			->orderBy('id')
 			->paginate($perSize);
 
 		return [

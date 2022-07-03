@@ -31,6 +31,7 @@ class ContentService implements StoreServiceInterface
 				$query->where('uuid', '=', $uuid);
 			}
 			if (!empty($store_book_category_uuid)) {
+				// 一级分类和全部分类条件查询
 				$query->where('store_book_category_uuid', '=', $store_book_category_uuid);
 			}
 			if (!empty($title)) {

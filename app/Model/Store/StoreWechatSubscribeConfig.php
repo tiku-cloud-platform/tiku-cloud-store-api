@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Model\Store;
 
@@ -11,17 +11,18 @@ namespace App\Model\Store;
  */
 class StoreWechatSubscribeConfig extends \App\Model\Common\StoreWechatSubscribeConfig
 {
-    public $searchFields = [
-        'uuid',
-        'title',
-        'template_id',
-        'page',
-        'data',
-        'miniprogram_state',
-        'lang',
-        'is_show',
-        'orders',
-        'file_uuid',
-        'description'
-    ];
+	public $searchFields = [
+		'uuid',
+		'title',
+		'template_id',
+		'page',
+		'data',
+		'miniprogram_state',
+		'lang',
+		'is_show',
+		'orders',
+		'file_uuid',
+		'description',
+		"store_uuid",
+	];
 }
