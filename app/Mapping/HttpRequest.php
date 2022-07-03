@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Mapping;
 
@@ -15,66 +15,66 @@ use Hyperf\Guzzle\ClientFactory;
  */
 class HttpRequest
 {
-    /**
-     * @Inject()
-     * @var ClientFactory
-     */
-    protected $clientFactory;
+	/**
+	 * @Inject()
+	 * @var ClientFactory
+	 */
+	protected $clientFactory;
 
-    /**
-     * get请求
-     *
-     * @param string $url 请求地址
-     * @param array $options 请求参数
-     * @return array
-     */
-    public function getRequest(string $url, array $options = []): array
-    {
-        $client     = $this->clientFactory->create($options);
-        $returnInfo = [
-            'code' => 0,
-            'data' => [],
-            'msg'  => 'success',
-        ];
+	/**
+	 * get请求
+	 *
+	 * @param string $url    请求地址
+	 * @param array $options 请求参数
+	 * @return array
+	 */
+	public function getRequest(string $url, array $options = []): array
+	{
+		$client     = $this->clientFactory->create($options);
+		$returnInfo = [
+			'code' => 0,
+			'data' => [],
+			'msg'  => 'success',
+		];
 
-        try {
-            $string             = $client->get($url, [])->getBody()->getContents();
-            $info               = json_decode($string, true);
-            $returnInfo['data'] = $info;
-        } catch (GuzzleException $e) {
-            $returnInfo['code'] = 1;
-            $returnInfo['msg']  = $e->getMessage();
-        }
+		try {
+			$string             = $client->get($url, [])->getBody()->getContents();
+			$info               = json_decode($string, true);
+			$returnInfo['data'] = $info;
+		} catch (GuzzleException $e) {
+			$returnInfo['code'] = 1;
+			$returnInfo['msg']  = $e->getMessage();
+		}
 
-        return $returnInfo;
-    }
+		return $returnInfo;
+	}
 
-    /**
-     * post请求
-     *
-     * @param string $url 请求地址
-     * @param array $requestData 请求参数
-     * @param array $options 请求基础参数
-     * @return array
-     */
-    public function postRequest(string $url, array $requestData, array $options = []): array
-    {
-        $client     = $this->clientFactory->create($options);
-        $returnInfo = [
-            'code' => 0,
-            'data' => [],
-            'msg'  => 'success',
-        ];
+	/**
+	 * post请求
+	 *
+	 * @param string $url        请求地址
+	 * @param array $requestData 请求参数
+	 * @param array $options     请求基础参数
+	 * @return array
+	 */
+	public function postRequest(string $url, array $requestData, array $options = []): array
+	{
+		$client     = $this->clientFactory->create($options);
+		$returnInfo = [
+			'code' => 0,
+			'data' => [],
+			'msg'  => '请求成功',
+		];
 
-        try {
-            $string             = $client->post($url, $requestData)->getBody()->getContents();
-            $info               = json_decode($string, true);
-            $returnInfo['data'] = $info;
-        } catch (GuzzleException $e) {
-            $returnInfo['code'] = 1;
-            $returnInfo['msg']  = $e->getMessage();
-        }
+		try {
+			$string             = $client->post($url, $requestData)->getBody()->getContents();
+			$info               = json_decode($string, true);
+			$returnInfo['data'] = $info;
+		} catch (GuzzleException $e) {
+			$returnInfo['code'] = 1;
+			$returnInfo['msg']  = $e->getMessage();
+		}
 
-        return $returnInfo;
-    }
+		return $returnInfo;
+	}
 }
