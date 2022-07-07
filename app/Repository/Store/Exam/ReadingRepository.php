@@ -224,4 +224,28 @@ class ReadingRepository implements StoreRepositoryInterface
     {
         return $this->examModel::query()->where($closure)->count();
     }
+
+    /**
+     * 指定条件查询
+     * @param array $searchWhere 查询条件
+     * @param int $page 当前页码
+     * @param int $perSize 分页大小
+     * @param array $fields 分页字段
+     * @return array
+     */
+    public function repositoryQuery(array $searchWhere, int $page = 1, int $perSize = 20,array $fields = ["uuid", "title"]): array
+    {
+        $items = $this->examModel::query()
+            ->where($searchWhere)
+            ->select($fields)
+            ->orderByDesc('id')
+            ->paginate((int)$perSize);
+
+        return [
+            'items' => $items->items(),
+            'total' => $items->total(),
+            'size'  => $items->perPage(),
+            'page'  => $items->currentPage(),
+        ];
+    }
 }
