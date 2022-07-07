@@ -29,7 +29,11 @@ class ContentService implements StoreServiceInterface
 			extract($requestParams);
 			// 处理一级分类，查询所有子类。
             $categoryAll = (new CategoryRepository())->repositorySpecial([["parent_uuid", "=", $store_book_uuid]], ["uuid"]);
-            $categoryAll = array_column($categoryAll, "uuid");
+            if (!empty($categoryAll)) {
+                $categoryAll = array_column($categoryAll, "uuid");
+            } else {
+                $categoryAll = [];
+            }
             array_push($categoryAll, $store_book_uuid);
             $query->whereIn('store_book_uuid', $categoryAll);
             if (!empty($uuid)) {
