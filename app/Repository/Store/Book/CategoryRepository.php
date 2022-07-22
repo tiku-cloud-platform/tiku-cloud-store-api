@@ -97,4 +97,15 @@ class CategoryRepository implements StoreRepositoryInterface
 		}
 		return [];
 	}
+
+	public function repositorySpecial(array $searchWhere, array $fields = ["id"]): array
+	{
+		$items = $this->categoryModel::query()
+			->where($searchWhere)
+			->get($fields);
+		if (!empty($items)) {
+			return $items->toArray();
+		}
+		return [];
+	}
 }

@@ -7,6 +7,7 @@ namespace App\Service\Store\Exam;
 use App\Mapping\UserInfo;
 use App\Mapping\UUID;
 use App\Repository\Store\Exam\CollectionRepository;
+use App\Repository\Store\Exam\ReadingRepository;
 use App\Service\StoreServiceInterface;
 use Hyperf\Di\Annotation\Inject;
 
@@ -160,5 +161,15 @@ class CollectionService implements StoreServiceInterface
     public function serviceSum(array $requestParams = []): int
     {
         return $this->collectionRepository->repositorySum(self::searchWhere((array)$requestParams), (string)'submit_number');
+    }
+
+    /**
+     * 查询阅读理解列表
+     * @param array $requestParams
+     * @return array
+     */
+    public function serviceReadingList(array $requestParams): array
+    {
+        return (new ReadingRepository())->repositoryQuery([[""]]);
     }
 }

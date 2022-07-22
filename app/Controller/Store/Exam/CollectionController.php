@@ -19,7 +19,7 @@ use Hyperf\HttpServer\Annotation\PutMapping;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * 试题分类
+ * 试卷
  *
  * @Middlewares({
  *     @Middleware(StoreAuthMiddleware::class)
@@ -103,5 +103,15 @@ class CollectionController extends StoreBaseController
         $deleteResult = $this->service->serviceDelete((array)$this->request->all());
 
         return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
+    }
+
+    /**
+     * @GetMapping(path="reading_list")
+     * @return ResponseInterface
+     */
+    public function reading()
+    {
+        $items = $this->service->serviceReadingList($this->request->all());
+        return  $this->httpResponse->success($items);
     }
 }

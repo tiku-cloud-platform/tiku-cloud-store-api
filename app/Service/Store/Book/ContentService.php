@@ -5,6 +5,7 @@ namespace App\Service\Store\Book;
 
 use App\Mapping\UserInfo;
 use App\Mapping\UUID;
+use App\Repository\Store\Book\CategoryRepository;
 use App\Repository\Store\Book\ContentRepository;
 use App\Service\StoreServiceInterface;
 use Closure;
@@ -26,8 +27,16 @@ class ContentService implements StoreServiceInterface
 	{
 		return function ($query) use ($requestParams) {
 			extract($requestParams);
-			$query->where('store_book_uuid', '=', $store_book_uuid);
-			if (!empty($uuid)) {
+			// 处理一级分类，查询所有子类。
+            $categoryAll = (new CategoryRepository())->repositorySpecial([["parent_uuid", "=", $store_book_uuid]], ["uuid"]);
+            if (!empty($categoryAll)) {
+                $categoryAll = array_column($categoryAll, "uuid");
+            } else {
+                $categoryAll = [];
+            }
+            array_push($categoryAll, $store_book_uuid);
+            $query->whereIn('store_book_uuid', $categoryAll);
+            if (!empty($uuid)) {
 				$query->where('uuid', '=', $uuid);
 			}
 			if (!empty($store_book_category_uuid)) {
