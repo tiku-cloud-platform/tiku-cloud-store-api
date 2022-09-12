@@ -1,3 +1,7 @@
+## 仓库说明
+
+本仓库负责商户端api管理。
+
 ## 项目文档
 
 ### 项目部署
@@ -14,6 +18,7 @@ git clone xxxx.git
 cd /path/api/ && composer install
 ```
 > /path/api为你的项目目录，与composer.json文件同级别目录。
+
 #### 配置参数
 
 ```shell
