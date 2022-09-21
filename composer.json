@@ -35,7 +35,8 @@
     "hyperf/tracer": "~2.1.0",
     "hyperf/validation": "^2.1",
     "mongodb/mongodb": "^1.9",
-    "qiniu/php-sdk": "^7.4"
+    "qiniu/php-sdk": "^7.4",
+    "ext-redis": "Required to use Redis Client."
   },
   "require-dev": {
     "swoole/ide-helper": "^4.5",
@@ -49,8 +50,7 @@
     "ext-openssl": "Required to use HTTPS.",
     "ext-json": "Required to use JSON.",
     "ext-pdo": "Required to use MySQL Client.",
-    "ext-pdo_mysql": "Required to use MySQL Client.",
-    "ext-redis": "Required to use Redis Client."
+    "ext-pdo_mysql": "Required to use MySQL Client."
   },
   "autoload": {
     "psr-4": {

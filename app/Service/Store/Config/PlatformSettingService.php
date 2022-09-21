@@ -1,14 +1,5 @@
 <?php
-
 declare(strict_types=1);
-/**
- * This file is part of api.
- *
- * @link     https://www.qqdeveloper.io
- * @document https://www.qqdeveloper.wiki
- * @contact  2665274677@qq.com
- * @license  Apache2.0
- */
 
 namespace App\Service\Store\Config;
 
@@ -19,6 +10,7 @@ use App\Mapping\UUID;
 use App\Repository\Store\Config\PlatformSettingRepository;
 use App\Service\StoreServiceInterface;
 use Hyperf\Di\Annotation\Inject;
+use RedisException;
 
 /**
  * 平台参数配置.
@@ -75,6 +67,7 @@ class PlatformSettingService implements StoreServiceInterface
 	 *
 	 * @param array $requestParams 请求参数
 	 * @return bool true|false
+	 * @throws RedisException
 	 */
 	public function serviceCreate(array $requestParams): bool
 	{
@@ -84,7 +77,7 @@ class PlatformSettingService implements StoreServiceInterface
 
 		$this->settingRepository->repositoryCreate($requestParams);
 
-		return $this->updateWxSetting((string)$userInfo['store_uuid'], (array)$requestParams);
+		return $this->updateWxSetting((string)$userInfo['store_uuid'], $requestParams);
 	}
 
 	/**
@@ -92,6 +85,7 @@ class PlatformSettingService implements StoreServiceInterface
 	 *
 	 * @param array $requestParams 请求参数
 	 * @return int 更新行数
+	 * @throws RedisException
 	 */
 	public function serviceUpdate(array $requestParams): int
 	{
@@ -144,19 +138,26 @@ class PlatformSettingService implements StoreServiceInterface
 	 * @param string $storeUUID
 	 * @param array $cacheInfo
 	 * @return bool
+	 * @throws RedisException
 	 */
 	private function updateWxSetting(string $storeUUID, array $cacheInfo): bool
 	{
 		if ($cacheInfo['type'] == 'wx_setting') {
-			$valueArray                      = json_decode($cacheInfo["values"], true);
-			$cacheInfo["name"]               = $valueArray["name"];
-			$cacheInfo["app_key"]            = $valueArray["app_key"];
-			$cacheInfo["app_secret"]         = $valueArray["app_secret"];
-			$cacheInfo["offical_name"]       = $valueArray["offical_name"];
-			$cacheInfo["offical_app_key"]    = $valueArray["offical_app_key"];
-			$cacheInfo["offical_app_secret"] = $valueArray["offical_app_secret"];
+			$valueArray = json_decode($cacheInfo["values"], true);
 			unset($cacheInfo["values"]);
-			return RedisClient::create(CacheKey::STORE_PLATFORM_SETTING, $storeUUID, $cacheInfo);
+			$publicResult = RedisClient::create(CacheKey::STORE_PUBLICPROGRAM_SETTING, $storeUUID, [
+				"name"       => $valueArray["offical_name"],
+				"app_key"    => $valueArray["offical_app_key"],
+				"app_secret" => $valueArray["offical_app_secret"],
+			]);
+			$miniResult   = RedisClient::create(CacheKey::STORE_MINIPROGRAM_SETTING, $storeUUID, [
+				"name"       => $valueArray["name"],
+				"app_key"    => $valueArray["app_key"],
+				"app_secret" => $valueArray["app_secret"],
+			]);
+
+			if ($publicResult && $miniResult) return true;
+			return false;
 		}
 
 		return true;

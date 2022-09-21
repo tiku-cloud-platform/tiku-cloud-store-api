@@ -55,7 +55,7 @@ class ClientMiddleware implements MiddlewareInterface
 			return (new HttpDataResponse)->response((string)'客户端参数异常');
 		}
 		// 验证小程序的请求是否属于合法请求
-		$wxAppSettingCache = RedisClient::get((string)CacheKey::STORE_PLATFORM_SETTING, (string)$storeUUID);
+		$wxAppSettingCache = RedisClient::get((string)CacheKey::STORE_MINIPROGRAM_SETTING, (string)$storeUUID);
 		if (empty($wxAppSettingCache) && $header == 'wechat') {
 			return (new HttpDataResponse())->response((string)'配置信息不存在');
 		}

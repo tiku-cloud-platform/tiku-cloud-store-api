@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Store\Config;
 
-
 use App\Controller\StoreBaseController;
 use App\Middleware\Auth\StoreAuthMiddleware;
 use App\Request\Store\Common\UUIDValidate;
