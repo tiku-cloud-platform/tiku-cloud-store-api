@@ -34,7 +34,7 @@ class CollectionValidate extends FormRequest
 			'max_judge_total'    => 'required|integer|max:10|min:1',
 			'max_reading_total'  => 'required|integer|max:50|min:1',
 			'max_option_total'   => 'required|integer|max:50|min:1',
-			'resource_url'       => 'nullable|max:255'
+			'resource_url'       => 'sometimes|max:255'
 		];
 	}
 
@@ -70,6 +70,7 @@ class CollectionValidate extends FormRequest
 			"max_option_total.integer"    => "最大选择题数量格式不正确",
 			"max_option_total.max"        => "最大选择题数量不能超过20",
 			"max_option_total.min"        => "最大选择题数量不能小于1",
+			"resource_url.max"            => "链接地址长度不能超过255"
 		];
 	}
 }
