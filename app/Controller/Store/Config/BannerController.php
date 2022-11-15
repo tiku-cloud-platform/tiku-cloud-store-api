@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\Store\Config;
 
 
+use App\Constants\DataConfig;
 use App\Controller\StoreBaseController;
 use App\Middleware\Auth\StoreAuthMiddleware;
 use App\Request\Store\Common\UUIDValidate;
@@ -40,11 +41,22 @@ class BannerController extends StoreBaseController
 	 * @GetMapping(path="banner/list")
 	 * @return ResponseInterface
 	 */
-	public function index()
+	public function index(): ResponseInterface
 	{
 		$items = $this->service->serviceSelect((array)$this->request->all());
 
-		return $this->httpResponse->success((array)$items);
+		return $this->httpResponse->success($items);
+	}
+
+	/**
+	 * @GetMapping(path="banner/position_config")
+	 * @return ResponseInterface
+	 */
+	public function positionConfig(): ResponseInterface
+	{
+		$items = $this->service->serviceSelect(DataConfig::bannerClientType());
+
+		return $this->httpResponse->success($items);
 	}
 
 	/**

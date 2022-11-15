@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Model\Store;
 
 
+use App\Constants\DataConfig;
 use Hyperf\Database\Model\Relations\BelongsTo;
 
 /**
@@ -23,7 +24,17 @@ class StoreBanner extends \App\Model\Common\StoreBanner
 		'position',
 		'is_show',
 		'type',
+		'client_position',
 	];
+
+	protected $appends = [
+		'client_position_remark'
+	];
+
+	public function getClientPositionRemarkAttribute(): string
+	{
+		return DataConfig::bannerClientType()[$this->getAttributes['client_position']];
+	}
 
 	/**
 	 * 显示位置
