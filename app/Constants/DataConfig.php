@@ -8,6 +8,10 @@ namespace App\Constants;
  */
 class DataConfig
 {
+	/**
+	 * banner图片客户端配置
+	 * @return array
+	 */
 	public static function bannerClientType(): array
 	{
 		return [
@@ -17,5 +21,14 @@ class DataConfig
 			4 => '网页端',
 			5 => 'H5'
 		];
+	}
+
+	/**
+	 * banner客户端配置值
+	 * @return array
+	 */
+	public static function getBannerConfigValue(): array
+	{
+		return array_keys(self::bannerClientType());
 	}
 }

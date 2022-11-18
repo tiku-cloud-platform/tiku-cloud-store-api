@@ -38,6 +38,7 @@ class BannerController extends StoreBaseController
 	}
 
 	/**
+	 * 轮播图列表
 	 * @GetMapping(path="banner/list")
 	 * @return ResponseInterface
 	 */
@@ -49,6 +50,7 @@ class BannerController extends StoreBaseController
 	}
 
 	/**
+	 * 轮播图显示位置配置
 	 * @GetMapping(path="banner/position_config")
 	 * @return ResponseInterface
 	 */
@@ -60,6 +62,7 @@ class BannerController extends StoreBaseController
 	}
 
 	/**
+	 * 轮播图数据详情
 	 * @GetMapping(path="banner/show")
 	 * @param UUIDValidate $validate
 	 * @return ResponseInterface
@@ -72,6 +75,7 @@ class BannerController extends StoreBaseController
 	}
 
 	/**
+	 * 轮播图创建
 	 * @PostMapping(path="banner/create")
 	 * @param BannerValidate $validate
 	 * @return ResponseInterface
@@ -84,6 +88,7 @@ class BannerController extends StoreBaseController
 	}
 
 	/**
+	 * 轮播图更新
 	 * @PutMapping(path="banner/update")
 	 * @param BannerValidate $validate
 	 * @return ResponseInterface
@@ -96,6 +101,7 @@ class BannerController extends StoreBaseController
 	}
 
 	/**
+	 * 轮播图删除
 	 * @DeleteMapping(path="banner/delete")
 	 * @return ResponseInterface
 	 */

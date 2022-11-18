@@ -92,9 +92,9 @@ class BannerService implements StoreServiceInterface
 	 */
 	public function serviceUpdate(array $requestParams): int
 	{
-		return $this->bannerRepository->repositoryUpdate((array)[
+		return $this->bannerRepository->repositoryUpdate([
 			['uuid', '=', trim($requestParams['uuid'])],
-		], (array)[
+		], [
 			'title'     => empty($requestParams['title']) ? null : $requestParams['title'],
 			'file_uuid' => trim($requestParams['file_uuid']),
 			'type'      => trim($requestParams['type']),
@@ -102,6 +102,7 @@ class BannerService implements StoreServiceInterface
 			'position'  => trim($requestParams['position']),
 			'orders'    => trim($requestParams['orders']),
 			'is_show'   => trim($requestParams['is_show']),
+			'client_position' => $requestParams['client_position'],
 		]);
 	}
 
