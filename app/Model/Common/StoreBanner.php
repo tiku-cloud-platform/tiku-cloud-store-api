@@ -27,6 +27,7 @@ class StoreBanner extends BaseModel
         'is_show',
         'store_uuid',
         'type',
+	    'client_position',
     ];
 
     /**
