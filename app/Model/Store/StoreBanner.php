@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace App\Model\Store;
 
 
+use App\Constants\DataConfig;
 use Hyperf\Database\Model\Relations\BelongsTo;
+use function PHPStan\dumpType;
 
 /**
  * 平台轮播图
@@ -23,7 +25,25 @@ class StoreBanner extends \App\Model\Common\StoreBanner
 		'position',
 		'is_show',
 		'type',
+		'client_position',
 	];
+
+	protected $appends = [
+		'client_position_remark'
+	];
+
+	protected $casts = [
+		'position'        => 'string',
+		'client_position' => 'string'
+	];
+
+	public function getClientPositionRemarkAttribute(): string
+	{
+		if (empty($this->getAttributes()['client_position'])) {
+			return "";
+		}
+		return DataConfig::bannerClientType()[$this->getAttributes()['client_position']];
+	}
 
 	/**
 	 * 显示位置
