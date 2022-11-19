@@ -65,7 +65,7 @@ class BannerService implements StoreServiceInterface
 	public function serviceSelect(array $requestParams): array
 	{
 		return $this->bannerRepository->repositorySelect(
-			self::searchWhere((array)$requestParams),
+			self::searchWhere($requestParams),
 			(int)$requestParams['size'] ?? 20
 		);
 	}

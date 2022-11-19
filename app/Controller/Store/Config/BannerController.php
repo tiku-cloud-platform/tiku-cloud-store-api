@@ -44,7 +44,7 @@ class BannerController extends StoreBaseController
 	 */
 	public function index(): ResponseInterface
 	{
-		$items = $this->service->serviceSelect((array)$this->request->all());
+		$items = $this->service->serviceSelect($this->request->all());
 
 		return $this->httpResponse->success($items);
 	}
@@ -56,9 +56,7 @@ class BannerController extends StoreBaseController
 	 */
 	public function positionConfig(): ResponseInterface
 	{
-		$items = $this->service->serviceSelect(DataConfig::bannerClientType());
-
-		return $this->httpResponse->success($items);
+		return $this->httpResponse->success(DataConfig::bannerClientType());
 	}
 
 	/**
@@ -69,7 +67,7 @@ class BannerController extends StoreBaseController
 	 */
 	public function show(UUIDValidate $validate)
 	{
-		$bean = $this->service->serviceFind((array)$this->request->all());
+		$bean = $this->service->serviceFind($this->request->all());
 
 		return $this->httpResponse->success($bean);
 	}
@@ -82,7 +80,7 @@ class BannerController extends StoreBaseController
 	 */
 	public function create(BannerValidate $validate)
 	{
-		$createResult = $this->service->serviceCreate((array)$this->request->all());
+		$createResult = $this->service->serviceCreate($this->request->all());
 
 		return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
 	}
@@ -95,7 +93,7 @@ class BannerController extends StoreBaseController
 	 */
 	public function update(BannerValidate $validate)
 	{
-		$updateResult = $this->service->serviceUpdate((array)$this->request->all());
+		$updateResult = $this->service->serviceUpdate($this->request->all());
 
 		return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
 	}
@@ -107,7 +105,7 @@ class BannerController extends StoreBaseController
 	 */
 	public function destroy()
 	{
-		$deleteResult = $this->service->serviceDelete((array)$this->request->all());
+		$deleteResult = $this->service->serviceDelete($this->request->all());
 
 		return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
 	}
