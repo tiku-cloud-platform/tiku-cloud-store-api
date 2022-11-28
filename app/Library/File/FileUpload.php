@@ -52,7 +52,7 @@ class FileUpload
     public function fileUpload(array $fileArray): array
     {
         if ($this->driver == 'qiniu_cloud') {
-            return $this->QiNiuCloud((array)$fileArray);
+            return $this->QiNiuCloud($fileArray);
         }
     }
 
@@ -75,8 +75,7 @@ class FileUpload
                     'origin' => $value,
                 ];
             } else {
-                $fileInfo = pathinfo($value);
-                // 使用文件流形式上传，否则gitee上的图片会上传不完整。
+                $fileInfo     = pathinfo($value);
                 $fileResource = file_get_contents($value);
                 $uploadResult = $uploadManager->put($this->token, md5((string)microtime() . $fileInfo['filename']) . '.' . $fileInfo['extension'], $fileResource);
                 // 上传失败时，则默认为原图片链接地址。
@@ -92,9 +91,7 @@ class FileUpload
                     ];
                 }
             }
-
         }
-        var_dump("上传结果", $result);
         return $result;
     }
 }
