@@ -156,6 +156,7 @@ class CategoryService implements StoreServiceInterface
      */
     private function updateApi(): bool
     {
+        return true;
         $items          = $this->categoryRepository->repositoryAllSelect((array)[["is_show", "=", 1]], (int)1000);
         $items['items'] = $this->recursionData((array)$items['items']);
         $userInfo       = UserInfo::getStoreUserInfo();
@@ -164,7 +165,7 @@ class CategoryService implements StoreServiceInterface
     }
 
     /**
-     * 格式化数据
+     * 格式化数据[因api端调整，需要重新实现]
      * @param array $info
      * @return array
      */
