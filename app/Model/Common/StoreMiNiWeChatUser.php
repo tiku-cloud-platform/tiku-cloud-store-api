@@ -29,13 +29,9 @@ class StoreMiNiWeChatUser extends BaseModel
         'city',
         'is_forbidden',
         'language',
-        'real_name',
-        'mobile',
-        'address',
         'longitude',
         'latitude',
         'district',
-        'birthday',
         'is_show',
         "channel_uuid",
     ];

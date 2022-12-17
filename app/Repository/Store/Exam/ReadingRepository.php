@@ -35,13 +35,13 @@ class ReadingRepository implements StoreRepositoryInterface
             ->where($closure)
             ->select($this->examModel->searchFields)
             ->orderByDesc('id')
-            ->paginate((int)$perSize);
+            ->paginate($perSize);
 
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 
@@ -68,8 +68,8 @@ class ReadingRepository implements StoreRepositoryInterface
                     foreach ($categoryArray as $key => $value) {
                         $examCategoryArray[$key] = [
                             'category_uuid' => $value,
-                            'exam_uuid'     => $uuid,
-                            'store_uuid'    => $insertInfo['store_uuid']
+                            'exam_uuid' => $uuid,
+                            'store_uuid' => $insertInfo['store_uuid']
                         ];
                     }
                     (new ReadingCategoryRelationRepository())->repositoryCreate((array)$examCategoryArray);
@@ -80,8 +80,8 @@ class ReadingRepository implements StoreRepositoryInterface
                     $tagArray     = $insertInfo['tag'];
                     foreach ($tagArray as $key => $value) {
                         $examTagArray[$key] = [
-                            'tag_uuid'   => $value,
-                            'exam_uuid'  => $uuid,
+                            'tag_uuid' => $value,
+                            'exam_uuid' => $uuid,
                             'store_uuid' => $insertInfo['store_uuid']
                         ];
                     }
@@ -94,8 +94,8 @@ class ReadingRepository implements StoreRepositoryInterface
                     foreach ($collectionArray as $key => $value) {
                         $examCollectionArray[$key] = [
                             'collection_uuid' => $value,
-                            'exam_uuid'       => $uuid,
-                            'store_uuid'      => $insertInfo['store_uuid']
+                            'exam_uuid' => $uuid,
+                            'store_uuid' => $insertInfo['store_uuid']
                         ];
                     }
                     (new ReadingCollectionRelationRepository())->repositoryCreate((array)$examCollectionArray);
@@ -176,6 +176,17 @@ class ReadingRepository implements StoreRepositoryInterface
     }
 
     /**
+     * 更新数据
+     * @param array $updateWhere 修改条件
+     * @param array $updateInfo 修改信息
+     * @return int 更新行数
+     */
+    public function repositoryEdit(array $updateWhere, array $updateInfo): int
+    {
+        return $this->examModel::query()->where($updateWhere)->update($updateInfo);
+    }
+
+    /**
      * 删除数据
      *
      * @param array $deleteWhere 删除条件
@@ -233,7 +244,7 @@ class ReadingRepository implements StoreRepositoryInterface
      * @param array $fields 分页字段
      * @return array
      */
-    public function repositoryQuery(array $searchWhere, int $page = 1, int $perSize = 20,array $fields = ["uuid", "title"]): array
+    public function repositoryQuery(array $searchWhere, int $page = 1, int $perSize = 20, array $fields = ["uuid", "title"]): array
     {
         $items = $this->examModel::query()
             ->where($searchWhere)
@@ -244,8 +255,8 @@ class ReadingRepository implements StoreRepositoryInterface
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 }
