@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Service\Store\Exam;
 
@@ -60,7 +60,7 @@ class ReadingService implements StoreServiceInterface
      */
     public function serviceSelect(array $requestParams): array
     {
-        return $this->readingRepository->repositorySelect(self::searchWhere((array)$requestParams),
+        return $this->readingRepository->repositorySelect(self::searchWhere($requestParams),
             (int)$requestParams['size'] ?? 20);
     }
 
@@ -74,15 +74,15 @@ class ReadingService implements StoreServiceInterface
     {
         $imageArray = ImageSrcSearch::searchImageUrl((string)$requestParams['content']);
         if (!empty($imageArray)) {
-            $remoteFileArray          = (new FileUpload())->fileUpload((array)$imageArray);
-            $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], (array)$remoteFileArray);
+            $remoteFileArray          = (new FileUpload())->fileUpload($imageArray);
+            $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], $remoteFileArray);
         }
 
         $userInfo                    = UserInfo::getStoreUserInfo();
         $requestParams['store_uuid'] = $userInfo['store_uuid'];
         $requestParams['uuid']       = UUID::getUUID();
 
-        return $this->readingRepository->repositoryCreate((array)$requestParams);
+        return $this->readingRepository->repositoryCreate($requestParams);
     }
 
     /**
@@ -95,14 +95,29 @@ class ReadingService implements StoreServiceInterface
     {
         $imageArray = ImageSrcSearch::searchImageUrl((string)$requestParams['content']);
         if (!empty($imageArray)) {
-            $remoteFileArray          = (new FileUpload())->fileUpload((array)$imageArray);
-            $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], (array)$remoteFileArray);
+            $remoteFileArray          = (new FileUpload())->fileUpload($imageArray);
+            $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], $remoteFileArray);
         }
 
-        return $this->readingRepository->repositoryUpdate((array)[
+        return $this->readingRepository->repositoryUpdate([
             ['uuid', '=', $requestParams['uuid']],
             ['store_uuid', '=', UserInfo::getStoreUserInfo()['store_uuid']]// 绑定关联使用
-        ], (array)$requestParams);
+        ], $requestParams);
+    }
+
+    /**
+     * 更新基础字段
+     * @param array $requestParams
+     * @return int
+     */
+    public function serviceEdit(array $requestParams): int
+    {
+        $uuid = $requestParams["uuid"];
+        unset($requestParams["uuid"]);
+        return $this->readingRepository->repositoryEdit([
+            ["uuid", "=", $uuid],
+            ["store_uuid", "=", UserInfo::getStoreUserInfo()['store_uuid']]
+        ], $requestParams);
     }
 
     /**
@@ -169,7 +184,7 @@ class ReadingService implements StoreServiceInterface
                 $returnMsg["msg"]    = $bean["title"];
                 $returnMsg["status"] = 1;
                 break;
-            } elseif (!empty($bean) && $uuid != "" && $bean["max_reading_total"] < $examSum -1) {
+            } elseif (!empty($bean) && $uuid != "" && $bean["max_reading_total"] < $examSum - 1) {
                 $returnMsg["uuid"]   = $value;
                 $returnMsg["msg"]    = $bean["title"];
                 $returnMsg["status"] = 2;
