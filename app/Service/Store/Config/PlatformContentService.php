@@ -44,7 +44,7 @@ class PlatformContentService implements StoreServiceInterface
                 $query->where('uuid', '=', $uuid);
             }
             if (!empty($position)) {
-                $query->where('position', '=', $position);
+                $query->where('position', 'like', "%" . $position . "$%");
             }
             if (!empty($title)) {
                 $query->where('title', 'like', '%' . $title . '%');
@@ -61,7 +61,7 @@ class PlatformContentService implements StoreServiceInterface
     public function serviceSelect(array $requestParams): array
     {
         return $this->contentRepository->repositorySelect(
-            self::searchWhere((array)$requestParams),
+            self::searchWhere($requestParams),
             (int)$requestParams['size'] ?? 20
         );
     }
@@ -76,8 +76,8 @@ class PlatformContentService implements StoreServiceInterface
     {
         $imageArray = ImageSrcSearch::searchImageUrl((string)$requestParams['content']);
         if (!empty($imageArray)) {
-            $remoteFileArray          = (new FileUpload())->fileUpload((array)$imageArray);
-            $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], (array)$remoteFileArray);
+            $remoteFileArray          = (new FileUpload())->fileUpload($imageArray);
+            $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], $remoteFileArray);
         }
 
         $requestParams['uuid']       = UUID::getUUID();
@@ -96,17 +96,17 @@ class PlatformContentService implements StoreServiceInterface
     {
         $imageArray = ImageSrcSearch::searchImageUrl((string)$requestParams['content']);
         if (!empty($imageArray)) {
-            $remoteFileArray          = (new FileUpload())->fileUpload((array)$imageArray);
-            $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], (array)$remoteFileArray);
+            $remoteFileArray          = (new FileUpload())->fileUpload($imageArray);
+            $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], $remoteFileArray);
         }
 
-        return $this->contentRepository->repositoryUpdate((array)[
+        return $this->contentRepository->repositoryUpdate([
             ['uuid', '=', trim($requestParams['uuid'])],
-        ], (array)[
-            'title'    => trim($requestParams['title']),
-            'is_show'  => in_array($requestParams['is_show'], [1, 2]) ? $requestParams["is_show"] : 2,
+        ], [
+            'title' => trim($requestParams['title']),
+            'is_show' => in_array($requestParams['is_show'], [1, 2]) ? $requestParams["is_show"] : 2,
             'position' => $requestParams['position'],
-            'content'  => $requestParams['content'],
+            'content' => $requestParams['content'],
         ]);
     }
 
@@ -124,7 +124,7 @@ class PlatformContentService implements StoreServiceInterface
             array_push($deleteWhere, $value);
         }
 
-        return $this->contentRepository->repositoryWhereInDelete((array)$deleteWhere, (string)'uuid');
+        return $this->contentRepository->repositoryWhereInDelete($deleteWhere, 'uuid');
     }
 
     /**
@@ -135,6 +135,6 @@ class PlatformContentService implements StoreServiceInterface
      */
     public function serviceFind(array $requestParams): array
     {
-        return $this->contentRepository->repositoryFind(self::searchWhere((array)$requestParams));
+        return $this->contentRepository->repositoryFind(self::searchWhere($requestParams));
     }
 }

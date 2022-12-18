@@ -23,24 +23,24 @@ class ContentValidate extends FormRequest
     public function rules(): array
     {
         return [
-            'title'    => 'required|max:32',
-            'position' => 'required|integer',
-            'content'  => 'required',
-            'is_show'  => ['required', 'integer', Rule::in([2, 1])],
+            'title' => 'required|max:32',
+            'position' => 'required|max:50',
+            'content' => 'required',
+            'is_show' => ['required', 'integer', Rule::in([2, 1])],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'title.required'    => '标题不能为空',
-            'title.max'         => '标题长度超过32',
-            'position.required' => '显示位置不能为空',
-            'position.integer'  => '显示位置格式不正确',
-            'content.required'  => '内容不能为空',
-            'is_show.required'  => '显示状态不能为空',
-            'is_show.integer'   => '显示状态格式不正确',
-            'is_show.in'        => '显示状态值不正确',
+            'title.required' => '标题不能为空',
+            'title.max' => '标题长度超过32',
+            'position.required' => '配置描述不能为空',
+            'position.max' => '配置描述长度超过50',
+            'content.required' => '内容不能为空',
+            'is_show.required' => '显示状态不能为空',
+            'is_show.integer' => '显示状态格式不正确',
+            'is_show.in' => '显示状态值不正确',
         ];
     }
 }
