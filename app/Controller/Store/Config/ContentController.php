@@ -26,7 +26,7 @@ use Psr\Http\Message\ResponseInterface;
  * Class PlatformContentController
  * @package App\Controller\Store\Config
  */
-class PlatformContentController extends StoreBaseController
+class ContentController extends StoreBaseController
 {
     public function __construct(PlatformContentService $contentService)
     {

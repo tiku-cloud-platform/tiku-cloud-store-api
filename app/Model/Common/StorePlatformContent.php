@@ -8,7 +8,6 @@ use App\Model\BaseModel;
 
 /**
  * 平台内容介绍
- *
  * Class StorePlatformContent
  * @package App\Model\Common
  */
