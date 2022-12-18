@@ -20,10 +20,4 @@ class StorePlatformContent extends \App\Model\Common\StorePlatformContent
         'title',
         'orders',
     ];
-
-    public function positionShow()
-    {
-        return $this->belongsTo(StorePlatformConstConfig::class, 'position', 'value')
-            ->where('title', '=', 'signal_article');
-    }
 }

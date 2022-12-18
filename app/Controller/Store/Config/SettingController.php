@@ -26,7 +26,7 @@ use Psr\Http\Message\ResponseInterface;
  * @Controller(prefix="store/config")
  * Class PlatformSettingController
  */
-class PlatformSettingController extends StoreBaseController
+class SettingController extends StoreBaseController
 {
 	public function __construct(PlatformSettingService $settingService)
 	{
