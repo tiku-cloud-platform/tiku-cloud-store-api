@@ -39,13 +39,13 @@ class PlatformContentRepository implements StoreRepositoryInterface
             ->with(['positionShow:value,title,describe'])
             ->select($this->contentModel->searchFields)
             ->orderByDesc('id')
-            ->paginate((int)$perSize);
+            ->paginate($perSize);
 
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 
