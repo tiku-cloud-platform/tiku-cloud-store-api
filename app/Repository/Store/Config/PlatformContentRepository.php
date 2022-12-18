@@ -6,6 +6,7 @@ namespace App\Repository\Store\Config;
 
 use App\Model\Store\StorePlatformContent;
 use App\Repository\StoreRepositoryInterface;
+use Closure;
 use Hyperf\Di\Annotation\Inject;
 
 /**
@@ -32,11 +33,10 @@ class PlatformContentRepository implements StoreRepositoryInterface
      * @param int $perSize 分页大小
      * @return array
      */
-    public function repositorySelect(\Closure $closure, int $perSize): array
+    public function repositorySelect(Closure $closure, int $perSize): array
     {
         $items = $this->contentModel::query()
             ->where($closure)
-            ->with(['positionShow:value,title,describe'])
             ->select($this->contentModel->searchFields)
             ->orderByDesc('id')
             ->paginate($perSize);
@@ -78,11 +78,11 @@ class PlatformContentRepository implements StoreRepositoryInterface
     /**
      * 单条数据查询
      *
-     * @param \Closure $closure
+     * @param Closure $closure
      * @return array
      * @author kert
      */
-    public function repositoryFind(\Closure $closure): array
+    public function repositoryFind(Closure $closure): array
     {
         $bean = $this->contentModel::query()
             ->where($closure)
