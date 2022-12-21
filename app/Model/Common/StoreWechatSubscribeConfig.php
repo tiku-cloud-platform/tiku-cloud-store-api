@@ -14,7 +14,7 @@ use Hyperf\Database\Model\Relations\BelongsTo;
  */
 class StoreWechatSubscribeConfig extends BaseModel
 {
-    protected $table = 'store_user_mini_subscribe';
+    protected $table = 'store_mini_subscribe';
 
     protected $fillable = [
         'uuid',

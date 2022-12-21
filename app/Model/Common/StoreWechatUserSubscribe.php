@@ -12,7 +12,7 @@ use App\Model\BaseModel;
  */
 class StoreWechatUserSubscribe extends BaseModel
 {
-    protected $table = 'store_mini_subscribe';
+    protected $table = 'store_user_mini_subscribe';
 
     protected $fillable = [
         'uuid',
