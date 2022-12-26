@@ -30,7 +30,7 @@ class CloudStorageToken
             'token' => '',
         ];
         if ($driver == 'qiniu_cloud') {
-            $info['token'] = $this->qiNiuCloud((array)$config);
+            $info['token'] = $this->qiNiuCloud($config);
         }
 
         return $info;
