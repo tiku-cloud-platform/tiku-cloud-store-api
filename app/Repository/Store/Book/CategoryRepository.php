@@ -19,8 +19,7 @@ class CategoryRepository implements StoreRepositoryInterface
         $items = (new StoreBookCategory)::query()
 //			->with(["book:uuid,title"])
             ->where($closure)
-            ->whereNull("parent_uuid")
-            ->orWhere("parent_uuid", "=", "")
+            ->where("parent_uuid", "=", "")
             ->select([
                 "uuid",
 //				"store_book_uuid",
