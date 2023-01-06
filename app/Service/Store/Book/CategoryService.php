@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Service\Store\Book;
 
@@ -17,69 +17,66 @@ use Hyperf\Di\Annotation\Inject;
  */
 class CategoryService implements StoreServiceInterface
 {
-	/**
-	 * @Inject()
-	 * @var CategoryRepository
-	 */
-	protected $categoryRepository;
+    /**
+     * @Inject()
+     * @var CategoryRepository
+     */
+    protected $categoryRepository;
 
-	public static function searchWhere(array $requestParams): Closure
-	{
-		return function ($query) use ($requestParams) {
-			extract($requestParams);
-			$query->where("store_book_uuid", "=", $store_book_uuid);
-			if (!empty($uuid)) {
-				$query->where('uuid', '=', $uuid);
-			}
-			if (!empty($title)) {
-				$query->where('title', 'like', '%' . $title . '%');
-			}
-		};
-	}
+    public static function searchWhere(array $requestParams): Closure
+    {
+        return function ($query) use ($requestParams) {
+            extract($requestParams);
+            $query->where("store_book_uuid", "=", $store_book_uuid);
+            if (!empty($uuid)) {
+                $query->where('uuid', '=', $uuid);
+            }
+            if (!empty($title)) {
+                $query->where('title', 'like', '%' . $title . '%');
+            }
+        };
+    }
 
-	public function serviceSelect(array $requestParams): array
-	{
-		$items          = $this->categoryRepository->repositorySelect(
-			self::searchWhere($requestParams),
-			(int)$requestParams['size'] ?? 20
-		);
-		$items['items'] = DataFormatter::recursionData((array)$items['items']);
+    public function serviceSelect(array $requestParams): array
+    {
+        return (new CategoryRepository())->repositorySelect(
+            self::searchWhere($requestParams),
+            (int)$requestParams['size'] ?? 20
+        );
+    }
 
-		return $items;
-	}
+    public function serviceCreate(array $requestParams): bool
+    {
+        $requestParams["uuid"]       = UUID::getUUID();
+        $requestParams['store_uuid'] = UserInfo::getStoreUserInfo()['store_uuid'];
 
-	public function serviceCreate(array $requestParams): bool
-	{
-		$requestParams["uuid"]       = UUID::getUUID();
-		$requestParams['store_uuid'] = UserInfo::getStoreUserInfo()['store_uuid'];
+        return $this->categoryRepository->repositoryCreate($requestParams);
+    }
 
-		return $this->categoryRepository->repositoryCreate($requestParams);
-	}
+    public function serviceUpdate(array $requestParams): int
+    {
+        if (!isset($requestParams["uuid"])) return 0;
+        $uuid = $requestParams["uuid"];
+        unset($requestParams["uuid"]);
 
-	public function serviceUpdate(array $requestParams): int
-	{
-		if (!isset($requestParams["uuid"])) return 0;
-		$uuid = $requestParams["uuid"];
-		unset($requestParams["uuid"]);
+        return $this->categoryRepository->repositoryUpdate([
+            ['uuid', '=', $uuid],
+        ], $requestParams);
+    }
 
-		return $this->categoryRepository->repositoryUpdate([
-			['uuid', '=', $uuid],
-		], $requestParams);
-	}
+    public function serviceDelete(array $requestParams): int
+    {
+        $uuidArray   = explode(',', $requestParams['uuid']);
+        $deleteWhere = [];
+        foreach ($uuidArray as $value) {
+            $deleteWhere[] = $value;
+        }
 
-	public function serviceDelete(array $requestParams): int
-	{
-		$uuidArray   = explode(',', $requestParams['uuid']);
-		$deleteWhere = [];
-		foreach ($uuidArray as $value) {
-			$deleteWhere[] = $value;
-		}
+        return $this->categoryRepository->repositoryWhereInDelete($deleteWhere, 'uuid');
+    }
 
-		return $this->categoryRepository->repositoryWhereInDelete($deleteWhere, 'uuid');
-	}
-
-	public function serviceFind(array $requestParams): array
-	{
-		return $this->categoryRepository->repositoryFind(self::searchWhere($requestParams));
-	}
+    public function serviceFind(array $requestParams): array
+    {
+        return $this->categoryRepository->repositoryFind(self::searchWhere($requestParams));
+    }
 }

@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Model\Common;
 
@@ -12,20 +12,31 @@ use Hyperf\Database\Model\Relations\BelongsTo;
  */
 class StoreBookCategory extends BaseModel
 {
-	protected $table = "store_book_category";
+    protected $table = "store_book_category";
 
-	protected $fillable = [
-		"uuid",
-		"store_uuid",
-		"store_book_uuid",
-		"title",
-		"parent_uuid",
-		"is_show",
-		"orders",
-	];
+    protected $fillable = [
+        "uuid",
+        "store_uuid",
+        "store_book_uuid",
+        "title",
+        "parent_uuid",
+        "is_show",
+        "orders",
+    ];
 
-	public function book(): BelongsTo
-	{
-		return $this->belongsTo(StoreBook::class, "store_book_uuid", "uuid");
-	}
+    protected $appends = [
+        "children"
+    ];
+
+    public function book(): BelongsTo
+    {
+        return $this->belongsTo(StoreBook::class, "store_book_uuid", "uuid");
+    }
+
+    public function getChildrenAttribute()
+    {
+        return (new self())::query()->where([
+            ["parent_uuid", "=", $this->getAttribute("uuid")]
+        ])->get(["uuid", "title"]);
+    }
 }
