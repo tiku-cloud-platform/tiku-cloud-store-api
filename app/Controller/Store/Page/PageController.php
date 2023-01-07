@@ -23,20 +23,13 @@ use Psr\Http\Message\ResponseInterface;
  */
 class PageController extends StoreBaseController
 {
-    public function __construct(PageService $pageService)
-    {
-        $this->service = $pageService;
-        parent::__construct($pageService);
-    }
-
     /**
      * @GetMapping(path="list")
      * @return ResponseInterface
      */
-    public function index()
+    public function index(): ResponseInterface
     {
-        $items = $this->service->serviceSelect((array)$this->request->all());
-
-        return $this->httpResponse->success((array)$items);
+        $items = (new PageService)->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
     }
 }

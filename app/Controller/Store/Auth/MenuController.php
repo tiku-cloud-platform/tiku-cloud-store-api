@@ -24,12 +24,6 @@ use Psr\Http\Message\ResponseInterface;
  */
 class MenuController extends StoreBaseController
 {
-    public function __construct(ArticleService $articleService)
-    {
-        $this->service = $articleService;
-        parent::__construct($articleService);
-    }
-
     /**
      * @GetMapping(path="list")
      * @return ResponseInterface

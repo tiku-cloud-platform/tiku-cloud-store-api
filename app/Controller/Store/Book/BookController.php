@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Controller\Store\Book;
 
@@ -28,67 +28,61 @@ use Psr\Http\Message\ResponseInterface;
  */
 class BookController extends StoreBaseController
 {
-	public function __construct(BookService $articleService)
-	{
-		$this->service = $articleService;
-		parent::__construct($articleService);
-	}
+    /**
+     * @GetMapping(path="list")
+     * @return ResponseInterface
+     */
+    public function index(): ResponseInterface
+    {
+        $items = (new BookService)->serviceSelect($this->request->all());
 
-	/**
-	 * @GetMapping(path="list")
-	 * @return ResponseInterface
-	 */
-	public function index(): ResponseInterface
-	{
-		$items = $this->service->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
+    }
 
-		return $this->httpResponse->success($items);
-	}
+    /**
+     * @GetMapping(path="show")
+     * @param UUIDValidate $validate
+     * @return ResponseInterface
+     */
+    public function show(UUIDValidate $validate): ResponseInterface
+    {
+        $bean = (new BookService)->serviceFind($this->request->all());
 
-	/**
-	 * @GetMapping(path="show")
-	 * @param UUIDValidate $validate
-	 * @return ResponseInterface
-	 */
-	public function show(UUIDValidate $validate): ResponseInterface
-	{
-		$bean = $this->service->serviceFind($this->request->all());
+        return $this->httpResponse->success($bean);
+    }
 
-		return $this->httpResponse->success($bean);
-	}
+    /**
+     * @PostMapping(path="create")
+     * @param BookValidate $validate
+     * @return ResponseInterface
+     */
+    public function create(BookValidate $validate): ResponseInterface
+    {
+        $createResult = (new BookService)->serviceCreate($this->request->all());
 
-	/**
-	 * @PostMapping(path="create")
-	 * @param BookValidate $validate
-	 * @return ResponseInterface
-	 */
-	public function create(BookValidate $validate): ResponseInterface
-	{
-		$createResult = $this->service->serviceCreate($this->request->all());
+        return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
+    }
 
-		return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
-	}
+    /**
+     * @PostMapping(path="update")
+     * @param BookValidate $validate
+     * @return ResponseInterface
+     */
+    public function update(BookValidate $validate): ResponseInterface
+    {
+        $updateResult = (new BookService)->serviceUpdate($this->request->all());
 
-	/**
-	 * @PostMapping(path="update")
-	 * @param BookValidate $validate
-	 * @return ResponseInterface
-	 */
-	public function update(BookValidate $validate): ResponseInterface
-	{
-		$updateResult = $this->service->serviceUpdate($this->request->all());
+        return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
+    }
 
-		return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
-	}
+    /**
+     * @DeleteMapping(path="delete")
+     * @return ResponseInterface
+     */
+    public function destroy(): ResponseInterface
+    {
+        $deleteResult = (new BookService)->serviceDelete($this->request->all());
 
-	/**
-	 * @DeleteMapping(path="delete")
-	 * @return ResponseInterface
-	 */
-	public function destroy(): ResponseInterface
-	{
-		$deleteResult = $this->service->serviceDelete($this->request->all());
-
-		return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
-	}
+        return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
+    }
 }

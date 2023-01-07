@@ -29,21 +29,14 @@ use Psr\Http\Message\ResponseInterface;
  */
 class GroupController extends StoreBaseController
 {
-    public function __construct(GroupService $groupService)
-    {
-        $this->service = $groupService;
-        parent::__construct($groupService);
-    }
-
     /**
      * @GetMapping(path="list")
      * @return ResponseInterface
      */
     public function index(): ResponseInterface
     {
-        $items = $this->service->serviceSelect((array)$this->request->all());
-
-        return $this->httpResponse->success((array)$items);
+        $items = (new GroupService)->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
     }
 
     /**
@@ -53,11 +46,10 @@ class GroupController extends StoreBaseController
      */
     public function create(GroupValidate $groupValidate): ResponseInterface
     {
-        $createResult = $this->service->serviceCreate((array)$this->request->all());
+        $createResult = (new GroupService)->serviceCreate($this->request->all());
         if ($createResult) {
             return $this->httpResponse->success();
         }
-
         return $this->httpResponse->error();
     }
 
@@ -69,12 +61,10 @@ class GroupController extends StoreBaseController
      */
     public function update(GroupValidate $groupValidate, UUIDValidate $UUIDValidate): ResponseInterface
     {
-        $updateResult = $this->service->serviceUpdate((array)$this->request->all());
-
+        $updateResult = (new GroupService)->serviceUpdate($this->request->all());
         if ($updateResult) {
             return $this->httpResponse->success();
         }
-
         return $this->httpResponse->error();
     }
 
@@ -85,9 +75,8 @@ class GroupController extends StoreBaseController
      */
     public function show(UUIDValidate $UUIDValidate): ResponseInterface
     {
-        $bean = $this->service->serviceFind((array)$this->request->all());
-
-        return $this->httpResponse->success((array)$bean);
+        $bean = (new GroupService)->serviceFind($this->request->all());
+        return $this->httpResponse->success($bean);
     }
 
     /**
@@ -96,11 +85,10 @@ class GroupController extends StoreBaseController
      */
     public function destroy(): ResponseInterface
     {
-        $deleteResult = $this->service->serviceDelete((array)$this->request->all());
+        $deleteResult = (new GroupService)->serviceDelete($this->request->all());
         if ($deleteResult) {
             return $this->httpResponse->success();
         }
-
         return $this->httpResponse->error();
     }
 }

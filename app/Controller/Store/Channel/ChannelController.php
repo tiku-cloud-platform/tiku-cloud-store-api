@@ -28,21 +28,14 @@ use Psr\Http\Message\ResponseInterface;
  */
 class ChannelController extends StoreBaseController
 {
-    public function __construct(ChannelService $channelService)
-    {
-        $this->service = $channelService;
-        parent::__construct($channelService);
-    }
-
     /**
      * @GetMapping(path="list")
      * @return ResponseInterface
      */
     public function index(): ResponseInterface
     {
-        $items = $this->service->serviceSelect((array)$this->request->all());
-
-        return $this->httpResponse->success((array)$items);
+        $items = (new ChannelService)->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
     }
 
     /**
@@ -52,11 +45,10 @@ class ChannelController extends StoreBaseController
      */
     public function create(ChannelValidate $channelValidate): ResponseInterface
     {
-        $createResult = $this->service->serviceCreate((array)$this->request->all());
+        $createResult = (new ChannelService)->serviceCreate($this->request->all());
         if ($createResult) {
             return $this->httpResponse->success();
         }
-
         return $this->httpResponse->error();
     }
 
@@ -68,11 +60,10 @@ class ChannelController extends StoreBaseController
      */
     public function update(ChannelValidate $channelValidate, UUIDValidate $UUIDValidate): ResponseInterface
     {
-        $updateResult = $this->service->serviceUpdate((array)$this->request->all());
+        $updateResult = (new ChannelService)->serviceUpdate($this->request->all());
         if ($updateResult) {
             return $this->httpResponse->success();
         }
-
         return $this->httpResponse->error();
     }
 
@@ -83,9 +74,8 @@ class ChannelController extends StoreBaseController
      */
     public function show(UUIDValidate $UUIDValidate): ResponseInterface
     {
-        $bean = $this->service->serviceFind((array)$this->request->all());
-
-        return $this->httpResponse->success((array)$bean);
+        $bean = (new ChannelService)->serviceFind($this->request->all());
+        return $this->httpResponse->success($bean);
     }
 
     /**
@@ -94,11 +84,10 @@ class ChannelController extends StoreBaseController
      */
     public function destroy(): ResponseInterface
     {
-        $deleteResult = $this->service->serviceDelete((array)$this->request->all());
+        $deleteResult = (new ChannelService)->serviceDelete($this->request->all());
         if ($deleteResult) {
             return $this->httpResponse->success();
         }
-
         return $this->httpResponse->error();
     }
 }

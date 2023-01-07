@@ -62,7 +62,7 @@ class PlatformContentService implements StoreServiceInterface
     {
         return $this->contentRepository->repositorySelect(
             self::searchWhere($requestParams),
-            (int)$requestParams['size'] ?? 20
+            (int)($requestParams['size'] ?? 20)
         );
     }
 

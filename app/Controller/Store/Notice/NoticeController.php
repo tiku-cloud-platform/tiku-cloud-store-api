@@ -14,7 +14,6 @@ use Psr\Http\Message\ResponseInterface;
 
 /**
  * 商户公告
- *
  * @Middlewares({
  *     @Middleware(StoreAuthMiddleware::class)
  *     })
@@ -24,20 +23,13 @@ use Psr\Http\Message\ResponseInterface;
  */
 class NoticeController extends StoreBaseController
 {
-    public function __construct(NoticeService $noticeService)
-    {
-        $this->service = $noticeService;
-        parent::__construct($noticeService);
-    }
-
     /**
      * @GetMapping(path="list")
      * @return ResponseInterface
      */
-    public function index()
+    public function index(): ResponseInterface
     {
-        $items = $this->service->serviceSelect((array)$this->request->all());
-
-        return $this->httpResponse->success((array)$items);
+        $items = (new NoticeService)->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
     }
 }

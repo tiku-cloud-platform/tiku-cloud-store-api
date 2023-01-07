@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Controller\Store\Config;
 
@@ -28,67 +28,56 @@ use Psr\Http\Message\ResponseInterface;
  */
 class SettingController extends StoreBaseController
 {
-	public function __construct(PlatformSettingService $settingService)
-	{
-		$this->service = $settingService;
-		parent::__construct($settingService);
-	}
+    /**
+     * @GetMapping(path="setting/list")
+     * @return ResponseInterface
+     */
+    public function index()
+    {
+        $items = (new PlatformSettingService)->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
+    }
 
-	/**
-	 * @GetMapping(path="setting/list")
-	 * @return ResponseInterface
-	 */
-	public function index()
-	{
-		$items = $this->service->serviceSelect($this->request->all());
+    /**
+     * @GetMapping(path="setting/show")
+     * @param UUIDValidate $validate
+     * @return ResponseInterface
+     */
+    public function show(UUIDValidate $validate)
+    {
+        $bean = (new PlatformSettingService)->serviceFind($this->request->all());
+        return $this->httpResponse->success($bean);
+    }
 
-		return $this->httpResponse->success($items);
-	}
+    /**
+     * @PostMapping(path="setting/create")
+     * @param SettingValidate $validate
+     * @return ResponseInterface
+     */
+    public function create(SettingValidate $validate)
+    {
+        $createResult = (new PlatformSettingService)->serviceCreate($this->request->all());
+        return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
+    }
 
-	/**
-	 * @GetMapping(path="setting/show")
-	 * @param UUIDValidate $validate
-	 * @return ResponseInterface
-	 */
-	public function show(UUIDValidate $validate)
-	{
-		$bean = $this->service->serviceFind($this->request->all());
+    /**
+     * @PutMapping(path="setting/update")
+     * @param SettingValidate $validate
+     * @return ResponseInterface
+     */
+    public function update(SettingValidate $validate)
+    {
+        $updateResult = (new PlatformSettingService)->serviceUpdate($this->request->all());
+        return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
+    }
 
-		return $this->httpResponse->success($bean);
-	}
-
-	/**
-	 * @PostMapping(path="setting/create")
-	 * @param SettingValidate $validate
-	 * @return ResponseInterface
-	 */
-	public function create(SettingValidate $validate)
-	{
-		$createResult = $this->service->serviceCreate($this->request->all());
-
-		return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
-	}
-
-	/**
-	 * @PutMapping(path="setting/update")
-	 * @param SettingValidate $validate
-	 * @return ResponseInterface
-	 */
-	public function update(SettingValidate $validate)
-	{
-		$updateResult = $this->service->serviceUpdate($this->request->all());
-
-		return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
-	}
-
-	/**
-	 * @DeleteMapping(path="setting/delete")
-	 * @return ResponseInterface
-	 */
-	public function destroy()
-	{
-		$deleteResult = $this->service->serviceDelete($this->request->all());
-
-		return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
-	}
+    /**
+     * @DeleteMapping(path="setting/delete")
+     * @return ResponseInterface
+     */
+    public function destroy()
+    {
+        $deleteResult = (new PlatformSettingService)->serviceDelete($this->request->all());
+        return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
+    }
 }

@@ -20,7 +20,6 @@ use Psr\Http\Message\ResponseInterface;
 
 /**
  * 积分配置
- *
  * @Middlewares({
  *     @Middleware(StoreAuthMiddleware::class)
  *     })
@@ -30,21 +29,14 @@ use Psr\Http\Message\ResponseInterface;
  */
 class ScoreController extends StoreBaseController
 {
-    public function __construct(ScoreSettingService $scoreSettingService)
-    {
-        $this->service = $scoreSettingService;
-        parent::__construct($scoreSettingService);
-    }
-
     /**
      * @GetMapping(path="list")
      * @return ResponseInterface
      */
-    public function index()
+    public function index(): ResponseInterface
     {
-        $items = $this->service->serviceSelect((array)$this->request->all());
-
-        return $this->httpResponse->success((array)$items);
+        $items = (new ScoreSettingService)->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
     }
 
     /**
@@ -52,10 +44,9 @@ class ScoreController extends StoreBaseController
      * @param UUIDValidate $validate
      * @return ResponseInterface
      */
-    public function show(UUIDValidate $validate)
+    public function show(UUIDValidate $validate): ResponseInterface
     {
-        $bean = $this->service->serviceFind((array)$this->request->all());
-
+        $bean = (new ScoreSettingService)->serviceFind($this->request->all());
         return $this->httpResponse->success($bean);
     }
 
@@ -64,10 +55,9 @@ class ScoreController extends StoreBaseController
      * @param ScoreSettingValidate $validate
      * @return ResponseInterface
      */
-    public function create(ScoreSettingValidate $validate)
+    public function create(ScoreSettingValidate $validate): ResponseInterface
     {
-        $createResult = $this->service->serviceCreate((array)$this->request->all());
-
+        $createResult = (new ScoreSettingService)->serviceCreate($this->request->all());
         return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -76,10 +66,9 @@ class ScoreController extends StoreBaseController
      * @param ScoreSettingValidate $validate
      * @return ResponseInterface
      */
-    public function update(ScoreSettingValidate $validate)
+    public function update(ScoreSettingValidate $validate): ResponseInterface
     {
-        $updateResult = $this->service->serviceUpdate((array)$this->request->all());
-
+        $updateResult = (new ScoreSettingService)->serviceUpdate($this->request->all());
         return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -87,10 +76,9 @@ class ScoreController extends StoreBaseController
      * @DeleteMapping(path="delete")
      * @return ResponseInterface
      */
-    public function destroy()
+    public function destroy(): ResponseInterface
     {
-        $deleteResult = $this->service->serviceDelete((array)$this->request->all());
-
+        $deleteResult = (new ScoreSettingService)->serviceDelete($this->request->all());
         return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 }

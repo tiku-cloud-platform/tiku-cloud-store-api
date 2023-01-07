@@ -29,19 +29,13 @@ use Psr\Http\Message\ResponseInterface;
  */
 class ArticleController extends StoreBaseController
 {
-    public function __construct(ArticleService $articleService)
-    {
-        $this->service = $articleService;
-        parent::__construct($articleService);
-    }
-
     /**
      * @GetMapping(path="list")
      * @return ResponseInterface
      */
     public function index()
     {
-        $items = $this->service->serviceSelect($this->request->all());
+        $items = (new ArticleService)->serviceSelect($this->request->all());
         return $this->httpResponse->success($items);
     }
 
@@ -52,7 +46,7 @@ class ArticleController extends StoreBaseController
      */
     public function show(UUIDValidate $validate)
     {
-        $bean = $this->service->serviceFind($this->request->all());
+        $bean = (new ArticleService)->serviceFind($this->request->all());
         return $this->httpResponse->success($bean);
     }
 
@@ -63,7 +57,7 @@ class ArticleController extends StoreBaseController
      */
     public function create(ArticleValidate $validate)
     {
-        $createResult = $this->service->serviceCreate($this->request->all());
+        $createResult = (new ArticleService)->serviceCreate($this->request->all());
         return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -74,7 +68,7 @@ class ArticleController extends StoreBaseController
      */
     public function update(ArticleValidate $validate)
     {
-        $updateResult = $this->service->serviceUpdate($this->request->all());
+        $updateResult = (new ArticleService)->serviceUpdate($this->request->all());
         return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -84,7 +78,7 @@ class ArticleController extends StoreBaseController
      */
     public function destroy()
     {
-        $deleteResult = $this->service->serviceDelete($this->request->all());
+        $deleteResult = (new ArticleService)->serviceDelete($this->request->all());
         return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -94,7 +88,7 @@ class ArticleController extends StoreBaseController
      */
     public function publish()
     {
-        $updateResult = $this->service->servicePublish($this->request->all());
+        $updateResult = (new ArticleService)->servicePublish($this->request->all());
 
         if ($updateResult['code'] == 0) {
             return $this->httpResponse->success();

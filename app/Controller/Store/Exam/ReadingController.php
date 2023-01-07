@@ -30,19 +30,13 @@ use Psr\Http\Message\ResponseInterface;
  */
 class ReadingController extends StoreBaseController
 {
-    public function __construct(ReadingService $readingService)
-    {
-        $this->service = $readingService;
-        parent::__construct($readingService);
-    }
-
     /**
      * @GetMapping(path="list")
      * @return ResponseInterface
      */
     public function index()
     {
-        $items = $this->service->serviceSelect($this->request->all());
+        $items = (new ReadingService)->serviceSelect($this->request->all());
         return $this->httpResponse->success($items);
     }
 
@@ -53,7 +47,7 @@ class ReadingController extends StoreBaseController
      */
     public function show(UUIDValidate $validate)
     {
-        $bean = $this->service->serviceFind($this->request->all());
+        $bean = (new ReadingService)->serviceFind($this->request->all());
         return $this->httpResponse->success($bean);
     }
 
@@ -64,11 +58,11 @@ class ReadingController extends StoreBaseController
      */
     public function create(ReadingValidate $validate)
     {
-        $verifyResult = $this->service->verifyCollectionSum((array)$this->request->all()["collection"]);
+        $verifyResult = (new ReadingService)->verifyCollectionSum((array)$this->request->all()["collection"]);
         if (!empty($verifyResult["uuid"])) {
             return $this->httpResponse->error($verifyResult, ErrorCode::REQUEST_ERROR, $verifyResult["msg"] . "已超过最大问答题数");
         } else {
-            $createResult = $this->service->serviceCreate($this->request->all());
+            $createResult = (new ReadingService)->serviceCreate($this->request->all());
             return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
         }
     }
@@ -80,11 +74,11 @@ class ReadingController extends StoreBaseController
      */
     public function update(ReadingValidate $validate): ResponseInterface
     {
-        $verifyResult = $this->service->verifyCollectionSum((array)$this->request->all()["collection"], (string)$this->request->all()["uuid"]);
+        $verifyResult = (new ReadingService)->verifyCollectionSum((array)$this->request->all()["collection"], (string)$this->request->all()["uuid"]);
         if (!empty($verifyResult["uuid"])) {
             return $this->httpResponse->error($verifyResult, ErrorCode::REQUEST_ERROR, $verifyResult["msg"] . "已超过最大问答题数");
         } else {
-            $updateResult = $this->service->serviceUpdate($this->request->all());
+            $updateResult = (new ReadingService)->serviceUpdate($this->request->all());
             return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
         }
     }
@@ -95,7 +89,7 @@ class ReadingController extends StoreBaseController
      */
     public function destroy()
     {
-        $deleteResult = $this->service->serviceDelete($this->request->all());
+        $deleteResult = (new ReadingService)->serviceDelete($this->request->all());
         return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 

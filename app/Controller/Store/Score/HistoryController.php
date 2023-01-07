@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Controller\Store\Score;
 
@@ -25,20 +25,13 @@ use Psr\Http\Message\ResponseInterface;
  */
 class HistoryController extends StoreBaseController
 {
-	public function __construct(ScoreHistoryService $historyService)
-	{
-		$this->service = $historyService;
-		parent::__construct($historyService);
-	}
-
-	/**
-	 * @GetMapping(path="list")
-	 * @return ResponseInterface
-	 */
-	public function index()
-	{
-		$items = $this->service->serviceSelect((array)$this->request->all());
-
-		return $this->httpResponse->success((array)$items);
-	}
+    /**
+     * @GetMapping(path="list")
+     * @return ResponseInterface
+     */
+    public function index(): ResponseInterface
+    {
+        $items = (new ScoreHistoryService)->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
+    }
 }

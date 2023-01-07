@@ -1,14 +1,5 @@
 <?php
-
 declare(strict_types = 1);
-/**
- * This file is part of api.
- *
- * @link     https://www.qqdeveloper.io
- * @document https://www.qqdeveloper.wiki
- * @contact  2665274677@qq.com
- * @license  Apache2.0
- */
 
 namespace App\Controller\Store\File;
 
@@ -37,21 +28,14 @@ use Psr\Http\Message\ResponseInterface;
  */
 class GroupController extends StoreBaseController
 {
-    public function __construct(FileGroupService $fileGroupService)
-    {
-        $this->service = $fileGroupService;
-        parent::__construct($fileGroupService);
-    }
-
     /**
      * @GetMapping(path="group/list")
      * @return ResponseInterface
      */
-    public function index()
+    public function index(): ResponseInterface
     {
-        $items = $this->service->serviceSelect((array)$this->request->all());
-
-        return $this->httpResponse->success((array)$items);
+        $items = (new FileGroupService)->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
     }
 
     /**
@@ -60,9 +44,8 @@ class GroupController extends StoreBaseController
      */
     public function parent(): ResponseInterface
     {
-        $items = $this->service->serviceParentSelect((array)$this->request->all());
-
-        return $this->httpResponse->success((array)$items);
+        $items = (new FileGroupService)->serviceParentSelect($this->request->all());
+        return $this->httpResponse->success($items);
     }
 
     /**
@@ -70,10 +53,9 @@ class GroupController extends StoreBaseController
      * @param UUIDValidate $validate
      * @return ResponseInterface
      */
-    public function show(UUIDValidate $validate)
+    public function show(UUIDValidate $validate): ResponseInterface
     {
-        $bean = $this->service->serviceFind((array)$this->request->all());
-
+        $bean = (new FileGroupService)->serviceFind($this->request->all());
         return $this->httpResponse->success($bean);
     }
 
@@ -82,10 +64,9 @@ class GroupController extends StoreBaseController
      * @param FileGroupValidate $validate
      * @return ResponseInterface
      */
-    public function create(FileGroupValidate $validate)
+    public function create(FileGroupValidate $validate): ResponseInterface
     {
-        $createResult = $this->service->serviceCreate((array)$this->request->all());
-
+        $createResult = (new FileGroupService)->serviceCreate($this->request->all());
         return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -94,10 +75,9 @@ class GroupController extends StoreBaseController
      * @param FileGroupValidate $validate
      * @return ResponseInterface
      */
-    public function update(FileGroupValidate $validate)
+    public function update(FileGroupValidate $validate): ResponseInterface
     {
-        $updateResult = $this->service->serviceUpdate((array)$this->request->all());
-
+        $updateResult = (new FileGroupService)->serviceUpdate($this->request->all());
         return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -105,10 +85,9 @@ class GroupController extends StoreBaseController
      * @DeleteMapping(path="group/delete")
      * @return ResponseInterface
      */
-    public function destroy()
+    public function destroy(): ResponseInterface
     {
-        $deleteResult = $this->service->serviceDelete((array)$this->request->all());
-
+        $deleteResult = (new FileGroupService)->serviceDelete($this->request->all());
         return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 }

@@ -20,7 +20,6 @@ use Psr\Http\Message\ResponseInterface;
 
 /**
  * 平台文件管理
- *
  * @Middlewares({
  *     @Middleware(StoreAuthMiddleware::class)
  *     })
@@ -30,21 +29,14 @@ use Psr\Http\Message\ResponseInterface;
  */
 class FileController extends StoreBaseController
 {
-    public function __construct(FileService $fileService)
-    {
-        $this->service = $fileService;
-        parent::__construct($fileService);
-    }
-
     /**
      * @GetMapping(path="list")
      * @return ResponseInterface
      */
     public function index()
     {
-        $items = $this->service->serviceSelect((array)$this->request->all());
-
-        return $this->httpResponse->success((array)$items);
+        $items = (new FileService)->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
     }
 
     /**
@@ -54,8 +46,7 @@ class FileController extends StoreBaseController
      */
     public function show(UUIDValidate $validate)
     {
-        $bean = $this->service->serviceFind((array)$this->request->all());
-
+        $bean = (new FileService)->serviceFind($this->request->all());
         return $this->httpResponse->success($bean);
     }
 
@@ -66,8 +57,7 @@ class FileController extends StoreBaseController
      */
     public function create(FileValidate $validate)
     {
-        $createResult = $this->service->serviceCreate((array)$this->request->all());
-
+        $createResult = (new FileService)->serviceCreate($this->request->all());
         return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -78,8 +68,7 @@ class FileController extends StoreBaseController
      */
     public function update(FileValidate $validate)
     {
-        $updateResult = $this->service->serviceUpdate((array)$this->request->all());
-
+        $updateResult = (new FileService)->serviceUpdate($this->request->all());
         return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -89,8 +78,7 @@ class FileController extends StoreBaseController
      */
     public function destroy()
     {
-        $deleteResult = $this->service->serviceDelete((array)$this->request->all());
-
+        $deleteResult = (new FileService)->serviceDelete($this->request->all());
         return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 }

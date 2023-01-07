@@ -23,21 +23,14 @@ use Psr\Http\Message\ResponseInterface;
  */
 class SubmitHistoryController extends StoreBaseController
 {
-    public function __construct(SubmitHistoryService $historyService)
-    {
-        $this->service = $historyService;
-        parent::__construct($historyService);
-    }
-
     /**
      * @GetMapping(path="list")
      * @return ResponseInterface
      */
     public function index()
     {
-        $items = $this->service->serviceSelect((array)$this->request->all());
-
-        return $this->httpResponse->success((array)$items);
+        $items = (new SubmitHistoryService)->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
     }
 
     /**
@@ -46,8 +39,7 @@ class SubmitHistoryController extends StoreBaseController
      */
     public function show()
     {
-        $bean = $this->service->serviceFind((array)$this->request->all());
-
-        return $this->httpResponse->success((array)$bean);
+        $bean = (new SubmitHistoryService)->serviceFind($this->request->all());
+        return $this->httpResponse->success($bean);
     }
 }
