@@ -1,14 +1,5 @@
 <?php
-
 declare(strict_types = 1);
-/**
- * This file is part of api.
- *
- * @link     https://www.qqdeveloper.io
- * @document https://www.qqdeveloper.wiki
- * @contact  2665274677@qq.com
- * @license  Apache2.0
- */
 
 namespace App\Controller\Store\User;
 
@@ -36,37 +27,28 @@ use Psr\Http\Message\ResponseInterface;
  */
 class StoreUserController extends StoreBaseController
 {
-    public function __construct(StoreUserService $userService)
-    {
-        $this->serivce = $userService;
-        parent::__construct($userService);
-    }
-
     /**
-     * 获取商户信息.
-     *
+     * 获取商户信息
      * @GetMapping(path="user_info")
      * @return ResponseInterface
      */
-    public function show()
+    public function show(): ResponseInterface
     {
         $userInfo = UserInfo::getStoreUserInfo();
-
-        return $this->httpResponse->success((array)$userInfo);
+        return $this->httpResponse->success($userInfo);
     }
 
     /**
      * 修改商户信息
-     *
      * @PutMapping(path="update_info")
      * @param StoreUserValidate $validate
      * @return ResponseInterface
      */
-    public function update(StoreUserValidate $validate)
+    public function update(StoreUserValidate $validate): ResponseInterface
     {
-        $updateResult = $this->serivce->serviceUpdate((array)$this->request->all());
+        $updateResult = (new StoreUserService)->serviceUpdate($this->request->all());
         if ($updateResult == -1) {
-            return $this->httpResponse->response((string)'原始密码不正确');
+            return $this->httpResponse->response('原始密码不正确');
         } elseif ($updateResult) {
             return $this->httpResponse->success();
         }
@@ -76,11 +58,10 @@ class StoreUserController extends StoreBaseController
 
     /**
      * 退出登录
-     *
      * @DeleteMapping(path="login_out")
      * @return ResponseInterface
      */
-    public function loginOut()
+    public function loginOut(): ResponseInterface
     {
         return $this->httpResponse->success();
     }

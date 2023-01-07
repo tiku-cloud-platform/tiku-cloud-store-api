@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Controller\Store\Book;
 
@@ -27,67 +27,56 @@ use Psr\Http\Message\ResponseInterface;
  */
 class CategoryController extends StoreBaseController
 {
-	public function __construct(CategoryService $articleService)
-	{
-		$this->service = $articleService;
-		parent::__construct($articleService);
-	}
+    /**
+     * @GetMapping(path="list")
+     * @return ResponseInterface
+     */
+    public function index(): ResponseInterface
+    {
+        $items = (new CategoryService)->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
+    }
 
-	/**
-	 * @GetMapping(path="list")
-	 * @return ResponseInterface
-	 */
-	public function index(): ResponseInterface
-	{
-		$items = $this->service->serviceSelect($this->request->all());
+    /**
+     * @GetMapping(path="show")
+     * @param UUIDValidate $validate
+     * @return ResponseInterface
+     */
+    public function show(UUIDValidate $validate): ResponseInterface
+    {
+        $bean = (new CategoryService)->serviceFind($this->request->all());
+        return $this->httpResponse->success($bean);
+    }
 
-		return $this->httpResponse->success($items);
-	}
+    /**
+     * @PostMapping(path="create")
+     * @param CategoryValidate $validate
+     * @return ResponseInterface
+     */
+    public function create(CategoryValidate $validate): ResponseInterface
+    {
+        $createResult = (new CategoryService)->serviceCreate($this->request->all());
+        return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
+    }
 
-	/**
-	 * @GetMapping(path="show")
-	 * @param UUIDValidate $validate
-	 * @return ResponseInterface
-	 */
-	public function show(UUIDValidate $validate): ResponseInterface
-	{
-		$bean = $this->service->serviceFind($this->request->all());
+    /**
+     * @PostMapping(path="update")
+     * @param CategoryValidate $validate
+     * @return ResponseInterface
+     */
+    public function update(CategoryValidate $validate): ResponseInterface
+    {
+        $updateResult = (new CategoryService)->serviceUpdate($this->request->all());
+        return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
+    }
 
-		return $this->httpResponse->success($bean);
-	}
-
-	/**
-	 * @PostMapping(path="create")
-	 * @param CategoryValidate $validate
-	 * @return ResponseInterface
-	 */
-	public function create(CategoryValidate $validate): ResponseInterface
-	{
-		$createResult = $this->service->serviceCreate($this->request->all());
-
-		return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
-	}
-
-	/**
-	 * @PostMapping(path="update")
-	 * @param CategoryValidate $validate
-	 * @return ResponseInterface
-	 */
-	public function update(CategoryValidate $validate): ResponseInterface
-	{
-		$updateResult = $this->service->serviceUpdate($this->request->all());
-
-		return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
-	}
-
-	/**
-	 * @DeleteMapping(path="delete")
-	 * @return ResponseInterface
-	 */
-	public function destroy(): ResponseInterface
-	{
-		$deleteResult = $this->service->serviceDelete($this->request->all());
-
-		return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
-	}
+    /**
+     * @DeleteMapping(path="delete")
+     * @return ResponseInterface
+     */
+    public function destroy(): ResponseInterface
+    {
+        $deleteResult = (new CategoryService)->serviceDelete($this->request->all());
+        return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
+    }
 }

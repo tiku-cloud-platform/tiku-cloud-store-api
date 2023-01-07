@@ -14,33 +14,22 @@ use Psr\Http\Message\ResponseInterface;
 
 /**
  * 微信用户订阅消息
- *
  * @Middlewares({
  *     @Middleware(StoreAuthMiddleware::class)
  *     })
  * @Controller(prefix="store/subscribe/wechat")
  * Class UserSubscribeController
- * Author 卡二条
- * Email 2665274677@qq.com
- * Date 2021/9/20
  * @package App\Controller\Store\Subscribe
  */
 class UserSubscribeController extends StoreBaseController
 {
-    public function __construct(UserSubscribeService $subscribeService)
-    {
-        $this->service = $subscribeService;
-        parent::__construct($subscribeService);
-    }
-
     /**
      * @GetMapping(path="list")
      * @return ResponseInterface
      */
     public function index()
     {
-        $items = $this->service->serviceSelect((array)$this->request->all());
-
-        return $this->httpResponse->success((array)$items);
+        $items = (new UserSubscribeService)->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
     }
 }

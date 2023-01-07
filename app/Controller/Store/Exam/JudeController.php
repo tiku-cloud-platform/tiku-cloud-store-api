@@ -28,21 +28,14 @@ use Psr\Http\Message\ResponseInterface;
  */
 class JudeController extends StoreBaseController
 {
-    public function __construct(JudeOptionService $judeOptionService)
-    {
-        $this->service = $judeOptionService;
-        parent::__construct($judeOptionService);
-    }
-
     /**
      * @GetMapping(path="list")
      * @return ResponseInterface
      */
     public function index()
     {
-        $items = $this->service->serviceSelect((array)$this->request->all());
-
-        return $this->httpResponse->success((array)$items);
+        $items = (new JudeOptionService)->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
     }
 
     /**
@@ -52,8 +45,7 @@ class JudeController extends StoreBaseController
      */
     public function show(UUIDValidate $validate)
     {
-        $bean = $this->service->serviceFind((array)$this->request->all());
-
+        $bean = (new JudeOptionService)->serviceFind($this->request->all());
         return $this->httpResponse->success($bean);
     }
 
@@ -64,8 +56,7 @@ class JudeController extends StoreBaseController
      */
     public function create(JudgeValidate $judgeValidate)
     {
-        $createResult = $this->service->serviceCreate((array)$this->request->all());
-
+        $createResult = (new JudeOptionService)->serviceCreate($this->request->all());
         return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -76,8 +67,7 @@ class JudeController extends StoreBaseController
      */
     public function update(JudgeValidate $judgeValidate)
     {
-        $updateResult = $this->service->serviceUpdate((array)$this->request->all());
-
+        $updateResult = (new JudeOptionService)->serviceUpdate($this->request->all());
         return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -87,8 +77,7 @@ class JudeController extends StoreBaseController
      */
     public function destroy()
     {
-        $deleteResult = $this->service->serviceDelete((array)$this->request->all());
-
+        $deleteResult = (new JudeOptionService)->serviceDelete($this->request->all());
         return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 }

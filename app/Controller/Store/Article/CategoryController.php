@@ -30,19 +30,13 @@ use Psr\Http\Message\ResponseInterface;
  */
 class CategoryController extends StoreBaseController
 {
-    public function __construct(CategoryService $categoryService)
-    {
-        $this->service = $categoryService;
-        parent::__construct($categoryService);
-    }
-
     /**
      * @GetMapping(path="list")
      * @return ResponseInterface
      */
     public function index()
     {
-        $items = $this->service->serviceSelect($this->request->all());
+        $items = (new CategoryService)->serviceSelect($this->request->all());
         return $this->httpResponse->success($items);
     }
 
@@ -53,7 +47,7 @@ class CategoryController extends StoreBaseController
      */
     public function show(UUIDValidate $validate)
     {
-        $bean = $this->service->serviceFind($this->request->all());
+        $bean = (new CategoryService)->serviceFind($this->request->all());
         return $this->httpResponse->success($bean);
     }
 
@@ -64,7 +58,7 @@ class CategoryController extends StoreBaseController
      */
     public function create(CategoryValidate $validate)
     {
-        $createResult = $this->service->serviceCreate($this->request->all());
+        $createResult = (new CategoryService)->serviceCreate($this->request->all());
         return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -75,7 +69,7 @@ class CategoryController extends StoreBaseController
      */
     public function update(CategoryValidate $validate)
     {
-        $updateResult = $this->service->serviceUpdate($this->request->all());
+        $updateResult = (new CategoryService)->serviceUpdate($this->request->all());
         return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -85,7 +79,7 @@ class CategoryController extends StoreBaseController
      */
     public function destroy()
     {
-        $deleteResult = $this->service->serviceDelete($this->request->all());
+        $deleteResult = (new CategoryService)->serviceDelete($this->request->all());
         return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 }

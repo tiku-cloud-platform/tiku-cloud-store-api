@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Controller\Store\Config;
 
@@ -19,7 +19,6 @@ use Psr\Http\Message\ResponseInterface;
 
 /**
  * 商户端常量配置
- *
  * @Middlewares({
  *     @Middleware(StoreAuthMiddleware::class)
  *     })
@@ -28,67 +27,56 @@ use Psr\Http\Message\ResponseInterface;
  */
 class ConstantConfigController extends StoreBaseController
 {
-	public function __construct(ConstantConfigService $configService)
-	{
-		$this->service = $configService;
-		parent::__construct($configService);
-	}
+    /**
+     * @GetMapping(path="constant/list")
+     * @return ResponseInterface
+     */
+    public function index()
+    {
+        $items = (new ConstantConfigService)->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
+    }
 
-	/**
-	 * @GetMapping(path="constant/list")
-	 * @return ResponseInterface
-	 */
-	public function index()
-	{
-		$items = $this->service->serviceSelect((array)$this->request->all());
+    /**
+     * @GetMapping(path="constant/show")
+     * @param UUIDValidate $validate
+     * @return ResponseInterface
+     */
+    public function show(UUIDValidate $validate)
+    {
+        $bean = (new ConstantConfigService)->serviceFind($this->request->all());
+        return $this->httpResponse->success($bean);
+    }
 
-		return $this->httpResponse->success((array)$items);
-	}
+    /**
+     * @PostMapping(path="constant/create")
+     * @param ConstantValidate $validate
+     * @return ResponseInterface
+     */
+    public function create(ConstantValidate $validate)
+    {
+        $createResult = (new ConstantConfigService)->serviceCreate($this->request->all());
+        return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
+    }
 
-	/**
-	 * @GetMapping(path="constant/show")
-	 * @param UUIDValidate $validate
-	 * @return ResponseInterface
-	 */
-	public function show(UUIDValidate $validate)
-	{
-		$bean = $this->service->serviceFind((array)$this->request->all());
+    /**
+     * @PutMapping(path="constant/update")
+     * @param ConstantValidate $validate
+     * @return ResponseInterface
+     */
+    public function update(ConstantValidate $validate)
+    {
+        $updateResult = (new ConstantConfigService)->serviceUpdate($this->request->all());
+        return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
+    }
 
-		return $this->httpResponse->success($bean);
-	}
-
-	/**
-	 * @PostMapping(path="constant/create")
-	 * @param ConstantValidate $validate
-	 * @return ResponseInterface
-	 */
-	public function create(ConstantValidate $validate)
-	{
-		$createResult = $this->service->serviceCreate((array)$this->request->all());
-
-		return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
-	}
-
-	/**
-	 * @PutMapping(path="constant/update")
-	 * @param ConstantValidate $validate
-	 * @return ResponseInterface
-	 */
-	public function update(ConstantValidate $validate)
-	{
-		$updateResult = $this->service->serviceUpdate((array)$this->request->all());
-
-		return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
-	}
-
-	/**
-	 * @DeleteMapping(path="constant/delete")
-	 * @return ResponseInterface
-	 */
-	public function destroy()
-	{
-		$deleteResult = $this->service->serviceDelete((array)$this->request->all());
-
-		return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
-	}
+    /**
+     * @DeleteMapping(path="constant/delete")
+     * @return ResponseInterface
+     */
+    public function destroy()
+    {
+        $deleteResult = (new ConstantConfigService)->serviceDelete($this->request->all());
+        return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
+    }
 }

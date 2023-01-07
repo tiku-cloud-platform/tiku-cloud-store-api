@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Controller\Store\Subscribe;
 
@@ -18,7 +18,6 @@ use Psr\Http\Message\ResponseInterface;
 
 /**
  * 微信订阅消息配置
- *
  * @Middlewares({
  *     @Middleware(StoreAuthMiddleware::class)
  *     })
@@ -28,83 +27,72 @@ use Psr\Http\Message\ResponseInterface;
  */
 class ConfigController extends StoreBaseController
 {
-	public function __construct(ConfigService $configService)
-	{
-		$this->service = $configService;
-		parent::__construct($configService);
-	}
+    /**
+     * @GetMapping(path="list")
+     * @return ResponseInterface
+     */
+    public function index(): ResponseInterface
+    {
+        $items = (new ConfigService)->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
+    }
 
-	/**
-	 * @GetMapping(path="list")
-	 * @return ResponseInterface
-	 */
-	public function index(): ResponseInterface
-	{
-		$items = $this->service->serviceSelect((array)$this->request->all());
+    /**
+     * @GetMapping(path="show")
+     * @param UUIDValidate $validate
+     * @return ResponseInterface
+     */
+    public function show(UUIDValidate $validate): ResponseInterface
+    {
+        $bean = (new ConfigService)->serviceFind($this->request->all());
+        return $this->httpResponse->success($bean);
+    }
 
-		return $this->httpResponse->success((array)$items);
-	}
+    /**
+     * @PostMapping(path="create")
+     * @param ConfigValidate $validate
+     * @return ResponseInterface
+     */
+    public function create(ConfigValidate $validate): ResponseInterface
+    {
+        $createResult = (new ConfigService)->serviceCreate($this->request->all());
+        return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
+    }
 
-	/**
-	 * @GetMapping(path="show")
-	 * @param UUIDValidate $validate
-	 * @return ResponseInterface
-	 */
-	public function show(UUIDValidate $validate): ResponseInterface
-	{
-		$bean = $this->service->serviceFind((array)$this->request->all());
+    /**
+     * @PostMapping(path="update")
+     * @param ConfigValidate $validate
+     * @return ResponseInterface
+     */
+    public function update(ConfigValidate $validate): ResponseInterface
+    {
+        $updateResult = (new ConfigService)->serviceUpdate($this->request->all());
+        return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
+    }
 
-		return $this->httpResponse->success($bean);
-	}
+    /**
+     * @DeleteMapping(path="delete")
+     * @return ResponseInterface
+     */
+    public function destroy(): ResponseInterface
+    {
+        $deleteResult = (new ConfigService)->serviceDelete($this->request->all());
+        return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
+    }
 
-	/**
-	 * @PostMapping(path="create")
-	 * @param ConfigValidate $validate
-	 * @return ResponseInterface
-	 */
-	public function create(ConfigValidate $validate): ResponseInterface
-	{
-		$createResult = $this->service->serviceCreate((array)$this->request->all());
-
-		return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
-	}
-
-	/**
-	 * @PostMapping(path="update")
-	 * @param ConfigValidate $validate
-	 * @return ResponseInterface
-	 */
-	public function update(ConfigValidate $validate): ResponseInterface
-	{
-		$updateResult = $this->service->serviceUpdate((array)$this->request->all());
-
-		return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
-	}
-
-	/**
-	 * @DeleteMapping(path="delete")
-	 * @return ResponseInterface
-	 */
-	public function destroy(): ResponseInterface
-	{
-		$deleteResult = $this->service->serviceDelete((array)$this->request->all());
-
-		return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
-	}
-
-	/**
-	 * 发送微信小程序订阅消息
-	 * @PostMapping(path="mini_send")
-	 * @param UUIDValidate $validate
-	 * @return ResponseInterface
-	 */
-	public function send(UUIDValidate $validate): ResponseInterface
-	{
-		$sendResult = $this->service->serviceSend($this->request->all());
-		return $this->httpResponse->success($sendResult);
-		if (!$sendResult["code"]) {
-			return $this->httpResponse->success();
-		}
-		return $this->httpResponse->response((string)$sendResult["msg"]);
-	}
+    /**
+     * 发送微信小程序订阅消息
+     * @PostMapping(path="mini_send")
+     * @param UUIDValidate $validate
+     * @return ResponseInterface
+     */
+    public function send(UUIDValidate $validate): ResponseInterface
+    {
+        $sendResult = (new ConfigService)->serviceSend($this->request->all());
+        return $this->httpResponse->success($sendResult);
+        if (!$sendResult["code"]) {
+            return $this->httpResponse->success();
+        }
+        return $this->httpResponse->response((string)$sendResult["msg"]);
+    }
 }

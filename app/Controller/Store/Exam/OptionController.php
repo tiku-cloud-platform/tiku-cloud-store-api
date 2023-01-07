@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Controller\Store\Exam;
 
@@ -31,21 +31,14 @@ use Psr\Http\Message\ResponseInterface;
  */
 class OptionController extends StoreBaseController
 {
-    public function __construct(OptionService $optionService)
-    {
-        $this->service = $optionService;
-        parent::__construct($optionService);
-    }
-
     /**
      * @GetMapping(path="list")
      * @return ResponseInterface
      */
     public function index()
     {
-        $items = $this->service->serviceSelect((array)$this->request->all());
-
-        return $this->httpResponse->success((array)$items);
+        $items = (new OptionService)->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
     }
 
     /**
@@ -55,8 +48,7 @@ class OptionController extends StoreBaseController
      */
     public function show(UUIDValidate $validate)
     {
-        $bean = $this->service->serviceFind((array)$this->request->all());
-
+        $bean = (new OptionService)->serviceFind($this->request->all());
         return $this->httpResponse->success($bean);
     }
 
@@ -68,11 +60,11 @@ class OptionController extends StoreBaseController
     public function create(OptionValidate $validate)
     {
         // 验证单选题数
-        $verifyResult = $this->service->verifyCollectionSum((array)$this->request->all()["collection"]);
+        $verifyResult = (new OptionService)->verifyCollectionSum((array)$this->request->all()["collection"]);
         if (!empty($verifyResult["uuid"])) {
-            return $this->httpResponse->error((array)$verifyResult, (int)ErrorCode::REQUEST_ERROR, (string)$verifyResult["msg"] . "已超过最大选择题数");
+            return $this->httpResponse->error($verifyResult, ErrorCode::REQUEST_ERROR, $verifyResult["msg"] . "已超过最大选择题数");
         } else {
-            $createResult = $this->service->serviceCreate((array)$this->request->all());
+            $createResult = (new OptionService)->serviceCreate($this->request->all());
             return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
         }
     }
@@ -85,11 +77,11 @@ class OptionController extends StoreBaseController
     public function update(OptionValidate $validate)
     {
         // 验证单选题数
-        $verifyResult = $this->service->verifyCollectionSum((array)$this->request->all()["collection"], (string)$this->request->all()["uuid"]);
+        $verifyResult = (new OptionService)->verifyCollectionSum((array)$this->request->all()["collection"], (string)$this->request->all()["uuid"]);
         if (!empty($verifyResult["uuid"])) {
-            return $this->httpResponse->error((array)$verifyResult, (int)ErrorCode::REQUEST_ERROR, (string)$verifyResult["msg"] . "已超过最大选择题数");
+            return $this->httpResponse->error($verifyResult, ErrorCode::REQUEST_ERROR, $verifyResult["msg"] . "已超过最大选择题数");
         } else {
-            $updateResult = $this->service->serviceUpdate((array)$this->request->all());
+            $updateResult = (new OptionService)->serviceUpdate($this->request->all());
             return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
         }
     }
@@ -100,8 +92,7 @@ class OptionController extends StoreBaseController
      */
     public function destroy()
     {
-        $deleteResult = $this->service->serviceDelete((array)$this->request->all());
-
+        $deleteResult = (new OptionService)->serviceDelete($this->request->all());
         return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 }

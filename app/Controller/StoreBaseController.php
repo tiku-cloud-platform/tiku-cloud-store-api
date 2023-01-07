@@ -35,11 +35,4 @@ class StoreBaseController extends AbstractController
      * @var RequestInterface
      */
     protected $request;
-
-    protected $service;
-
-    public function __construct(StoreServiceInterface $userService)
-    {
-        $this->service = $userService;
-    }
 }

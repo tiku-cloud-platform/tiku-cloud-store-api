@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Controller\Store\Book;
 
@@ -28,68 +28,58 @@ use Psr\Http\Message\ResponseInterface;
  */
 class ContentController extends StoreBaseController
 {
-	public function __construct(ContentService $articleService)
-	{
-		$this->service = $articleService;
-		parent::__construct($articleService);
-	}
+    /**
+     * @GetMapping(path="list")
+     * @param ContentSearchValidate $validate
+     * @return ResponseInterface
+     */
+    public function index(ContentSearchValidate $validate): ResponseInterface
+    {
+        $items = (new ContentService)->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
+    }
 
-	/**
-	 * @GetMapping(path="list")
-	 * @param ContentSearchValidate $validate
-	 * @return ResponseInterface
-	 */
-	public function index(ContentSearchValidate $validate): ResponseInterface
-	{
-		$items = $this->service->serviceSelect($this->request->all());
+    /**
+     * @GetMapping(path="show")
+     * @param UUIDValidate $validate
+     * @return ResponseInterface
+     */
+    public function show(UUIDValidate $validate): ResponseInterface
+    {
+        $bean = (new ContentService)->serviceFind($this->request->all());
+        return $this->httpResponse->success($bean);
+    }
 
-		return $this->httpResponse->success($items);
-	}
+    /**
+     * @PostMapping(path="create")
+     * @param ContentValidate $validate
+     * @return ResponseInterface
+     */
+    public function create(ContentValidate $validate): ResponseInterface
+    {
+        $createResult = (new ContentService)->serviceCreate($this->request->all());
+        return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
+    }
 
-	/**
-	 * @GetMapping(path="show")
-	 * @param UUIDValidate $validate
-	 * @return ResponseInterface
-	 */
-	public function show(UUIDValidate $validate): ResponseInterface
-	{
-		$bean = $this->service->serviceFind($this->request->all());
+    /**
+     * @PostMapping(path="update")
+     * @param ContentValidate $validate
+     * @return ResponseInterface
+     */
+    public function update(ContentValidate $validate): ResponseInterface
+    {
+        $updateResult = (new ContentService)->serviceUpdate($this->request->all());
+        return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
+    }
 
-		return $this->httpResponse->success($bean);
-	}
+    /**
+     * @DeleteMapping(path="delete")
+     * @return ResponseInterface
+     */
+    public function destroy(): ResponseInterface
+    {
+        $deleteResult = (new ContentService)->serviceDelete($this->request->all());
 
-	/**
-	 * @PostMapping(path="create")
-	 * @param ContentValidate $validate
-	 * @return ResponseInterface
-	 */
-	public function create(ContentValidate $validate): ResponseInterface
-	{
-		$createResult = $this->service->serviceCreate($this->request->all());
-
-		return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
-	}
-
-	/**
-	 * @PostMapping(path="update")
-	 * @param ContentValidate $validate
-	 * @return ResponseInterface
-	 */
-	public function update(ContentValidate $validate): ResponseInterface
-	{
-		$updateResult = $this->service->serviceUpdate($this->request->all());
-
-		return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
-	}
-
-	/**
-	 * @DeleteMapping(path="delete")
-	 * @return ResponseInterface
-	 */
-	public function destroy(): ResponseInterface
-	{
-		$deleteResult = $this->service->serviceDelete($this->request->all());
-
-		return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
-	}
+        return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
+    }
 }

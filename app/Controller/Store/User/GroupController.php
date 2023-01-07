@@ -30,21 +30,14 @@ use Psr\Http\Message\ResponseInterface;
  */
 class GroupController extends StoreBaseController
 {
-    public function __construct(UserGroupService $groupService)
-    {
-        $this->service = $groupService;
-        parent::__construct($groupService);
-    }
-
     /**
      * @GetMapping(path="list")
      * @return ResponseInterface
      */
     public function index()
     {
-        $items = $this->service->serviceSelect((array)$this->request->all());
-
-        return $this->httpResponse->success((array)$items);
+        $items = (new UserGroupService)->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
     }
 
     /**
@@ -54,8 +47,7 @@ class GroupController extends StoreBaseController
      */
     public function show(UUIDValidate $validate)
     {
-        $bean = $this->service->serviceFind((array)$this->request->all());
-
+        $bean = (new UserGroupService)->serviceFind($this->request->all());
         return $this->httpResponse->success($bean);
     }
 
@@ -66,8 +58,7 @@ class GroupController extends StoreBaseController
      */
     public function create(UserGroupValidate $validate)
     {
-        $createResult = $this->service->serviceCreate((array)$this->request->all());
-
+        $createResult = (new UserGroupService)->serviceCreate($this->request->all());
         return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -78,8 +69,7 @@ class GroupController extends StoreBaseController
      */
     public function update(UserGroupValidate $validate)
     {
-        $updateResult = $this->service->serviceUpdate((array)$this->request->all());
-
+        $updateResult = (new UserGroupService)->serviceUpdate($this->request->all());
         return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -89,8 +79,7 @@ class GroupController extends StoreBaseController
      */
     public function destroy()
     {
-        $deleteResult = $this->service->serviceDelete((array)$this->request->all());
-
+        $deleteResult = (new UserGroupService)->serviceDelete($this->request->all());
         return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -102,8 +91,7 @@ class GroupController extends StoreBaseController
      */
     public function bindUser(BindUserValidate $userValidate)
     {
-        $bindResult = $this->service->serviceBindUser((array)$this->request->all());
-
+        $bindResult = (new UserGroupService)->serviceBindUser($this->request->all());
         return $bindResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 }

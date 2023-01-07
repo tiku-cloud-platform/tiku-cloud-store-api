@@ -30,21 +30,14 @@ use Psr\Http\Message\ResponseInterface;
  */
 class CategoryController extends StoreBaseController
 {
-    public function __construct(CategoryService $categoryService)
-    {
-        $this->service = $categoryService;
-        parent::__construct($categoryService);
-    }
-
     /**
      * @GetMapping(path="list")
      * @return ResponseInterface
      */
     public function index()
     {
-        $items = $this->service->serviceSelect((array)$this->request->all());
-
-        return $this->httpResponse->success((array)$items);
+        $items = (new CategoryService)->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
     }
 
     /**
@@ -53,9 +46,8 @@ class CategoryController extends StoreBaseController
      */
     public function parent(): ResponseInterface
     {
-        $items = $this->service->serviceParentSelect((array)$this->request->all());
-
-        return $this->httpResponse->success((array)$items);
+        $items = (new CategoryService)->serviceParentSelect($this->request->all());
+        return $this->httpResponse->success($items);
     }
 
     /**
@@ -65,8 +57,7 @@ class CategoryController extends StoreBaseController
      */
     public function show(UUIDValidate $validate)
     {
-        $bean = $this->service->serviceFind((array)$this->request->all());
-
+        $bean = (new CategoryService)->serviceFind($this->request->all());
         return $this->httpResponse->success($bean);
     }
 
@@ -77,8 +68,7 @@ class CategoryController extends StoreBaseController
      */
     public function create(CategoryValidate $validate)
     {
-        $createResult = $this->service->serviceCreate((array)$this->request->all());
-
+        $createResult = (new CategoryService)->serviceCreate($this->request->all());
         return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -89,8 +79,7 @@ class CategoryController extends StoreBaseController
      */
     public function update(CategoryValidate $validate)
     {
-        $updateResult = $this->service->serviceUpdate((array)$this->request->all());
-
+        $updateResult = (new CategoryService)->serviceUpdate($this->request->all());
         return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -100,8 +89,7 @@ class CategoryController extends StoreBaseController
      */
     public function destroy()
     {
-        $deleteResult = $this->service->serviceDelete((array)$this->request->all());
-
+        $deleteResult = (new CategoryService)->serviceDelete($this->request->all());
         return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -112,8 +100,7 @@ class CategoryController extends StoreBaseController
      */
     public function second()
     {
-        $bean = $this->service->serviceSecond((array)$this->request->all());
-
+        $bean = (new CategoryService)->serviceSecond($this->request->all());
         return $this->httpResponse->success($bean);
     }
 }

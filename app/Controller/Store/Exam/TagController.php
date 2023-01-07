@@ -30,21 +30,14 @@ use Psr\Http\Message\ResponseInterface;
  */
 class TagController extends StoreBaseController
 {
-    public function __construct(TagService $tagService)
-    {
-        $this->service = $tagService;
-        parent::__construct($tagService);
-    }
-
     /**
      * @GetMapping(path="list")
      * @return ResponseInterface
      */
     public function index()
     {
-        $items = $this->service->serviceSelect((array)$this->request->all());
-
-        return $this->httpResponse->success((array)$items);
+        $items = (new TagService)->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
     }
 
     /**
@@ -53,9 +46,8 @@ class TagController extends StoreBaseController
      */
     public function parent(): ResponseInterface
     {
-        $items = $this->service->serviceParentSelect((array)$this->request->all());
-
-        return $this->httpResponse->success((array)$items);
+        $items = (new TagService)->serviceParentSelect($this->request->all());
+        return $this->httpResponse->success($items);
     }
 
     /**
@@ -65,8 +57,7 @@ class TagController extends StoreBaseController
      */
     public function show(UUIDValidate $validate)
     {
-        $bean = $this->service->serviceFind((array)$this->request->all());
-
+        $bean = (new TagService)->serviceFind($this->request->all());
         return $this->httpResponse->success($bean);
     }
 
@@ -77,8 +68,7 @@ class TagController extends StoreBaseController
      */
     public function create(TagValidate $validate)
     {
-        $createResult = $this->service->serviceCreate((array)$this->request->all());
-
+        $createResult = (new TagService)->serviceCreate($this->request->all());
         return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -89,8 +79,7 @@ class TagController extends StoreBaseController
      */
     public function update(TagValidate $validate)
     {
-        $updateResult = $this->service->serviceUpdate((array)$this->request->all());
-
+        $updateResult = (new TagService)->serviceUpdate($this->request->all());
         return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -100,8 +89,7 @@ class TagController extends StoreBaseController
      */
     public function destroy()
     {
-        $deleteResult = $this->service->serviceDelete((array)$this->request->all());
-
+        $deleteResult = (new TagService)->serviceDelete($this->request->all());
         return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 }

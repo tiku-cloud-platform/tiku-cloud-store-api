@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace App\Controller\Store\User;
 
-
 use App\Controller\StoreBaseController;
 use App\Middleware\Auth\StoreAuthMiddleware;
 use App\Request\Store\Common\UUIDValidate;
@@ -20,7 +19,6 @@ use Psr\Http\Message\ResponseInterface;
 
 /**
  * 平台用户
- *
  * @Middlewares({
  *     @Middleware(StoreAuthMiddleware::class)
  *     })
@@ -30,21 +28,14 @@ use Psr\Http\Message\ResponseInterface;
  */
 class UserController extends StoreBaseController
 {
-    public function __construct(UserService $chatService)
-    {
-        $this->service = $chatService;
-        parent::__construct($chatService);
-    }
-
     /**
      * @GetMapping(path="list")
      * @return ResponseInterface
      */
-    public function index()
+    public function index(): ResponseInterface
     {
-        $items = $this->service->serviceSelect((array)$this->request->all());
-
-        return $this->httpResponse->success((array)$items);
+        $items = (new UserService)->serviceSelect($this->request->all());
+        return $this->httpResponse->success($items);
     }
 
     /**
@@ -52,10 +43,9 @@ class UserController extends StoreBaseController
      * @param UUIDValidate $validate
      * @return ResponseInterface
      */
-    public function show(UUIDValidate $validate)
+    public function show(UUIDValidate $validate): ResponseInterface
     {
-        $bean = $this->service->serviceFind((array)$this->request->all());
-
+        $bean = (new UserService)->serviceFind($this->request->all());
         return $this->httpResponse->success($bean);
     }
 
@@ -73,10 +63,9 @@ class UserController extends StoreBaseController
      * @param WeChatUserValidate $validate
      * @return ResponseInterface
      */
-    public function update(WeChatUserValidate $validate)
+    public function update(WeChatUserValidate $validate): ResponseInterface
     {
-        $updateResult = $this->service->serviceUpdate((array)$this->request->all());
-
+        $updateResult = (new UserService)->serviceUpdate($this->request->all());
         return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -84,7 +73,7 @@ class UserController extends StoreBaseController
      * @DeleteMapping(path="delete")
      * @return ResponseInterface
      */
-    public function destroy()
+    public function destroy(): ResponseInterface
     {
 
     }

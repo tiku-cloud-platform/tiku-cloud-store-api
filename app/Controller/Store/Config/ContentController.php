@@ -28,20 +28,13 @@ use Psr\Http\Message\ResponseInterface;
  */
 class ContentController extends StoreBaseController
 {
-    public function __construct(PlatformContentService $contentService)
-    {
-        $this->service = $contentService;
-        parent::__construct($contentService);
-    }
-
     /**
      * @GetMapping(path="content/list")
      * @return ResponseInterface
      */
     public function index()
     {
-        $items = $this->service->serviceSelect($this->request->all());
-
+        $items = (new PlatformContentService)->serviceSelect($this->request->all());
         return $this->httpResponse->success($items);
     }
 
@@ -52,8 +45,7 @@ class ContentController extends StoreBaseController
      */
     public function show(UUIDValidate $validate)
     {
-        $bean = $this->service->serviceFind($this->request->all());
-
+        $bean = (new PlatformContentService)->serviceFind($this->request->all());
         return $this->httpResponse->success($bean);
     }
 
@@ -64,8 +56,7 @@ class ContentController extends StoreBaseController
      */
     public function create(ContentValidate $validate)
     {
-        $createResult = $this->service->serviceCreate($this->request->all());
-
+        $createResult = (new PlatformContentService)->serviceCreate($this->request->all());
         return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -76,8 +67,7 @@ class ContentController extends StoreBaseController
      */
     public function update(ContentValidate $validate)
     {
-        $updateResult = $this->service->serviceUpdate($this->request->all());
-
+        $updateResult = (new PlatformContentService)->serviceUpdate($this->request->all());
         return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 
@@ -87,8 +77,7 @@ class ContentController extends StoreBaseController
      */
     public function destroy()
     {
-        $deleteResult = $this->service->serviceDelete($this->request->all());
-
+        $deleteResult = (new PlatformContentService)->serviceDelete($this->request->all());
         return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
     }
 }
