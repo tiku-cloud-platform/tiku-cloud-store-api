@@ -1,14 +1,5 @@
 <?php
-
 declare(strict_types = 1);
-/**
- * This file is part of api.
- *
- * @link     https://www.qqdeveloper.io
- * @document https://www.qqdeveloper.wiki
- * @contact  2665274677@qq.com
- * @license  Apache2.0
- */
 
 namespace App\Service\Store\Config;
 
@@ -25,16 +16,6 @@ use Hyperf\Di\Annotation\Inject;
  */
 class ConstantConfigService implements StoreServiceInterface
 {
-    /**
-     * @Inject
-     * @var ConstantConfigRepository
-     */
-    private $configRepository;
-
-    public function __construct()
-    {
-    }
-
     /**
      * 格式化查询条件.
      *
@@ -68,8 +49,8 @@ class ConstantConfigService implements StoreServiceInterface
      */
     public function serviceSelect(array $requestParams): array
     {
-        return $this->configRepository->repositorySelect(
-            self::searchWhere((array)$requestParams),
+        return (new ConstantConfigRepository)->repositorySelect(
+            self::searchWhere($requestParams),
             (int)$requestParams['size'] ?? 20
         );
     }
@@ -85,7 +66,7 @@ class ConstantConfigService implements StoreServiceInterface
         $requestParams['uuid']       = UUID::getUUID();
         $requestParams['store_uuid'] = UserInfo::getStoreUserInfo()['store_uuid'];
 
-        return $this->configRepository->repositoryCreate($requestParams);
+        return (new ConstantConfigRepository)->repositoryCreate($requestParams);
     }
 
     /**
@@ -96,12 +77,12 @@ class ConstantConfigService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
-        return $this->configRepository->repositoryUpdate((array)[
+        return (new ConstantConfigRepository)->repositoryUpdate([
             ['uuid', '=', trim($requestParams['uuid'])],
-        ], (array)[
-            'title'    => trim($requestParams['title']),
+        ], [
+            'title' => trim($requestParams['title']),
             'describe' => trim($requestParams['describe']),
-            'value'    => trim($requestParams['value']),
+            'value' => trim($requestParams['value']),
         ]);
     }
 
@@ -119,7 +100,7 @@ class ConstantConfigService implements StoreServiceInterface
             array_push($deleteWhere, $value);
         }
 
-        return $this->configRepository->repositoryWhereInDelete((array)$deleteWhere, (string)'uuid');
+        return (new ConstantConfigRepository)->repositoryWhereInDelete($deleteWhere, 'uuid');
     }
 
     /**
@@ -130,6 +111,6 @@ class ConstantConfigService implements StoreServiceInterface
      */
     public function serviceFind(array $requestParams): array
     {
-        return $this->configRepository->repositoryFind(self::searchWhere((array)$requestParams));
+        return (new ConstantConfigRepository)->repositoryFind(self::searchWhere($requestParams));
     }
 }

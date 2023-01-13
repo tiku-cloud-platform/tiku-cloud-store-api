@@ -58,8 +58,8 @@ class CategoryService implements StoreServiceInterface
      */
     public function serviceSelect(array $requestParams): array
     {
-        return $this->categoryRepository->repositorySelect(self::searchWhere((array)$requestParams),
-            (int)$requestParams['size'] ?? 20);
+        return (new CategoryRepository)->repositorySelect(self::searchWhere($requestParams),
+            (int)($requestParams['size'] ?? 20));
     }
 
     /**
@@ -70,7 +70,7 @@ class CategoryService implements StoreServiceInterface
      */
     public function serviceParentSelect(array $requestParams): array
     {
-        return $this->categoryRepository->repositoryParentSelect(self::searchWhere((array)$requestParams),
+        return (new CategoryRepository)->repositoryParentSelect(self::searchWhere($requestParams),
             (int)$requestParams['size'] ?? 20);
     }
 
@@ -87,9 +87,7 @@ class CategoryService implements StoreServiceInterface
         $requestParams['uuid']        = UUID::getUUID();
         $requestParams['parent_uuid'] = empty($requestParams['parent_uuid']) ? null : $requestParams['parent_uuid'];
 
-        $insertResult = $this->categoryRepository->repositoryCreate((array)$requestParams);
-        $this->updateApi();
-
+        $insertResult = (new CategoryRepository)->repositoryCreate($requestParams);
         return $insertResult;
     }
 
@@ -102,11 +100,9 @@ class CategoryService implements StoreServiceInterface
     public function serviceUpdate(array $requestParams): int
     {
         $requestParams['parent_uuid'] = empty($requestParams['parent_uuid']) ? null : $requestParams['parent_uuid'];
-        $updateRows                   = $this->categoryRepository->repositoryUpdate((array)[
+        $updateRows                   = (new CategoryRepository)->repositoryUpdate([
             ['uuid', '=', $requestParams['uuid']]
-        ], (array)$requestParams);
-
-        $this->updateApi();
+        ], $requestParams);
         return $updateRows;
     }
 
@@ -123,8 +119,7 @@ class CategoryService implements StoreServiceInterface
         foreach ($uuidArray as $value) {
             array_push($deleteWhere, $value);
         }
-        $this->updateApi();
-        return $this->categoryRepository->repositoryWhereInDelete((array)$deleteWhere, (string)'uuid');
+        return (new CategoryRepository)->repositoryWhereInDelete($deleteWhere, 'uuid');
     }
 
     /**
@@ -135,7 +130,7 @@ class CategoryService implements StoreServiceInterface
      */
     public function serviceFind(array $requestParams): array
     {
-        return $this->categoryRepository->repositoryFind(self::searchWhere((array)$requestParams));
+        return (new CategoryRepository)->repositoryFind(self::searchWhere($requestParams));
     }
 
     /**
@@ -146,7 +141,7 @@ class CategoryService implements StoreServiceInterface
      */
     public function serviceSecond(array $requestParams): array
     {
-        return $this->categoryRepository->repositorySecond(self::searchWhere((array)$requestParams),
+        return (new CategoryRepository)->repositorySecond(self::searchWhere($requestParams),
             (int)$requestParams['size'] ?? 20);
     }
 
@@ -157,11 +152,11 @@ class CategoryService implements StoreServiceInterface
     private function updateApi(): bool
     {
         return true;
-        $items          = $this->categoryRepository->repositoryAllSelect((array)[["is_show", "=", 1]], (int)1000);
-        $items['items'] = $this->recursionData((array)$items['items']);
-        $userInfo       = UserInfo::getStoreUserInfo();
-
-        return RedisClient::create((string)"exam_category:", (string)$userInfo['store_uuid'], (array)$items);
+//        $items          = (new CategoryRepository)->repositoryAllSelect((array)[["is_show", "=", 1]], (int)1000);
+//        $items['items'] = $this->recursionData((array)$items['items']);
+//        $userInfo       = UserInfo::getStoreUserInfo();
+//
+//        return RedisClient::create((string)"exam_category:", (string)$userInfo['store_uuid'], (array)$items);
     }
 
     /**
@@ -182,13 +177,13 @@ class CategoryService implements StoreServiceInterface
                         "title" => $v["title"],
                         "image" => (empty($v["small_file_info"]["file_url"]) ? "" : $v["small_file_info"]["file_url"]) .
                             (empty($v["small_file_info"]["file_name"]) ? "" : $v["small_file_info"]["file_name"]),
-                        "uuid"  => $v["uuid"],
+                        "uuid" => $v["uuid"],
                     ];
                 }
             }
             $tree[] = [
-                "title"    => $value["title"],
-                "uuid"     => $value["uuid"],
+                "title" => $value["title"],
+                "uuid" => $value["uuid"],
                 "children" => $children
             ];
         }

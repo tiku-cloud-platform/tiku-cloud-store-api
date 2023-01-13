@@ -13,22 +13,11 @@ use Hyperf\Di\Annotation\Inject;
 use RedisException;
 
 /**
- * 平台参数配置.
- *
+ * 平台参数配置
  * Class PlatformSettingService
  */
 class PlatformSettingService implements StoreServiceInterface
 {
-    /**
-     * @Inject
-     * @var PlatformSettingRepository
-     */
-    protected $settingRepository;
-
-    public function __construct()
-    {
-    }
-
     /**
      * 格式化查询条件.
      *
@@ -56,9 +45,9 @@ class PlatformSettingService implements StoreServiceInterface
      */
     public function serviceSelect(array $requestParams): array
     {
-        return $this->settingRepository->repositorySelect(
-            self::searchWhere((array)$requestParams),
-            (int)$requestParams['size'] ?? 20
+        return (new PlatformSettingRepository)->repositorySelect(
+            self::searchWhere($requestParams),
+            (int)($requestParams['size'] ?? 20)
         );
     }
 
@@ -75,7 +64,7 @@ class PlatformSettingService implements StoreServiceInterface
         $userInfo                    = UserInfo::getStoreUserInfo();
         $requestParams['store_uuid'] = $userInfo['store_uuid'];
 
-        $this->settingRepository->repositoryCreate($requestParams);
+        (new PlatformSettingRepository)->repositoryCreate($requestParams);
 
         return $this->updateWxSetting((string)$userInfo['store_uuid'], $requestParams);
     }
@@ -89,7 +78,7 @@ class PlatformSettingService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
-        $this->settingRepository->repositoryUpdate([
+        (new PlatformSettingRepository)->repositoryUpdate([
             ['uuid', '=', trim($requestParams['uuid'])],
         ], [
             'title' => trim($requestParams['title']),
@@ -118,7 +107,7 @@ class PlatformSettingService implements StoreServiceInterface
             $deleteWhere[] = $value;
         }
 
-        return $this->settingRepository->repositoryWhereInDelete($deleteWhere, 'uuid');
+        return (new PlatformSettingRepository)->repositoryWhereInDelete($deleteWhere, 'uuid');
     }
 
     /**
@@ -129,7 +118,7 @@ class PlatformSettingService implements StoreServiceInterface
      */
     public function serviceFind(array $requestParams): array
     {
-        return $this->settingRepository->repositoryFind(self::searchWhere($requestParams));
+        return (new PlatformSettingRepository)->repositoryFind(self::searchWhere($requestParams));
     }
 
     /**

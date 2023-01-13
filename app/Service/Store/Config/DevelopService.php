@@ -12,12 +12,6 @@ use Hyperf\Di\Annotation\Inject;
  */
 class DevelopService implements StoreServiceInterface
 {
-    /**
-     * @Inject()
-     * @var DevelopRepository
-     */
-    protected $configRepository;
-
     public static function searchWhere(array $requestParams)
     {
         return function ($query) use ($requestParams) {
@@ -55,6 +49,6 @@ class DevelopService implements StoreServiceInterface
      */
     public function serviceFind(array $requestParams): array
     {
-        return $this->configRepository->repositoryFind(self::searchWhere($requestParams));
+        return (new DevelopRepository)->repositoryFind(self::searchWhere($requestParams));
     }
 }

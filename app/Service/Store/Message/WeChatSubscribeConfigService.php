@@ -14,11 +14,6 @@ use App\Service\StoreServiceInterface;
  */
 class WeChatSubscribeConfigService implements StoreServiceInterface
 {
-
-    public function __construct()
-    {
-    }
-
     /**
      * 格式化查询条件
      *
@@ -27,7 +22,8 @@ class WeChatSubscribeConfigService implements StoreServiceInterface
      */
     public static function searchWhere(array $requestParams)
     {
-        // TODO: Implement searchWhere() method.
+        return function () {
+        };
     }
 
     /**
@@ -38,7 +34,7 @@ class WeChatSubscribeConfigService implements StoreServiceInterface
      */
     public function serviceSelect(array $requestParams): array
     {
-        // TODO: Implement serviceSelect() method.
+        return [];
     }
 
     /**
@@ -49,7 +45,7 @@ class WeChatSubscribeConfigService implements StoreServiceInterface
      */
     public function serviceCreate(array $requestParams): bool
     {
-        // TODO: Implement serviceCreate() method.
+        return true;
     }
 
     /**
@@ -60,7 +56,7 @@ class WeChatSubscribeConfigService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
-        // TODO: Implement serviceUpdate() method.
+        return 1;
     }
 
     /**
@@ -71,7 +67,7 @@ class WeChatSubscribeConfigService implements StoreServiceInterface
      */
     public function serviceDelete(array $requestParams): int
     {
-        // TODO: Implement serviceDelete() method.
+        return 1;
     }
 
     /**
@@ -82,6 +78,6 @@ class WeChatSubscribeConfigService implements StoreServiceInterface
      */
     public function serviceFind(array $requestParams): array
     {
-        // TODO: Implement serviceFind() method.
+        return [];
     }
 }

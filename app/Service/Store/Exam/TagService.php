@@ -8,6 +8,7 @@ use App\Mapping\UserInfo;
 use App\Mapping\UUID;
 use App\Repository\Store\Exam\TagRepository;
 use App\Service\StoreServiceInterface;
+use Closure;
 use Hyperf\Di\Annotation\Inject;
 
 /**
@@ -19,22 +20,12 @@ use Hyperf\Di\Annotation\Inject;
 class TagService implements StoreServiceInterface
 {
     /**
-     * @Inject()
-     * @var TagRepository
-     */
-    protected $tagRepository;
-
-    public function __construct()
-    {
-    }
-
-    /**
      * 格式化查询条件
      *
      * @param array $requestParams 请求参数
-     * @return mixed 组装的查询条件
+     * @return Closure 组装的查询条件
      */
-    public static function searchWhere(array $requestParams)
+    public static function searchWhere(array $requestParams): Closure
     {
         return function ($query) use ($requestParams) {
             extract($requestParams);
@@ -58,7 +49,7 @@ class TagService implements StoreServiceInterface
      */
     public function serviceSelect(array $requestParams): array
     {
-        return $this->tagRepository->repositorySelect(self::searchWhere((array)$requestParams),
+        return (new TagRepository)->repositorySelect(self::searchWhere($requestParams),
             (int)$requestParams['size'] ?? 20);
     }
 
@@ -70,7 +61,7 @@ class TagService implements StoreServiceInterface
      */
     public function serviceParentSelect(array $requestParams): array
     {
-        return $this->tagRepository->repositoryParentSelect(self::searchWhere((array)$requestParams),
+        return (new TagRepository)->repositoryParentSelect(self::searchWhere($requestParams),
             (int)$requestParams['size'] ?? 20);
     }
 
@@ -87,7 +78,7 @@ class TagService implements StoreServiceInterface
         $requestParams['uuid']        = UUID::getUUID();
         $requestParams['parent_uuid'] = empty($requestParams['parent_uuid']) ? null : $requestParams['parent_uuid'];
 
-        return $this->tagRepository->repositoryCreate((array)$requestParams);
+        return (new TagRepository)->repositoryCreate($requestParams);
 
     }
 
@@ -100,9 +91,9 @@ class TagService implements StoreServiceInterface
     public function serviceUpdate(array $requestParams): int
     {
         $requestParams['parent_uuid'] = empty($requestParams['parent_uuid']) ? null : $requestParams['parent_uuid'];
-        return $this->tagRepository->repositoryUpdate((array)[
+        return (new TagRepository)->repositoryUpdate([
             ['uuid', '=', $requestParams['uuid']]
-        ], (array)$requestParams);
+        ], $requestParams);
     }
 
     /**
@@ -119,7 +110,7 @@ class TagService implements StoreServiceInterface
             array_push($deleteWhere, $value);
         }
 
-        return $this->tagRepository->repositoryWhereInDelete((array)$deleteWhere, (string)'uuid');
+        return (new TagRepository)->repositoryWhereInDelete($deleteWhere, 'uuid');
     }
 
     /**
@@ -130,6 +121,6 @@ class TagService implements StoreServiceInterface
      */
     public function serviceFind(array $requestParams): array
     {
-        return $this->tagRepository->repositoryFind(self::searchWhere((array)$requestParams));
+        return (new TagRepository)->repositoryFind(self::searchWhere($requestParams));
     }
 }

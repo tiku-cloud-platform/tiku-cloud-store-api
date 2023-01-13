@@ -18,12 +18,6 @@ use Hyperf\Di\Annotation\Inject;
 class ChannelService implements StoreServiceInterface
 {
     /**
-     * @Inject()
-     * @var ChannelRepository
-     */
-    protected $channelModel;
-
-    /**
      * 格式化查询条件
      *
      * @param array $requestParams 请求参数
@@ -53,8 +47,8 @@ class ChannelService implements StoreServiceInterface
      */
     public function serviceSelect(array $requestParams): array
     {
-        $items = $this->channelModel->repositorySelect(
-            self::searchWhere((array)$requestParams),
+        $items = (new ChannelRepository)->repositorySelect(
+            self::searchWhere($requestParams),
             (int)$requestParams['size'] ?? 20
         );
         // 查询系统总注册人数
@@ -65,15 +59,15 @@ class ChannelService implements StoreServiceInterface
         $items["systemCount"]             = $userService->serviceCount();
         $items["todaySystemTotal"]        = $userService->serviceCount((array)[
             "start_time" => date("Y-m-d 00:00:00"),
-            "end_time"   => date("Y-m-d 23:59:59")
+            "end_time" => date("Y-m-d 23:59:59")
         ]);
         $items["channelSystemCount"]      = $userService->serviceCount((array)[
             "channel" => 0,
         ]);
         $items["todayChannelSystemTotal"] = $userService->serviceCount((array)[
             "start_time" => date("Y-m-d 00:00:00"),
-            "end_time"   => date("Y-m-d 23:59:59"),
-            "channel"    => 0,
+            "end_time" => date("Y-m-d 23:59:59"),
+            "channel" => 0,
         ]);
 
         return $items;
@@ -90,7 +84,7 @@ class ChannelService implements StoreServiceInterface
         $requestParams['uuid']       = UUID::getUUID();
         $requestParams['store_uuid'] = UserInfo::getStoreUserInfo()['store_uuid'];
 
-        return $this->channelModel->repositoryCreate($requestParams);
+        return (new ChannelRepository)->repositoryCreate($requestParams);
     }
 
     /**
@@ -101,14 +95,14 @@ class ChannelService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
-        return $this->channelModel->repositoryUpdate((array)[
+        return (new ChannelRepository)->repositoryUpdate((array)[
             ['uuid', '=', $requestParams['uuid'] ?? ""],
         ], (array)[
-            'title'              => trim($requestParams['title']),
-            'is_show'            => $requestParams['is_show'],
+            'title' => trim($requestParams['title']),
+            'is_show' => $requestParams['is_show'],
             'channel_group_uuid' => $requestParams['channel_group_uuid'],
-            'remark'             => $requestParams["remark"],
-            'file_uuid'          => $requestParams["file_uuid"],
+            'remark' => $requestParams["remark"],
+            'file_uuid' => $requestParams["file_uuid"],
         ]);
     }
 
@@ -126,7 +120,7 @@ class ChannelService implements StoreServiceInterface
             array_push($deleteWhere, $value);
         }
 
-        return $this->channelModel->repositoryWhereInDelete((array)$deleteWhere, (string)'uuid');
+        return (new ChannelRepository)->repositoryWhereInDelete((array)$deleteWhere, (string)'uuid');
     }
 
     /**
@@ -137,6 +131,6 @@ class ChannelService implements StoreServiceInterface
      */
     public function serviceFind(array $requestParams): array
     {
-        return $this->channelModel->repositoryFind(self::searchWhere((array)$requestParams));
+        return (new ChannelRepository)->repositoryFind(self::searchWhere((array)$requestParams));
     }
 }

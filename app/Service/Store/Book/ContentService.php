@@ -19,12 +19,6 @@ use Hyperf\Di\Annotation\Inject;
  */
 class ContentService implements StoreServiceInterface
 {
-    /**
-     * @Inject()
-     * @var ContentRepository
-     */
-    protected $contentRepository;
-
     public static function searchWhere(array $requestParams): Closure
     {
         return function ($query) use ($requestParams) {
@@ -53,7 +47,7 @@ class ContentService implements StoreServiceInterface
 
     public function serviceSelect(array $requestParams): array
     {
-        return $this->contentRepository->repositorySelect(
+        return (new ContentRepository)->repositorySelect(
             self::searchWhere($requestParams),
             (int)$requestParams['size'] ?? 20
         );
@@ -65,7 +59,7 @@ class ContentService implements StoreServiceInterface
         $requestParams["uuid"]       = UUID::getUUID();
         $requestParams['store_uuid'] = UserInfo::getStoreUserInfo()['store_uuid'];
 
-        return $this->contentRepository->repositoryCreate($requestParams);
+        return (new ContentRepository)->repositoryCreate($requestParams);
     }
 
     public function serviceUpdate(array $requestParams): int
@@ -75,7 +69,7 @@ class ContentService implements StoreServiceInterface
         $uuid          = $requestParams["uuid"];
         unset($requestParams["uuid"]);
 
-        return $this->contentRepository->repositoryUpdate([
+        return (new ContentRepository)->repositoryUpdate([
             ['uuid', '=', $uuid],
         ], $requestParams);
     }
@@ -88,12 +82,12 @@ class ContentService implements StoreServiceInterface
             $deleteWhere[] = $value;
         }
 
-        return $this->contentRepository->repositoryWhereInDelete($deleteWhere, 'uuid');
+        return (new ContentRepository)->repositoryWhereInDelete($deleteWhere, 'uuid');
     }
 
     public function serviceFind(array $requestParams): array
     {
-        return $this->contentRepository->repositoryFind(self::searchWhere($requestParams));
+        return (new ContentRepository)->repositoryFind(self::searchWhere($requestParams));
     }
 
     private function formatter(array $requestParams): array

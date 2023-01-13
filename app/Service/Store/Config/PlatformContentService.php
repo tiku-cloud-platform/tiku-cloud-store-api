@@ -21,16 +21,6 @@ use Hyperf\Di\Annotation\Inject;
 class PlatformContentService implements StoreServiceInterface
 {
     /**
-     * @Inject()
-     * @var PlatformContentRepository
-     */
-    protected $contentRepository;
-
-    public function __construct()
-    {
-    }
-
-    /**
      * 格式化查询条件
      *
      * @param array $requestParams 请求参数
@@ -60,7 +50,7 @@ class PlatformContentService implements StoreServiceInterface
      */
     public function serviceSelect(array $requestParams): array
     {
-        return $this->contentRepository->repositorySelect(
+        return (new PlatformContentRepository)->repositorySelect(
             self::searchWhere($requestParams),
             (int)($requestParams['size'] ?? 20)
         );
@@ -83,7 +73,7 @@ class PlatformContentService implements StoreServiceInterface
         $requestParams['uuid']       = UUID::getUUID();
         $requestParams['store_uuid'] = UserInfo::getStoreUserInfo()['store_uuid'];
 
-        return $this->contentRepository->repositoryCreate($requestParams);
+        return (new PlatformContentRepository)->repositoryCreate($requestParams);
     }
 
     /**
@@ -100,7 +90,7 @@ class PlatformContentService implements StoreServiceInterface
             $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], $remoteFileArray);
         }
 
-        return $this->contentRepository->repositoryUpdate([
+        return (new PlatformContentRepository)->repositoryUpdate([
             ['uuid', '=', trim($requestParams['uuid'])],
         ], [
             'title' => trim($requestParams['title']),
@@ -124,7 +114,7 @@ class PlatformContentService implements StoreServiceInterface
             array_push($deleteWhere, $value);
         }
 
-        return $this->contentRepository->repositoryWhereInDelete($deleteWhere, 'uuid');
+        return (new PlatformContentRepository)->repositoryWhereInDelete($deleteWhere, 'uuid');
     }
 
     /**
@@ -135,6 +125,6 @@ class PlatformContentService implements StoreServiceInterface
      */
     public function serviceFind(array $requestParams): array
     {
-        return $this->contentRepository->repositoryFind(self::searchWhere($requestParams));
+        return (new PlatformContentRepository)->repositoryFind(self::searchWhere($requestParams));
     }
 }

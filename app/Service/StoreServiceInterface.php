@@ -1,14 +1,6 @@
 <?php
+declare(strict_types = 1);
 
-declare(strict_types=1);
-/**
- * This file is part of api.
- *
- * @link     https://www.qqdeveloper.io
- * @document https://www.qqdeveloper.wiki
- * @contact  2665274677@qq.com
- * @license  Apache2.0
- */
 namespace App\Service;
 
 /**
@@ -18,7 +10,6 @@ interface StoreServiceInterface
 {
     /**
      * 格式化查询条件
-     *
      * @param array $requestParams 请求参数
      * @return mixed 组装的查询条件
      */
@@ -26,7 +17,6 @@ interface StoreServiceInterface
 
     /**
      * 查询数据
-     *
      * @param array $requestParams 请求参数
      * @return array 查询结果
      */
@@ -34,7 +24,6 @@ interface StoreServiceInterface
 
     /**
      * 创建数据
-     *
      * @param array $requestParams 请求参数
      * @return bool true|false
      */
@@ -42,7 +31,6 @@ interface StoreServiceInterface
 
     /**
      * 更新数据
-     *
      * @param array $requestParams 请求参数
      * @return int 更新行数
      */
@@ -50,7 +38,6 @@ interface StoreServiceInterface
 
     /**
      * 删除数据
-     *
      * @param array $requestParams 请求参数
      * @return int 删除行数
      */
@@ -58,7 +45,6 @@ interface StoreServiceInterface
 
     /**
      * 查询单条数据
-     *
      * @param array $requestParams 请求参数
      * @return array 删除行数
      */

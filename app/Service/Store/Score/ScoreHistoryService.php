@@ -10,25 +10,13 @@ use Hyperf\Di\Annotation\Inject;
 
 /**
  * 用户积分历史
- *
  * Class ScoreHistoryService
  * @package App\Service\Store\Score
  */
 class ScoreHistoryService implements StoreServiceInterface
 {
     /**
-     * @Inject()
-     * @var ScoreHistoryRepository
-     */
-    protected $scoreRepository;
-
-    public function __construct()
-    {
-    }
-
-    /**
      * 格式化查询条件
-     *
      * @param array $requestParams 请求参数
      * @return mixed 组装的查询条件
      */
@@ -59,24 +47,23 @@ class ScoreHistoryService implements StoreServiceInterface
 
     /**
      * 查询数据
-     *
      * @param array $requestParams 请求参数
      * @return array 查询结果
      */
     public function serviceSelect(array $requestParams): array
     {
-        $items = $this->scoreRepository->repositorySelect(
-            self::searchWhere((array)$requestParams),
+        $items = (new ScoreHistoryRepository)->repositorySelect(
+            self::searchWhere($requestParams),
             (int)$requestParams['size'] ?? 20
         );
 
         // 查询积分汇总
         if (!empty($requestParams['user_id'])) {
-            $income = $this->scoreRepository->repositorySum((array)[['user_uuid', '=', $requestParams['user_id']], ['type', '=', 1]], (array)['score']);
-            $expend = $this->scoreRepository->repositorySum((array)[['user_uuid', '=', $requestParams['user_id']], ['type', '=', 2]], (array)['score']);
+            $income = (new ScoreHistoryRepository)->repositorySum([['user_uuid', '=', $requestParams['user_id']], ['type', '=', 1]], ['score']);
+            $expend = (new ScoreHistoryRepository)->repositorySum([['user_uuid', '=', $requestParams['user_id']], ['type', '=', 2]], ['score']);
         } else {
-            $income = $this->scoreRepository->repositorySum((array)[['type', '=', 1]], (array)['score']);
-            $expend = $this->scoreRepository->repositorySum((array)[['type', '=', 2]], (array)['score']);
+            $income = (new ScoreHistoryRepository)->repositorySum([['type', '=', 1]], ['score']);
+            $expend = (new ScoreHistoryRepository)->repositorySum([['type', '=', 2]], ['score']);
         }
         $items['income'] = $income['score'] ?? "0.00";
         $items['expend'] = $expend['score'] ?? "0.00";
@@ -86,45 +73,41 @@ class ScoreHistoryService implements StoreServiceInterface
 
     /**
      * 创建数据
-     *
      * @param array $requestParams 请求参数
      * @return bool true|false
      */
     public function serviceCreate(array $requestParams): bool
     {
-
+        return false;
     }
 
     /**
      * 更新数据
-     *
      * @param array $requestParams 请求参数
      * @return int 更新行数
      */
     public function serviceUpdate(array $requestParams): int
     {
-
+        return 1;
     }
 
     /**
      * 删除数据
-     *
      * @param array $requestParams 请求参数
      * @return int 删除行数
      */
     public function serviceDelete(array $requestParams): int
     {
-
+        return 1;
     }
 
     /**
      * 查询单条数据
-     *
      * @param array $requestParams 请求参数
      * @return array 删除行数
      */
     public function serviceFind(array $requestParams): array
     {
-
+        return [];
     }
 }
