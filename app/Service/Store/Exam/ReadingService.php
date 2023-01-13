@@ -22,12 +22,6 @@ use Hyperf\Di\Annotation\Inject;
 class ReadingService implements StoreServiceInterface
 {
     /**
-     * @Inject()
-     * @var ReadingRepository
-     */
-    protected $readingRepository;
-
-    /**
      * 格式化查询条件
      *
      * @param array $requestParams 请求参数
@@ -60,7 +54,7 @@ class ReadingService implements StoreServiceInterface
      */
     public function serviceSelect(array $requestParams): array
     {
-        return $this->readingRepository->repositorySelect(self::searchWhere($requestParams),
+        return (new ReadingRepository)->repositorySelect(self::searchWhere($requestParams),
             (int)$requestParams['size'] ?? 20);
     }
 
@@ -82,7 +76,7 @@ class ReadingService implements StoreServiceInterface
         $requestParams['store_uuid'] = $userInfo['store_uuid'];
         $requestParams['uuid']       = UUID::getUUID();
 
-        return $this->readingRepository->repositoryCreate($requestParams);
+        return (new ReadingRepository)->repositoryCreate($requestParams);
     }
 
     /**
@@ -99,7 +93,7 @@ class ReadingService implements StoreServiceInterface
             $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], $remoteFileArray);
         }
 
-        return $this->readingRepository->repositoryUpdate([
+        return (new ReadingRepository)->repositoryUpdate([
             ['uuid', '=', $requestParams['uuid']],
             ['store_uuid', '=', UserInfo::getStoreUserInfo()['store_uuid']]// 绑定关联使用
         ], $requestParams);
@@ -114,7 +108,7 @@ class ReadingService implements StoreServiceInterface
     {
         $uuid = $requestParams["uuid"];
         unset($requestParams["uuid"]);
-        return $this->readingRepository->repositoryEdit([
+        return (new ReadingRepository)->repositoryEdit([
             ["uuid", "=", $uuid],
             ["store_uuid", "=", UserInfo::getStoreUserInfo()['store_uuid']]
         ], $requestParams);
@@ -134,7 +128,7 @@ class ReadingService implements StoreServiceInterface
             array_push($deleteWhere, $value);
         }
 
-        return $this->readingRepository->repositoryWhereInDelete((array)$deleteWhere, (string)'uuid');
+        return (new ReadingRepository)->repositoryWhereInDelete($deleteWhere, 'uuid');
     }
 
     /**
@@ -145,7 +139,7 @@ class ReadingService implements StoreServiceInterface
      */
     public function serviceCount(array $requestParams = []): int
     {
-        return $this->readingRepository->repositoryCount(self::searchWhere((array)$requestParams));
+        return (new ReadingRepository)->repositoryCount(self::searchWhere($requestParams));
     }
 
     /**
@@ -156,7 +150,7 @@ class ReadingService implements StoreServiceInterface
      */
     public function serviceFind(array $requestParams): array
     {
-        return $this->readingRepository->repositoryFind(self::searchWhere((array)$requestParams));
+        return (new ReadingRepository)->repositoryFind(self::searchWhere($requestParams));
     }
 
     /**
@@ -174,7 +168,7 @@ class ReadingService implements StoreServiceInterface
             return $returnMsg;
         }
         foreach ($collectionArray as $value) {
-            $examSum = $collectionRelationRepository->repositoryWhereInCount((string)"collection_uuid", [$value]);
+            $examSum = $collectionRelationRepository->repositoryWhereInCount("collection_uuid", [$value]);
             $bean    = $collectionRepository->repositoryFind(function ($query) use ($value) {
                 $query->where("uuid", "=", $value);
             });

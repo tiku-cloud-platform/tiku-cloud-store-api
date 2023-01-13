@@ -1,14 +1,5 @@
 <?php
-
 declare(strict_types = 1);
-/**
- * This file is part of api.
- *
- * @link     https://www.qqdeveloper.io
- * @document https://www.qqdeveloper.wiki
- * @contact  2665274677@qq.com
- * @license  Apache2.0
- */
 
 namespace App\Service\Store\User;
 
@@ -22,30 +13,19 @@ use Hyperf\Di\Annotation\Inject;
 
 /**
  * 商户平台用户.
- *
  * Class StoreUserService
  */
 class StoreUserService implements StoreServiceInterface
 {
     /**
-     * @Inject
-     * @var UserRepository
-     */
-    protected $storeUserRepository;
-
-    public function __construct()
-    {
-    }
-
-    /**
      * 格式化查询条件.
-     *
      * @param array $requestParams 请求参数
      * @return mixed 组装的查询条件
      */
     public static function searchWhere(array $requestParams)
     {
-        // TODO: Implement searchWhere() method.
+        return function () {
+        };
     }
 
     /**
@@ -56,7 +36,7 @@ class StoreUserService implements StoreServiceInterface
      */
     public function serviceSelect(array $requestParams): array
     {
-        // TODO: Implement serviceSelect() method.
+        return [];
     }
 
     /**
@@ -67,7 +47,7 @@ class StoreUserService implements StoreServiceInterface
      */
     public function serviceCreate(array $requestParams): bool
     {
-        // TODO: Implement serviceCreate() method.
+        return false;
     }
 
     /**
@@ -80,25 +60,25 @@ class StoreUserService implements StoreServiceInterface
     {
         $userInfo   = UserInfo::getStoreUserInfo();
         $updateInfo = [
-            'name'   => $requestParams['name'],
-            'email'  => $requestParams['email'],
+            'name' => $requestParams['name'],
+            'email' => $requestParams['email'],
             'mobile' => $requestParams['mobile'],
             'avatar' => $requestParams['avatar'],
         ];
         if (!empty($requestParams['new_password'])) {
-            $oldPwd = md5((string)base64_decode($requestParams['old_password']) . env('PASSWORD_SALT'));
+            $oldPwd = md5(base64_decode($requestParams['old_password']) . env('PASSWORD_SALT'));
             if ($userInfo['password'] != $oldPwd) {// 旧密码不一致
                 return -1;
             }
-            $updateInfo['password'] = md5((string)base64_decode($requestParams['new_password']) . env('PASSWORD_SALT'));
+            $updateInfo['password'] = md5(base64_decode($requestParams['new_password']) . env('PASSWORD_SALT'));
         }
 
-        $updateRow = $this->storeUserRepository->repositoryUpdate((array)[
+        $updateRow = (new UserRepository)->repositoryUpdate([
             ['uuid', '=', $userInfo['uuid']]
-        ], (array)$updateInfo);
+        ], $updateInfo);
 
         if ($updateRow && !empty($requestParams['new_password'])) {
-            RedisClient::delete((string)CacheKey::STORE_LOGIN_PREFIX, (string)$userInfo['login_token']);
+            RedisClient::delete(CacheKey::STORE_LOGIN_PREFIX, (string)$userInfo['login_token']);
         }
 
         return $updateRow;
@@ -123,7 +103,7 @@ class StoreUserService implements StoreServiceInterface
      */
     public function serviceFind(array $requestParams): array
     {
-        return $this->storeUserRepository->repositoryFind(function ($query) use ($requestParams) {
+        return (new UserRepository)->repositoryFind(function ($query) use ($requestParams) {
             extract($requestParams);
             if (!empty($username)) {
                 $query->where('login_number', '=', $username);
@@ -138,7 +118,7 @@ class StoreUserService implements StoreServiceInterface
      */
     public function serviceLogin(array $requestParams): array
     {
-        $userInfo = $this->storeUserRepository->repositoryFind(function ($query) use ($requestParams) {
+        $userInfo = (new UserRepository)->repositoryFind(function ($query) use ($requestParams) {
             extract($requestParams);
             if (!empty($username)) {
                 $query->where('login_number', '=', $username);
@@ -153,12 +133,12 @@ class StoreUserService implements StoreServiceInterface
                 return $data;
             }
             // 登录密码不正确
-            if ($userInfo['password'] != md5((string)base64_decode($requestParams['password']) . env('PASSWORD_SALT'))) {
-                var_dump($userInfo['password'], md5((string)base64_decode($requestParams['password']) . env('PASSWORD_SALT')));
+            if ($userInfo['password'] != md5(base64_decode($requestParams['password']) . env('PASSWORD_SALT'))) {
+                var_dump($userInfo['password'], md5(base64_decode($requestParams['password']) . env('PASSWORD_SALT')));
                 $data['code'] = 3;
                 $data['data'] = [
                     $userInfo['password'],
-                    md5((string)base64_decode($requestParams['password'] ?? null) . env('PASSWORD_SALT')),
+                    md5(base64_decode($requestParams['password'] ?? null) . env('PASSWORD_SALT')),
                 ];
                 return $data;
             }
@@ -167,11 +147,11 @@ class StoreUserService implements StoreServiceInterface
             // 生成token
             $token                   = md5((string)time());
             $userInfo['login_token'] = $token;
-            RedisClient::create((string)CacheKey::STORE_LOGIN_PREFIX, (string)$token, (array)$userInfo, (int)CacheTime::STORE_LOGIN_EXPIRE_TIME);
+            RedisClient::create(CacheKey::STORE_LOGIN_PREFIX, $token, $userInfo, CacheTime::STORE_LOGIN_EXPIRE_TIME);
             // token保存在数据库中
-            $this->storeUserRepository->repositoryUpdate((array)[['uuid', '=', $userInfo['uuid']]], (array)['remember_token' => $token]);
+            (new UserRepository)->repositoryUpdate([['uuid', '=', $userInfo['uuid']]], ['remember_token' => $token]);
             // 删除之前的token信息
-            RedisClient::delete((string)CacheKey::STORE_LOGIN_PREFIX, (string)$userInfo['remember_token']);
+            RedisClient::delete(CacheKey::STORE_LOGIN_PREFIX, (string)$userInfo['remember_token']);
             // 返回数据
             $userInfo['login_token'] = $token;
             $data['data']            = $userInfo;

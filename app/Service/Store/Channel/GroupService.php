@@ -17,12 +17,6 @@ use Hyperf\Di\Annotation\Inject;
 class GroupService implements StoreServiceInterface
 {
     /**
-     * @Inject()
-     * @var GroupRepository
-     */
-    protected $groupRepository;
-
-    /**
      * 格式化查询条件
      *
      * @param array $requestParams 请求参数
@@ -52,8 +46,8 @@ class GroupService implements StoreServiceInterface
      */
     public function serviceSelect(array $requestParams): array
     {
-        return $this->groupRepository->repositorySelect(
-            self::searchWhere((array)$requestParams),
+        return (new GroupRepository)->repositorySelect(
+            self::searchWhere($requestParams),
             (int)$requestParams['size'] ?? 20
         );
     }
@@ -69,7 +63,7 @@ class GroupService implements StoreServiceInterface
         $requestParams['uuid']       = UUID::getUUID();
         $requestParams['store_uuid'] = UserInfo::getStoreUserInfo()['store_uuid'];
 
-        return $this->groupRepository->repositoryCreate($requestParams);
+        return (new GroupRepository)->repositoryCreate($requestParams);
     }
 
     /**
@@ -80,10 +74,10 @@ class GroupService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
-        return $this->groupRepository->repositoryUpdate((array)[
+        return (new GroupRepository)->repositoryUpdate([
             ['uuid', '=', $requestParams['uuid'] ?? ""],
-        ], (array)[
-            'title'   => trim($requestParams['title']),
+        ], [
+            'title' => trim($requestParams['title']),
             'is_show' => $requestParams['is_show'],
         ]);
     }
@@ -102,7 +96,7 @@ class GroupService implements StoreServiceInterface
             array_push($deleteWhere, $value);
         }
 
-        return $this->groupRepository->repositoryWhereInDelete((array)$deleteWhere, (string)'uuid');
+        return (new GroupRepository)->repositoryWhereInDelete($deleteWhere, 'uuid');
     }
 
     /**
@@ -113,6 +107,6 @@ class GroupService implements StoreServiceInterface
      */
     public function serviceFind(array $requestParams): array
     {
-        return $this->groupRepository->repositoryFind(self::searchWhere((array)$requestParams));
+        return (new GroupRepository)->repositoryFind(self::searchWhere($requestParams));
     }
 }

@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Service\Store\Exam;
 
@@ -21,12 +21,6 @@ use function Swoole\Coroutine\Http\request;
  */
 class OptionService implements StoreServiceInterface
 {
-    /**
-     * @Inject()
-     * @var OptionRepository
-     */
-    protected $optionRepository;
-
     /**
      * @Inject
      * @var HttpDataResponse
@@ -67,7 +61,7 @@ class OptionService implements StoreServiceInterface
      */
     public function serviceSelect(array $requestParams): array
     {
-        return $this->optionRepository->repositorySelect(self::searchWhere((array)$requestParams),
+        return (new OptionRepository)->repositorySelect(self::searchWhere($requestParams),
             (int)$requestParams['size'] ?? 20);
     }
 
@@ -82,9 +76,9 @@ class OptionService implements StoreServiceInterface
         $userInfo                    = UserInfo::getStoreUserInfo();
         $requestParams['store_uuid'] = $userInfo['store_uuid'];
         $requestParams['uuid']       = UUID::getUUID();
-        $requestParams['answer']     = implode(',', self::getAnswerFormOption((array)$requestParams));
+        $requestParams['answer']     = implode(',', self::getAnswerFormOption($requestParams));
 
-        return $this->optionRepository->repositoryCreate((array)$requestParams);
+        return (new OptionRepository)->repositoryCreate($requestParams);
     }
 
     /**
@@ -95,12 +89,12 @@ class OptionService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
-        $requestParams['answer'] = implode(',', self::getAnswerFormOption((array)$requestParams));
+        $requestParams['answer'] = implode(',', self::getAnswerFormOption($requestParams));
 
-        return $this->optionRepository->repositoryUpdate((array)[
+        return (new OptionRepository)->repositoryUpdate([
             ['uuid', '=', $requestParams['uuid']],
             ['store_uuid', '=', UserInfo::getStoreUserInfo()['store_uuid']]// 绑定关联使用
-        ], (array)$requestParams);
+        ], $requestParams);
     }
 
     /**
@@ -117,7 +111,7 @@ class OptionService implements StoreServiceInterface
             array_push($deleteWhere, $value);
         }
 
-        return $this->optionRepository->repositoryWhereInDelete((array)$deleteWhere, (string)'uuid');
+        return (new OptionRepository)->repositoryWhereInDelete($deleteWhere, 'uuid');
     }
 
     /**
@@ -128,7 +122,7 @@ class OptionService implements StoreServiceInterface
      */
     public function serviceFind(array $requestParams): array
     {
-        return $this->optionRepository->repositoryFind(self::searchWhere((array)$requestParams));
+        return (new OptionRepository)->repositoryFind(self::searchWhere($requestParams));
     }
 
     /**
@@ -139,7 +133,7 @@ class OptionService implements StoreServiceInterface
      */
     public function serviceCount(array $requestParams = []): int
     {
-        return $this->optionRepository->repositoryCount(self::searchWhere((array)$requestParams));
+        return (new OptionRepository)->repositoryCount(self::searchWhere($requestParams));
     }
 
     /**
@@ -179,7 +173,7 @@ class OptionService implements StoreServiceInterface
             return $returnMsg;
         }
         foreach ($collectionArray as $value) {
-            $examSum = $collectionRelationRepository->repositoryWhereInCount((string)"exam_collection_uuid", [$value]);
+            $examSum = $collectionRelationRepository->repositoryWhereInCount("exam_collection_uuid", [$value]);
             $bean    = $collectionRepository->repositoryFind(function ($query) use ($value) {
                 $query->where("uuid", "=", $value);
             });

@@ -18,16 +18,6 @@ use Hyperf\Di\Annotation\Inject;
 class FileService implements StoreServiceInterface
 {
     /**
-     * @Inject()
-     * @var FileRepository
-     */
-    protected $fileRepository;
-
-    public function __construct()
-    {
-    }
-
-    /**
      * 格式化查询条件
      *
      * @param array $requestParams 请求参数
@@ -41,10 +31,10 @@ class FileService implements StoreServiceInterface
                 $query->where('uuid', '=', $uuid);
             }
             if (!empty($file_group_uuid)) {// 根据顶级分类查询所有图片
-                $fileGroupInfo = (new FileGroupService)->serviceFind((array)['uuid' => $file_group_uuid]);
+                $fileGroupInfo = (new FileGroupService)->serviceFind(['uuid' => $file_group_uuid]);
                 $searchWhere   = [];
                 if (empty($fileGroupInfo['parent_uuid'])) {// 一级分类
-                    $items = (new FileGroupService())->serviceAllIn((array)['uuid' => $file_group_uuid], (string)'parent_uuid');
+                    $items = (new FileGroupService())->serviceAllIn(['uuid' => $file_group_uuid], 'parent_uuid');
                     foreach ($items as $value) {
                         array_push($searchWhere, $value['uuid']);
                     }
@@ -68,8 +58,8 @@ class FileService implements StoreServiceInterface
      */
     public function serviceSelect(array $requestParams): array
     {
-        $items = $this->fileRepository->repositorySelect(
-            self::searchWhere((array)$requestParams),
+        $items = (new FileRepository)->repositorySelect(
+            self::searchWhere($requestParams),
             (int)$requestParams['size'] ?? 20
         );
 
@@ -85,7 +75,7 @@ class FileService implements StoreServiceInterface
     public function serviceCreate(array $requestParams): bool
     {
         /** @var array $fileConfig 文件上传配置 */
-        $fileConfig = (new PlatformSettingService())->serviceFind((array)['type' => 'file_upload']);
+        $fileConfig = (new PlatformSettingService())->serviceFind(['type' => 'file_upload']);
         if (empty($fileConfig)) {
             return false;
         }
@@ -103,7 +93,7 @@ class FileService implements StoreServiceInterface
             $fileInfoArray[$key]['file_group_uuid'] = $requestParams['file_group_uuid'];
         }
 
-        return $this->fileRepository->repositoryCreate((array)$fileInfoArray);
+        return (new FileRepository)->repositoryCreate($fileInfoArray);
     }
 
     /**
@@ -114,7 +104,7 @@ class FileService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
-        // TODO: Implement serviceUpdate() method.
+
     }
 
     /**
@@ -131,7 +121,7 @@ class FileService implements StoreServiceInterface
             array_push($deleteWhere, $value);
         }
 
-        return $this->fileRepository->repositoryWhereInDelete((array)$deleteWhere, (string)'uuid');
+        return (new FileRepository)->repositoryWhereInDelete($deleteWhere, 'uuid');
     }
 
     /**
@@ -142,6 +132,6 @@ class FileService implements StoreServiceInterface
      */
     public function serviceFind(array $requestParams): array
     {
-        return $this->fileRepository->repositoryFind(self::searchWhere((array)$requestParams));
+        return (new FileRepository)->repositoryFind(self::searchWhere($requestParams));
     }
 }

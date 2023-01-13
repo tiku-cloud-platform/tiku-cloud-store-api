@@ -17,12 +17,6 @@ use Hyperf\Di\Annotation\Inject;
  */
 class CategoryService implements StoreServiceInterface
 {
-    /**
-     * @Inject()
-     * @var CategoryRepository
-     */
-    protected $categoryRepository;
-
     public static function searchWhere(array $requestParams): Closure
     {
         return function ($query) use ($requestParams) {
@@ -50,7 +44,7 @@ class CategoryService implements StoreServiceInterface
         $requestParams["uuid"]       = UUID::getUUID();
         $requestParams['store_uuid'] = UserInfo::getStoreUserInfo()['store_uuid'];
 
-        return $this->categoryRepository->repositoryCreate($requestParams);
+        return (new CategoryRepository)->repositoryCreate($requestParams);
     }
 
     public function serviceUpdate(array $requestParams): int
@@ -59,7 +53,7 @@ class CategoryService implements StoreServiceInterface
         $uuid = $requestParams["uuid"];
         unset($requestParams["uuid"]);
 
-        return $this->categoryRepository->repositoryUpdate([
+        return (new CategoryRepository)->repositoryUpdate([
             ['uuid', '=', $uuid],
         ], $requestParams);
     }
@@ -72,11 +66,11 @@ class CategoryService implements StoreServiceInterface
             $deleteWhere[] = $value;
         }
 
-        return $this->categoryRepository->repositoryWhereInDelete($deleteWhere, 'uuid');
+        return (new CategoryRepository)->repositoryWhereInDelete($deleteWhere, 'uuid');
     }
 
     public function serviceFind(array $requestParams): array
     {
-        return $this->categoryRepository->repositoryFind(self::searchWhere($requestParams));
+        return (new CategoryRepository)->repositoryFind(self::searchWhere($requestParams));
     }
 }

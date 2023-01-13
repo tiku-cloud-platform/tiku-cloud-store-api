@@ -15,12 +15,6 @@ use Hyperf\Di\Annotation\Inject;
 class WeChatUserService implements StoreServiceInterface
 {
     /**
-     * @Inject()
-     * @var WeChatUserRepository
-     */
-    protected $userRepository;
-
-    /**
      * @inheritDoc
      */
     public static function searchWhere(array $requestParams)
@@ -38,7 +32,8 @@ class WeChatUserService implements StoreServiceInterface
      */
     public function serviceSelect(array $requestParams): array
     {
-        return $this->userRepository->repositorySelect(self::searchWhere((array)$requestParams), (int)$requestParams['size'] ?? 20);
+        return (new WeChatUserRepository)->repositorySelect(self::searchWhere($requestParams),
+            (int)$requestParams['size'] ?? 20);
     }
 
     /**
@@ -46,7 +41,7 @@ class WeChatUserService implements StoreServiceInterface
      */
     public function serviceCreate(array $requestParams): bool
     {
-        // TODO: Implement serviceCreate() method.
+        return true;
     }
 
     /**
@@ -54,7 +49,7 @@ class WeChatUserService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
-        // TODO: Implement serviceUpdate() method.
+        return 1;
     }
 
     /**
@@ -62,7 +57,7 @@ class WeChatUserService implements StoreServiceInterface
      */
     public function serviceDelete(array $requestParams): int
     {
-        // TODO: Implement serviceDelete() method.
+        return 1;
     }
 
     /**
@@ -70,6 +65,6 @@ class WeChatUserService implements StoreServiceInterface
      */
     public function serviceFind(array $requestParams): array
     {
-        // TODO: Implement serviceFind() method.
+        return [];
     }
 }

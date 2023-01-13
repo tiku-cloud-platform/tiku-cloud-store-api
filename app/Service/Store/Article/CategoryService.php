@@ -20,16 +20,6 @@ use Hyperf\Di\Annotation\Inject;
 class CategoryService implements StoreServiceInterface
 {
     /**
-     * @Inject()
-     * @var CategoryRepository
-     */
-    protected $categoryRepository;
-
-    public function __construct()
-    {
-    }
-
-    /**
      * 格式化查询条件
      *
      * @param array $requestParams 请求参数
@@ -59,12 +49,11 @@ class CategoryService implements StoreServiceInterface
      */
     public function serviceSelect(array $requestParams): array
     {
-        $items          = $this->categoryRepository->repositorySelect(
-            self::searchWhere((array)$requestParams),
-            (int)$requestParams['size'] ?? 20
+        $items          = (new CategoryRepository)->repositorySelect(
+            self::searchWhere($requestParams),
+            (int)($requestParams['size'] ?? 20)
         );
         $items['items'] = DataFormatter::recursionData((array)$items['items']);
-
         return $items;
     }
 
@@ -80,7 +69,7 @@ class CategoryService implements StoreServiceInterface
         $requestParams['parent_uuid'] = empty($requestParams['parent_uuid']) ? null : $requestParams['parent_uuid'];
         $requestParams['store_uuid']  = UserInfo::getStoreUserInfo()['store_uuid'];
 
-        return $this->categoryRepository->repositoryCreate($requestParams);
+        return (new CategoryRepository)->repositoryCreate($requestParams);
     }
 
     /**
@@ -91,13 +80,13 @@ class CategoryService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
-        return $this->categoryRepository->repositoryUpdate((array)[
+        return (new CategoryRepository)->repositoryUpdate([
             ['uuid', '=', trim($requestParams['uuid'])],
-        ], (array)[
-            'title'       => trim($requestParams['title']),
-            'is_show'     => trim($requestParams['is_show']),
-            'file_uuid'   => $requestParams['file_uuid'],
-            'orders'      => trim($requestParams['orders']),
+        ], [
+            'title' => trim($requestParams['title']),
+            'is_show' => trim($requestParams['is_show']),
+            'file_uuid' => $requestParams['file_uuid'],
+            'orders' => trim($requestParams['orders']),
             'parent_uuid' => !empty($requestParams['parent_uuid']) ? trim($requestParams['parent_uuid']) : null,
         ]);
     }
@@ -116,7 +105,7 @@ class CategoryService implements StoreServiceInterface
             array_push($deleteWhere, $value);
         }
 
-        return $this->categoryRepository->repositoryWhereInDelete((array)$deleteWhere, (string)'uuid');
+        return (new CategoryRepository)->repositoryWhereInDelete($deleteWhere, 'uuid');
     }
 
     /**
@@ -127,6 +116,6 @@ class CategoryService implements StoreServiceInterface
      */
     public function serviceFind(array $requestParams): array
     {
-        return $this->categoryRepository->repositoryFind(self::searchWhere((array)$requestParams));
+        return (new CategoryRepository)->repositoryFind(self::searchWhere($requestParams));
     }
 }

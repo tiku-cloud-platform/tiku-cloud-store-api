@@ -1,14 +1,5 @@
 <?php
-
 declare(strict_types = 1);
-/**
- * This file is part of api.
- *
- * @link     https://www.qqdeveloper.io
- * @document https://www.qqdeveloper.wiki
- * @contact  2665274677@qq.com
- * @license  Apache2.0
- */
 
 namespace App\Service\Store\File;
 
@@ -26,18 +17,7 @@ use Hyperf\Di\Annotation\Inject;
 class FileGroupService implements StoreServiceInterface
 {
     /**
-     * @Inject
-     * @var FileGroupRepository
-     */
-    private $fileGroupRepository;
-
-    public function __construct()
-    {
-    }
-
-    /**
      * 格式化查询条件
-     *
      * @param array $requestParams 请求参数
      * @return mixed 组装的查询条件
      */
@@ -62,8 +42,8 @@ class FileGroupService implements StoreServiceInterface
      */
     public function serviceSelect(array $requestParams): array
     {
-        return $this->fileGroupRepository->repositorySelect(
-            self::searchWhere((array)$requestParams),
+        return (new FileGroupRepository)->repositorySelect(
+            self::searchWhere($requestParams),
             (int)$requestParams['size'] ?? 20
         );
     }
@@ -76,7 +56,7 @@ class FileGroupService implements StoreServiceInterface
      */
     public function serviceParentSelect(array $requestParams): array
     {
-        return $this->fileGroupRepository->repositoryParentSelect(self::searchWhere((array)$requestParams),
+        return (new FileGroupRepository)->repositoryParentSelect(self::searchWhere($requestParams),
             (int)$requestParams['size'] ?? 20);
     }
 
@@ -92,7 +72,7 @@ class FileGroupService implements StoreServiceInterface
         $requestParams['parent_uuid'] = empty($requestParams['parent_uuid']) ? null : $requestParams['parent_uuid'];
         $requestParams['store_uuid']  = UserInfo::getStoreUserInfo()['store_uuid'];
 
-        return $this->fileGroupRepository->repositoryCreate($requestParams);
+        return (new FileGroupRepository)->repositoryCreate($requestParams);
     }
 
     /**
@@ -103,11 +83,11 @@ class FileGroupService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
-        return $this->fileGroupRepository->repositoryUpdate((array)[
+        return (new FileGroupRepository)->repositoryUpdate([
             ['uuid', '=', trim($requestParams['uuid'])],
-        ], (array)[
-            'title'       => trim($requestParams['title']),
-            'is_show'     => trim($requestParams['is_show']),
+        ], [
+            'title' => trim($requestParams['title']),
+            'is_show' => trim($requestParams['is_show']),
             'parent_uuid' => !empty($requestParams['parent_uuid']) ? trim($requestParams['parent_uuid']) : null,
         ]);
     }
@@ -126,7 +106,7 @@ class FileGroupService implements StoreServiceInterface
             array_push($deleteWhere, $value);
         }
 
-        return $this->fileGroupRepository->repositoryWhereInDelete((array)$deleteWhere, (string)'uuid');
+        return (new FileGroupRepository)->repositoryWhereInDelete($deleteWhere, 'uuid');
     }
 
     /**
@@ -137,7 +117,7 @@ class FileGroupService implements StoreServiceInterface
      */
     public function serviceFind(array $requestParams): array
     {
-        return $this->fileGroupRepository->repositoryFind(self::searchWhere((array)$requestParams));
+        return (new FileGroupRepository)->repositoryFind(self::searchWhere($requestParams));
     }
 
     /**
@@ -154,6 +134,6 @@ class FileGroupService implements StoreServiceInterface
             array_push($searchValue, $requestParams['uuid']);
         }
 
-        return $this->fileGroupRepository->repositoryAllIn((array)$searchValue, (string)$searchField);
+        return (new FileGroupRepository)->repositoryAllIn($searchValue, $searchField);
     }
 }

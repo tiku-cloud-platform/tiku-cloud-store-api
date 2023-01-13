@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Service\Store\Exam;
 
@@ -17,18 +17,7 @@ use Hyperf\Di\Annotation\Inject;
 class JudeOptionService implements StoreServiceInterface
 {
     /**
-     * @Inject()
-     * @var JudeOptionRepository
-     */
-    protected $judeOptionRepository;
-
-    public function __construct()
-    {
-    }
-
-    /**
      * 格式化查询条件
-     *
      * @param array $requestParams 请求参数
      * @return mixed 组装的查询条件
      */
@@ -44,19 +33,17 @@ class JudeOptionService implements StoreServiceInterface
 
     /**
      * 查询数据
-     *
      * @param array $requestParams 请求参数
      * @return array 查询结果
      */
     public function serviceSelect(array $requestParams): array
     {
-        return $this->judeOptionRepository->repositorySelect(self::searchWhere((array)$requestParams),
+        return (new JudeOptionRepository)->repositorySelect(self::searchWhere($requestParams),
             (int)$requestParams['size']);
     }
 
     /**
      * 创建数据
-     *
      * @param array $requestParams 请求参数
      * @return bool true|false
      */
@@ -66,26 +53,24 @@ class JudeOptionService implements StoreServiceInterface
         $requestParams['store_uuid'] = $userInfo['store_uuid'];
         $requestParams['uuid']       = UUID::getUUID();
 
-        return $this->judeOptionRepository->repositoryCreate((array)$requestParams);
+        return (new JudeOptionRepository)->repositoryCreate($requestParams);
     }
 
     /**
      * 更新数据
-     *
      * @param array $requestParams 请求参数
      * @return int 更新行数
      */
     public function serviceUpdate(array $requestParams): int
     {
-        $this->judeOptionRepository->repositoryUpdate((array)[
+        (new JudeOptionRepository)->repositoryUpdate([
             ['uuid', '=', $requestParams['uuid']],
             ['store_uuid', '=', UserInfo::getStoreUserInfo()['store_uuid']]// 绑定关联使用
-        ], (array)$requestParams);
+        ], $requestParams);
     }
 
     /**
      * 删除数据
-     *
      * @param array $requestParams 请求参数
      * @return int 删除行数
      */
@@ -97,18 +82,17 @@ class JudeOptionService implements StoreServiceInterface
             array_push($deleteWhere, $value);
         }
 
-        return $this->judeOptionRepository->repositoryWhereInDelete((array)$deleteWhere, (string)'uuid');
+        return (new JudeOptionRepository)->repositoryWhereInDelete($deleteWhere, 'uuid');
     }
 
     /**
      * 查询单条数据
-     *
      * @param array $requestParams 请求参数
      * @return array 删除行数
      */
     public function serviceFind(array $requestParams): array
     {
-        return $this->judeOptionRepository->repositoryFind(self::searchWhere((array)$requestParams));
+        return (new JudeOptionRepository)->repositoryFind(self::searchWhere($requestParams));
     }
 
 }

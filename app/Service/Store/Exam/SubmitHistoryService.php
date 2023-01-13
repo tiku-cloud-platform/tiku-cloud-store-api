@@ -15,16 +15,6 @@ use Hyperf\Di\Annotation\Inject;
 class SubmitHistoryService implements StoreServiceInterface
 {
     /**
-     * @Inject()
-     * @var SubmitHistoryRepository
-     */
-    protected $historyRepository;
-
-    public function __construct()
-    {
-    }
-
-    /**
      * 格式化查询条件
      *
      * @param array $requestParams 请求参数
@@ -54,11 +44,11 @@ class SubmitHistoryService implements StoreServiceInterface
      */
     public function serviceSelect(array $requestParams): array
     {
-        $items                = $this->historyRepository->repositorySelect(self::searchWhere((array)$requestParams),
+        $items                = (new SubmitHistoryRepository)->repositorySelect(self::searchWhere($requestParams),
             (int)$requestParams['size'] ?? 20);
-        $items['total_score'] = $this->historyRepository->repositorySum((array)[
+        $items['total_score'] = (new SubmitHistoryRepository)->repositorySum([
             ['user_uuid', '=', $requestParams['user_id']]
-        ], (array)['score'])['score'];
+        ], ['score'])['score'];
 
         return $items;
     }
@@ -115,7 +105,7 @@ class SubmitHistoryService implements StoreServiceInterface
      */
     public function serviceEveryDayRegister(array $requestParams = []): array
     {
-        return $this->historyRepository->repositoryEveryDayCount(self::searchWhere((array)$requestParams));
+        return (new SubmitHistoryRepository)->repositoryEveryDayCount(self::searchWhere($requestParams));
     }
 
     /**
@@ -126,7 +116,7 @@ class SubmitHistoryService implements StoreServiceInterface
     public function serviceEveryDayTotal(array $requestParams = []): array
     {
         foreach ($requestParams as $key => $value) {
-            $requestParams[$key]['number'] = $this->historyRepository->repositoryEveryDayTotal((string)$value['date']);
+            $requestParams[$key]['number'] = (new SubmitHistoryRepository)->repositoryEveryDayTotal((string)$value['date']);
         }
 
         return $requestParams;
