@@ -44,7 +44,7 @@ class FileGroupService implements StoreServiceInterface
     {
         return (new FileGroupRepository)->repositorySelect(
             self::searchWhere($requestParams),
-            (int)$requestParams['size'] ?? 20
+            (int)($requestParams['size'] ?? 20)
         );
     }
 
