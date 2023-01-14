@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace App\Controller\Store\Dictionary;
 
 use App\Controller\StoreBaseController;
-use App\Request\Store\Dict\GroupValidate;
+use App\Request\Store\Dict\DictValidate;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;
 use Hyperf\HttpServer\Annotation\GetMapping;
@@ -36,10 +36,10 @@ class DictController extends StoreBaseController
 
     /**
      * @PostMapping(path="create")
-     * @param GroupValidate $validate
+     * @param DictValidate $validate
      * @return ResponseInterface
      */
-    public function create(GroupValidate $validate): ResponseInterface
+    public function create(DictValidate $validate): ResponseInterface
     {
         if ((new DictService())->serviceCreate($this->request->all())) {
             return $this->httpResponse->success();
@@ -49,10 +49,10 @@ class DictController extends StoreBaseController
 
     /**
      * @PutMapping(path="update")
-     * @param GroupValidate $validate
+     * @param DictValidate $validate
      * @return ResponseInterface
      */
-    public function update(GroupValidate $validate): ResponseInterface
+    public function update(DictValidate $validate): ResponseInterface
     {
         if ((new DictService())->serviceUpdate($this->request->all())) {
             return $this->httpResponse->success();

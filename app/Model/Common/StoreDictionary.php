@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace App\Model\Common;
 
 use App\Model\BaseModel;
+use Hyperf\Database\Model\Relations\BelongsTo;
 
 /**
  * 字典配置
@@ -25,5 +26,10 @@ class StoreDictionary extends BaseModel
     public function getRemarkAttribute($key): string
     {
         return !empty($key) ? $key : "";
+    }
+
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(StoreDictionaryGroup::class, "group_uuid", "uuid");
     }
 }

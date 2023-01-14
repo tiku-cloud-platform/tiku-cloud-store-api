@@ -14,8 +14,11 @@ class DictionaryRepository implements StoreRepositoryInterface
 {
     public function repositorySelect(Closure $closure, int $perSize): array
     {
-        $items = (new StoreDictionary())::query()->where($closure)->paginate($perSize, ["uuid", "title", "store_uuid",
-            "group_uuid", "is_show", "created_at", "updated_at", "remark"]);
+        $items = (new StoreDictionary())::query()
+            ->with(["group:uuid,title"])
+            ->where($closure)
+            ->paginate($perSize, ["uuid", "title", "store_uuid", "is_system",
+                "group_uuid", "is_show", "created_at", "updated_at", "remark"]);
 
         return [
             "items" => $items->items(),
@@ -41,8 +44,11 @@ class DictionaryRepository implements StoreRepositoryInterface
 
     public function repositoryFind(Closure $closure): array
     {
-        $bean = (new StoreDictionary())::query()->where($closure)->first(["uuid", "title", "store_uuid",
-            "group_uuid", "is_show", "created_at", "updated_at", "remark"]);
+        $bean = (new StoreDictionary())::query()
+            ->with(["group:uuid,title"])
+            ->where($closure)
+            ->first(["uuid", "title", "store_uuid", "is_system",
+                "group_uuid", "is_show", "created_at", "updated_at", "remark"]);
         if (!empty($bean)) {
             return $bean->toArray();
         }
@@ -56,11 +62,19 @@ class DictionaryRepository implements StoreRepositoryInterface
 
     public function repositoryDelete(array $deleteWhere): int
     {
-        return (new StoreDictionary())::query()->where($deleteWhere)->delete();
+        return (new StoreDictionary())::query()
+            ->where([
+                ["is_system", "=", 2]
+            ])
+            ->where($deleteWhere)->delete();
     }
 
     public function repositoryWhereInDelete(array $deleteWhere, string $field): int
     {
-        return (new StoreDictionary())::query()->whereIn($field, $deleteWhere)->delete();
+        return (new StoreDictionary())::query()
+            ->where([
+                ["is_system", "=", 2]
+            ])
+            ->whereIn($field, $deleteWhere)->delete();
     }
 }

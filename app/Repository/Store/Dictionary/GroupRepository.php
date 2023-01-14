@@ -16,10 +16,23 @@ use Throwable;
  */
 class GroupRepository implements StoreRepositoryInterface
 {
+    public function repositoryAllSelect(Closure $closure, int $perSize): array
+    {
+        $items = (new StoreDictionaryGroup())::query()->where($closure)
+            ->paginate($perSize, ["uuid", "title"]);
+
+        return [
+            "items" => $items->items(),
+            "page" => $items->currentPage(),
+            "size" => $perSize,
+            "total" => $items->total(),
+        ];
+    }
+
     public function repositorySelect(Closure $closure, int $perSize): array
     {
         $items = (new StoreDictionaryGroup())::query()->where($closure)
-            ->paginate($perSize, ["uuid", "store_uuid", "title", "code", "is_system", "is_show", "created_at", "updated_at"]);
+            ->paginate($perSize, ["uuid", "store_uuid", "title", "code", "is_system", "is_show", "created_at", "updated_at", "remark"]);
 
         return [
             "items" => $items->items(),
@@ -41,11 +54,12 @@ class GroupRepository implements StoreRepositoryInterface
             Db::rollBack();
             return false;
         } catch (Throwable $throwable) {
+            Db::rollBack();
             preg_match("/Duplicate entry/", $throwable->getMessage(), $msg);
             if (!empty($msg)) {
                 throw new DbDuplicateMessageException("分组code已存在");
             } else {
-                throw new DbDataMessageException("分组创建失败");
+                throw new DbDataMessageException("分组创建失败" . $throwable->getMessage());
             }
         }
     }
@@ -66,6 +80,7 @@ class GroupRepository implements StoreRepositoryInterface
             "is_show",
             "created_at",
             "updated_at",
+            "remark",
         ]);
         if (!empty($bean)) return $bean->toArray();
         return [];
@@ -78,11 +93,15 @@ class GroupRepository implements StoreRepositoryInterface
 
     public function repositoryDelete(array $deleteWhere): int
     {
-        return (new StoreDictionaryGroup())::query()->where($deleteWhere)->delete();
+        return (new StoreDictionaryGroup())::query()->where([
+            ["is_system", "=", 2]
+        ])->where($deleteWhere)->delete();
     }
 
     public function repositoryWhereInDelete(array $deleteWhere, string $field): int
     {
-        return (new StoreDictionaryGroup())::query()->whereIn($field, $deleteWhere)->delete();
+        return (new StoreDictionaryGroup())::query()->where([
+            ["is_system", "=", 2]
+        ])->whereIn($field, $deleteWhere)->delete();
     }
 }

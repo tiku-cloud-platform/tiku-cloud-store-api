@@ -26,6 +26,15 @@ use App\Middleware\Auth\StoreAuthMiddleware;
 class GroupController extends StoreBaseController
 {
     /**
+     * @GetMapping(path="all")
+     * @return ResponseInterface
+     */
+    public function all(): ResponseInterface
+    {
+        return $this->httpResponse->success((new GroupService())->serviceAll($this->request->all()));
+    }
+
+    /**
      * @GetMapping(path="list")
      * @return ResponseInterface
      */
