@@ -21,6 +21,9 @@ class DictService implements StoreServiceInterface
             if (!empty($uuid)) {
                 $query->where("uuid", "=", $uuid);
             }
+            if (!empty($group_uuid)) {
+                $query->where("group_uuid", "=", $group_uuid);
+            }
             if (!empty($is_show)) {
                 $query->where("is_show", "=", $is_show);
             }

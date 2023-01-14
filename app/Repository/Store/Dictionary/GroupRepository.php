@@ -16,6 +16,19 @@ use Throwable;
  */
 class GroupRepository implements StoreRepositoryInterface
 {
+    public function repositoryAllSelect(Closure $closure, int $perSize): array
+    {
+        $items = (new StoreDictionaryGroup())::query()->where($closure)
+            ->paginate($perSize, ["uuid", "title"]);
+
+        return [
+            "items" => $items->items(),
+            "page" => $items->currentPage(),
+            "size" => $perSize,
+            "total" => $items->total(),
+        ];
+    }
+
     public function repositorySelect(Closure $closure, int $perSize): array
     {
         $items = (new StoreDictionaryGroup())::query()->where($closure)

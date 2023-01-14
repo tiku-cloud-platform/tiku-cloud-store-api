@@ -30,6 +30,12 @@ class GroupService implements StoreServiceInterface
         };
     }
 
+    public function serviceAll(array $requestParams): array
+    {
+        return (new GroupRepository())->repositoryAllSelect(self::searchWhere($requestParams),
+            (int)($requestParams["size"] ?? 20));
+    }
+
     public function serviceSelect(array $requestParams): array
     {
         return (new GroupRepository())->repositorySelect(self::searchWhere($requestParams),
