@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Model\Store;
 
@@ -16,54 +16,38 @@ use function PHPStan\dumpType;
  */
 class StoreBanner extends \App\Model\Common\StoreBanner
 {
-	public $searchFields = [
-		'uuid',
-		'title',
-		'file_uuid',
-		'orders',
-		'url',
-		'position',
-		'is_show',
-		'type',
-		'client_position',
-	];
+    public $searchFields = [
+        'uuid',
+        'title',
+        'file_uuid',
+        'orders',
+        'url',
+        'position',
+        'is_show',
+        'type',
+        'client_position',
+    ];
 
-	protected $appends = [
-		'client_position_remark'
-	];
+    protected $casts = [
+        'position' => 'string',
+        'client_position' => 'string'
+    ];
 
-	protected $casts = [
-		'position'        => 'string',
-		'client_position' => 'string'
-	];
+    /**
+     * 客户端端口
+     * @return BelongsTo
+     */
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(StoreDictionary::class, "client_position", "uuid");
+    }
 
-	public function getClientPositionRemarkAttribute(): string
-	{
-		if (empty($this->getAttributes()['client_position'])) {
-			return "";
-		}
-		return DataConfig::bannerClientType()[$this->getAttributes()['client_position']];
-	}
-
-	/**
-	 * 显示位置
-	 *
-	 * @return BelongsTo
-	 */
-	public function positionShow(): BelongsTo
-	{
-		return $this->belongsTo(StorePlatformConstConfig::class, 'position', 'value')
-			->where('title', '=', 'wechat_banner');
-	}
-
-	/**
-	 * 跳转类型
-	 *
-	 * @return BelongsTo
-	 */
-	public function menuType(): BelongsTo
-	{
-		return $this->belongsTo(StorePlatformConstConfig::class, 'type', 'value')
-			->where('title', '=', 'wechat_banner_navi');
-	}
+    /**
+     * 显示位置
+     * @return BelongsTo
+     */
+    public function position(): BelongsTo
+    {
+        return $this->belongsTo(StoreDictionary::class, "position", "uuid");
+    }
 }

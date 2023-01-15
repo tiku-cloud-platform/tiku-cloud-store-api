@@ -33,6 +33,11 @@ class DictService implements StoreServiceInterface
         };
     }
 
+    public function serviceByGroupCode(array $requestParams): array
+    {
+        return (new DictionaryRepository())->serviceByGroupCode($requestParams, (int)($requestParams["size"] ?? 20));
+    }
+
     public function serviceSelect(array $requestParams): array
     {
         return (new DictionaryRepository())->repositorySelect(self::searchWhere($requestParams),

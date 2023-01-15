@@ -9,7 +9,6 @@ use Hyperf\Database\Model\Relations\BelongsTo;
 
 /**
  * 用户端菜单
- *
  * Class StoreMenu
  * @package App\Model\Common
  */
@@ -23,15 +22,15 @@ class StoreMenu extends BaseModel
         'file_uuid',
         'type',
         'url',
-        'position',
+        'position_position',
         'orders',
         'is_show',
         'store_uuid',
+        "client_position",
     ];
 
     /**
      * 菜单图标地址
-     *
      * @return BelongsTo
      * @author kert
      */

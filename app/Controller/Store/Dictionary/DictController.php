@@ -26,6 +26,16 @@ use App\Service\Store\Dictionary\DictService;
 class DictController extends StoreBaseController
 {
     /**
+     * 通过分组code查询对应的字典
+     * @GetMapping(path="list_group_code")
+     * @return ResponseInterface
+     */
+    public function indexByGroupCode(): ResponseInterface
+    {
+        return $this->httpResponse->success((new DictService())->serviceByGroupCode($this->request->all()));
+    }
+
+    /**
      * @GetMapping(path="list")
      * @return ResponseInterface
      */

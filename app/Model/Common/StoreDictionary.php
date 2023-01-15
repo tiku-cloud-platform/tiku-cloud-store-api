@@ -21,6 +21,7 @@ class StoreDictionary extends BaseModel
         "is_system",
         "is_show",
         "remark",
+        "value"
     ];
 
     public function getRemarkAttribute($key): string

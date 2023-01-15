@@ -12,13 +12,28 @@ use Closure;
  */
 class DictionaryRepository implements StoreRepositoryInterface
 {
+
+    public function serviceByGroupCode(array $where, int $perSize): array
+    {
+        $items = (new StoreDictionary())::query()->whereHas("group", function ($query) use ($where) {
+            $query->where("code", "=", $where["code"] ?? "");
+        })->where([["is_show", "=", 1]])->paginate($perSize, ["title", "uuid", "value"]);
+
+        return [
+            "items" => $items->items(),
+            "page" => $items->currentPage(),
+            "size" => $perSize,
+            "total" => $items->total(),
+        ];
+    }
+
     public function repositorySelect(Closure $closure, int $perSize): array
     {
         $items = (new StoreDictionary())::query()
             ->with(["group:uuid,title"])
             ->where($closure)
             ->paginate($perSize, ["uuid", "title", "store_uuid", "is_system",
-                "group_uuid", "is_show", "created_at", "updated_at", "remark"]);
+                "group_uuid", "is_show", "created_at", "updated_at", "remark", "value"]);
 
         return [
             "items" => $items->items(),
@@ -48,7 +63,7 @@ class DictionaryRepository implements StoreRepositoryInterface
             ->with(["group:uuid,title"])
             ->where($closure)
             ->first(["uuid", "title", "store_uuid", "is_system",
-                "group_uuid", "is_show", "created_at", "updated_at", "remark"]);
+                "group_uuid", "is_show", "created_at", "updated_at", "remark", "value"]);
         if (!empty($bean)) {
             return $bean->toArray();
         }

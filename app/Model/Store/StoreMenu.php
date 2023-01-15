@@ -19,30 +19,27 @@ class StoreMenu extends \App\Model\Common\StoreMenu
         'file_uuid',
         'type',
         'url',
-        'position',
+        'position_position',
         'orders',
         'is_show',
+        "client_position",
     ];
 
     /**
-     * 显示位置
-     *
+     * 客户端端口
      * @return BelongsTo
      */
-    public function positionShow()
+    public function client(): BelongsTo
     {
-        return $this->belongsTo(StorePlatformConstConfig::class, 'position', 'value')
-            ->where('title', '=', 'wechat_menu');
+        return $this->belongsTo(StoreDictionary::class, "client_position", "uuid");
     }
 
     /**
-     * 跳转类型
-     *
+     * 显示位置
      * @return BelongsTo
      */
-    public function menuType()
+    public function position(): BelongsTo
     {
-        return $this->belongsTo(StorePlatformConstConfig::class, 'type', 'value')
-            ->where('title', '=', 'wechat_mini_navi');
+        return $this->belongsTo(StoreDictionary::class, "position_position", "uuid");
     }
 }
