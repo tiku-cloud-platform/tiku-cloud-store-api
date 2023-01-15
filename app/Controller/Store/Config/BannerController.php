@@ -46,6 +46,7 @@ class BannerController extends StoreBaseController
      * 轮播图显示位置配置
      * @GetMapping(path="banner/position_config")
      * @return ResponseInterface
+     * @deprecated
      */
     public function positionConfig(): ResponseInterface
     {

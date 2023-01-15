@@ -27,12 +27,11 @@ class StoreBanner extends BaseModel
         'is_show',
         'store_uuid',
         'type',
-	    'client_position',
+        'client_position',
     ];
 
     /**
      * 菜单图标地址
-     *
      * @return BelongsTo
      * @author kert
      */

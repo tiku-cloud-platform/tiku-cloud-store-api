@@ -14,6 +14,7 @@ class DictValidate extends StoreRequestValidate
     {
         return [
             "title" => "required|max:32",
+            "value" => "required|max:50",
             "group_uuid" => "required|uuid|exists:store_dictionary_group,uuid",
             "is_show" => "required|integer",
             "remark" => "sometimes|max:50",
@@ -25,6 +26,8 @@ class DictValidate extends StoreRequestValidate
         return [
             "title.required" => "字典名称必填",
             "title.max" => "分组名称长度不能超过32",
+            "value.required" => "字典值必填",
+            "value.max" => "字典值必填不能超过50",
             "group_uuid.required" => "字典分组必填",
             "group_uuid.uuid" => "字典分组格式错误",
             "group_uuid.exists" => "字典分组不存在",

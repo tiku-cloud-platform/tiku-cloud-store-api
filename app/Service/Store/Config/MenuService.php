@@ -32,7 +32,7 @@ class MenuService implements StoreServiceInterface
                 $query->where('uuid', '=', $uuid);
             }
             if (!empty($position)) {
-                $query->where('position', '=', $position);
+                $query->where('position_position', '=', $position);
             }
             if (!empty($is_show)) {
                 $query->where('is_show', '=', $is_show);
@@ -89,9 +89,10 @@ class MenuService implements StoreServiceInterface
             'file_uuid' => trim($requestParams['file_uuid']),
             'type' => trim($requestParams['type']),
             'url' => trim($requestParams['url']),
-            'position' => trim($requestParams['position']),
+            'position_position' => trim($requestParams['position_position']),
             'orders' => trim($requestParams['orders']),
             'is_show' => trim($requestParams['is_show']),
+            'client_position' => trim($requestParams['client_position']),
         ]);
     }
 
