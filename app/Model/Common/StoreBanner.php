@@ -23,7 +23,7 @@ class StoreBanner extends BaseModel
         'file_uuid',
         'orders',
         'url',
-        'position',
+        'position_position',
         'is_show',
         'store_uuid',
         'type',

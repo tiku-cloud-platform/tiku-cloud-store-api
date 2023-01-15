@@ -22,14 +22,14 @@ class StoreBanner extends \App\Model\Common\StoreBanner
         'file_uuid',
         'orders',
         'url',
-        'position',
+        'position_position',
         'is_show',
         'type',
         'client_position',
     ];
 
     protected $casts = [
-        'position' => 'string',
+        'position_position' => 'string',
         'client_position' => 'string'
     ];
 
@@ -48,6 +48,6 @@ class StoreBanner extends \App\Model\Common\StoreBanner
      */
     public function position(): BelongsTo
     {
-        return $this->belongsTo(StoreDictionary::class, "position", "uuid");
+        return $this->belongsTo(StoreDictionary::class, "position_position", "uuid");
     }
 }

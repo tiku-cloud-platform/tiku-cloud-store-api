@@ -89,7 +89,7 @@ class BannerService implements StoreServiceInterface
             'file_uuid' => trim($requestParams['file_uuid']),
             'type' => trim($requestParams['type']),
             'url' => trim($requestParams['url']),
-            'position' => trim($requestParams['position']),
+            'position_position' => trim($requestParams['position_position']),
             'orders' => trim($requestParams['orders']),
             'is_show' => trim($requestParams['is_show']),
             'client_position' => $requestParams['client_position'],
