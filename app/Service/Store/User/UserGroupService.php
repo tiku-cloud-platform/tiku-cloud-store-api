@@ -3,9 +3,11 @@ declare(strict_types = 1);
 
 namespace App\Service\Store\User;
 
+use App\Exception\DbDuplicateMessageException;
 use App\Mapping\UserInfo;
 use App\Mapping\UUID;
 use App\Repository\Store\User\PlatformUserGroupRepository;
+use App\Repository\Store\User\StorePlatformUserRepository;
 use App\Service\StoreServiceInterface;
 use Hyperf\Di\Annotation\Inject;
 
@@ -70,6 +72,10 @@ class UserGroupService implements StoreServiceInterface
         return (new PlatformUserGroupRepository)->repositoryUpdate([['uuid', '=', $requestParams['uuid']]], [
             'title' => trim($requestParams['title']),
             'is_show' => $requestParams['is_show'],
+            'is_default' => $requestParams['is_default'],
+            'score' => $requestParams['score'],
+            'remark' => $requestParams['remark'],
+            'file_uuid' => $requestParams['file_uuid'],
         ]);
     }
 
@@ -85,7 +91,13 @@ class UserGroupService implements StoreServiceInterface
         foreach ($uuidArray as $value) {
             array_push($deleteWhere, $value);
         }
-
+        // 先查询是否存在被使用的会员等级
+        $count = (new StorePlatformUserRepository())->repositoryCount(function ($query) use ($uuidArray) {
+            $query->whereIn("store_platform_user_group_uuid", $uuidArray);
+        });
+        if ($count > 0) {
+            throw new DbDuplicateMessageException("该等级下存在用户，无法进行删除");
+        }
         return (new PlatformUserGroupRepository)->repositoryWhereInDelete($deleteWhere, 'uuid');
     }
 
