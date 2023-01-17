@@ -19,8 +19,7 @@ use Hyperf\HttpServer\Annotation\PutMapping;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * 用户分组
- *
+ * 用户会员等级
  * @Middlewares({
  *     @Middleware(StoreAuthMiddleware::class)
  *     })

@@ -6,45 +6,39 @@ namespace App\Repository\Store\User;
 
 use App\Model\Store\StorePlatformUser;
 use App\Repository\StoreRepositoryInterface;
+use Closure;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 
 /**
  * 微信用户
- *
  * Class StorePlatformUserRepository
  * @package App\Repository\Store\User
  */
 class StorePlatformUserRepository implements StoreRepositoryInterface
 {
     /**
-     * @Inject()
-     * @var StorePlatformUser
-     */
-    protected $userModel;
-
-    /**
      * 查询数据
      *
-     * @param \Closure $closure
+     * @param Closure $closure
      * @param int $perSize 分页大小
      * @return array
      */
-    public function repositorySelect(\Closure $closure, int $perSize): array
+    public function repositorySelect(Closure $closure, int $perSize): array
     {
-        $items = $this->userModel::query()
+        $items = (new StorePlatformUser)::query()
             ->with(['group:uuid,title'])
             ->with(['channel:uuid,title'])
             ->where($closure)
-            ->select($this->userModel->searchFields)
+            ->select((new StorePlatformUser)->searchFields)
             ->orderByDesc('id')
             ->paginate((int)$perSize);
 
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 
@@ -56,7 +50,7 @@ class StorePlatformUserRepository implements StoreRepositoryInterface
      */
     public function repositoryCreate(array $insertInfo): bool
     {
-        if (!empty($this->userModel::query()->create($insertInfo))) {
+        if (!empty((new StorePlatformUser)::query()->create($insertInfo))) {
             return true;
         }
 
@@ -77,16 +71,16 @@ class StorePlatformUserRepository implements StoreRepositoryInterface
     /**
      * 单条数据查询
      *
-     * @param \Closure $closure
+     * @param Closure $closure
      * @return array
      * @author kert
      */
-    public function repositoryFind(\Closure $closure): array
+    public function repositoryFind(Closure $closure): array
     {
-        $bean = $this->userModel::query()
+        $bean = (new StorePlatformUser)::query()
             ->with(['group:uuid,title'])
             ->where($closure)
-            ->first($this->userModel->searchFields);
+            ->first((new StorePlatformUser)->searchFields);
 
         if (!empty($bean)) return $bean->toArray();
         return [];
@@ -101,7 +95,7 @@ class StorePlatformUserRepository implements StoreRepositoryInterface
      */
     public function repositoryUpdate(array $updateWhere, array $updateInfo): int
     {
-        return $this->userModel::query()->where($updateWhere)->update($updateInfo);
+        return (new StorePlatformUser)::query()->where($updateWhere)->update($updateInfo);
     }
 
     /**
@@ -112,7 +106,7 @@ class StorePlatformUserRepository implements StoreRepositoryInterface
      */
     public function repositoryDelete(array $deleteWhere): int
     {
-        return $this->userModel::query()->where($deleteWhere)->delete();
+        return (new StorePlatformUser)::query()->where($deleteWhere)->delete();
     }
 
     /**
@@ -124,32 +118,32 @@ class StorePlatformUserRepository implements StoreRepositoryInterface
      */
     public function repositoryWhereInDelete(array $deleteWhere, string $field): int
     {
-        return $this->userModel::query()->whereIn($field, $deleteWhere)->delete();
+        return (new StorePlatformUser)::query()->whereIn($field, $deleteWhere)->delete();
     }
 
     /**
      * 查询总数据
      *
-     * @param \Closure $closure
+     * @param Closure $closure
      * @return int
      */
-    public function repositoryCount(\Closure $closure): int
+    public function repositoryCount(Closure $closure): int
     {
-        return $this->userModel::query()->where($closure)->count();
+        return (new StorePlatformUser)::query()->where($closure)->count();
     }
 
     /**
      * 查询每日注册用户
      *
-     * @param \Closure $closure
+     * @param Closure $closure
      * @return array
      */
-    public function repositoryEveryDayCount(\Closure $closure): array
+    public function repositoryEveryDayCount(Closure $closure): array
     {
         // SELECT DATE_FORMAT(created_at,'%Y-%m-%d') AS `current_date`,COUNT(*) AS `register_count` FROM store_wechat_user
         //WHERE created_at BETWEEN '2021-08-01 00:00:00' AND '2021-08-31 23:59:59' GROUP BY DATE_FORMAT(created_at,'%Y-%m-%d');
 
-        $items = $this->userModel::query()->where($closure)
+        $items = (new StorePlatformUser)::query()->where($closure)
             ->groupBy([Db::raw("DATE_FORMAT(`created_at`,'%Y-%m-%d')")])
             ->select([
                 Db::raw("DATE_FORMAT(created_at,'%Y-%m-%d') AS `date`"),
@@ -170,7 +164,7 @@ class StorePlatformUserRepository implements StoreRepositoryInterface
      */
     public function repositoryEveryDayTotal(string $date): int
     {
-        return $this->userModel::query()
+        return (new StorePlatformUser)::query()
             ->where('created_at', '<=', $date . ' 23:59:59')
             ->count();
     }
