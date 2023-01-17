@@ -30,6 +30,9 @@ class UserGroupService implements StoreServiceInterface
             if (!empty($uuid)) {
                 $query->where('uuid', '=', $uuid);
             }
+            if (!empty($is_show)) {
+                $query->where('is_show', '=', $is_show);
+            }
             if (!empty($title)) {
                 $query->where('title', 'like', '%' . $title . '%');
             }
