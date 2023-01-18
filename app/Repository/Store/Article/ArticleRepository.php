@@ -6,6 +6,7 @@ namespace App\Repository\Store\Article;
 
 use App\Model\Store\StoreArticle;
 use App\Repository\StoreRepositoryInterface;
+use Closure;
 use Hyperf\Di\Annotation\Inject;
 
 /**
@@ -32,7 +33,7 @@ class ArticleRepository implements StoreRepositoryInterface
      * @param int $perSize 分页大小
      * @return array
      */
-    public function repositorySelect(\Closure $closure, int $perSize): array
+    public function repositorySelect(Closure $closure, int $perSize): array
     {
         $items = $this->articleModel::query()
             ->with(['categoryInfo:uuid,title'])
@@ -40,13 +41,13 @@ class ArticleRepository implements StoreRepositoryInterface
             ->where($closure)
             ->select($this->articleModel->searchFields)
             ->orderByDesc('id')
-            ->paginate((int)$perSize);
+            ->paginate($perSize);
 
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 
@@ -79,11 +80,11 @@ class ArticleRepository implements StoreRepositoryInterface
     /**
      * 单条数据查询
      *
-     * @param \Closure $closure
+     * @param Closure $closure
      * @return array
      * @author kert
      */
-    public function repositoryFind(\Closure $closure): array
+    public function repositoryFind(Closure $closure): array
     {
         $bean = $this->articleModel::query()
             ->with(['coverFileInfo:uuid,file_url,file_name'])

@@ -42,6 +42,11 @@ class ContentRepository implements StoreRepositoryInterface
                 "orders",
                 "created_at",
                 "updated_at",
+                "read_score",
+                "share_score",
+                "click_score",
+                "collection_score",
+                "read_expend_score",
             ])
             ->paginate($perSize);
 
@@ -91,6 +96,11 @@ class ContentRepository implements StoreRepositoryInterface
                 "orders",
                 "created_at",
                 "updated_at",
+                "read_score",
+                "share_score",
+                "click_score",
+                "collection_score",
+                "read_expend_score",
             ])->first();
 
         if (!empty($bean)) {

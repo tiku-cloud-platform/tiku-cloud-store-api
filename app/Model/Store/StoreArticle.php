@@ -25,5 +25,10 @@ class StoreArticle extends \App\Model\Common\StoreArticle
         'is_show',
         'is_top',
         'is_publish',
+        "read_score",
+        "share_score",
+        "click_score",
+        "collection_score",
+        "read_expend_score",
     ];
 }
