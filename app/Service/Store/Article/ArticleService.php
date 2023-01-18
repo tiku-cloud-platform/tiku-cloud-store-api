@@ -106,6 +106,11 @@ class ArticleService implements StoreServiceInterface
             'is_top' => $requestParams['is_top'],
             'source' => trim($requestParams['source']),
             'article_category_uuid' => trim($requestParams['article_category_uuid']),
+            "read_score" => $requestParams["read_score"],
+            "share_score" => $requestParams["share_score"],
+            "click_score" => $requestParams["click_score"],
+            "collection_score" => $requestParams["collection_score"],
+            "read_expend_score" => $requestParams["read_expend_score"],
         ]);
     }
 

@@ -4,9 +4,11 @@ declare(strict_types = 1);
 namespace App\Service\Store\Article;
 
 
+use App\Exception\DbDataMessageException;
 use App\Mapping\DataFormatter;
 use App\Mapping\UserInfo;
 use App\Mapping\UUID;
+use App\Repository\Store\Article\ArticleRepository;
 use App\Repository\Store\Article\CategoryRepository;
 use App\Service\StoreServiceInterface;
 use Hyperf\Di\Annotation\Inject;
@@ -104,7 +106,12 @@ class CategoryService implements StoreServiceInterface
         foreach ($uuidArray as $value) {
             array_push($deleteWhere, $value);
         }
-
+        $bean = (new ArticleRepository())->repositoryFind(function ($query) use ($uuidArray) {
+            $query->whereIn("article_category_uuid", $uuidArray);
+        });
+        if ($bean > 0) {
+            throw new DbDataMessageException("该分类下存在文章");
+        }
         return (new CategoryRepository)->repositoryWhereInDelete($deleteWhere, 'uuid');
     }
 
