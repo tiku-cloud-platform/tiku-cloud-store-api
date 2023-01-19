@@ -38,7 +38,7 @@ class ClientScope implements Scope
         $router = $this->request->getRequestUri();
 
         if (!empty($header) && in_array($header, ['web_store'])) {
-            if ($router !== '/store/user/login') {
+            if ($router !== '/store/login') {
                 $builder->where('store_uuid', '=', UserInfo::getStoreUserInfo()['store_uuid']);
             } else {
                 $builder->where('id', '>', 0);
