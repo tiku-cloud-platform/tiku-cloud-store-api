@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Mapping;
 
 use App\Constants\CacheKey;
-use App\Service\Store\Config\PlatformSettingService;
+use App\Service\Config\PlatformSettingService;
 
 /**
  * 发送微信请求

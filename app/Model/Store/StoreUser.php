@@ -19,18 +19,5 @@ namespace App\Model\Store;
  */
 class StoreUser extends \App\Model\Common\StoreUser
 {
-    public $searchFields = [
-        'uuid',
-        'name',
-        'email',
-        'password',
-        'login_number',
-        'mobile',
-        'expire_time',
-        'avatar',
-        'store_uuid',
-        'remember_token',
-        'company_name',
-        'company_tel',
-    ];
+
 }
