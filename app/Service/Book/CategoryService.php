@@ -33,7 +33,7 @@ class CategoryService implements StoreServiceInterface
     {
         return (new CategoryRepository())->repositorySelect(
             self::searchWhere($requestParams),
-            (int)$requestParams['size'] ?? 20
+            (int)($requestParams['size'] ?? 20)
         );
     }
 
