@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace App\Library\File;
 
-use App\Service\Store\File\TokenService;
+use App\Service\File\TokenService;
 use Qiniu\Storage\UploadManager;
 
 /**
