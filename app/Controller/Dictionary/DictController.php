@@ -5,7 +5,7 @@ namespace App\Controller\Dictionary;
 
 use App\Controller\StoreBaseController;
 use App\Middleware\Auth\StoreAuthMiddleware;
-use App\Request\Store\Dict\DictValidate;
+use App\Request\Dict\DictValidate;
 use App\Service\Dictionary\DictService;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;

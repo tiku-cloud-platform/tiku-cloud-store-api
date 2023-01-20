@@ -5,7 +5,7 @@ namespace App\Controller\Dictionary;
 
 use App\Controller\StoreBaseController;
 use App\Middleware\Auth\StoreAuthMiddleware;
-use App\Request\Store\Dict\GroupValidate;
+use App\Request\Dict\GroupValidate;
 use App\Service\Dictionary\GroupService;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;

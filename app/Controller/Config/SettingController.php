@@ -5,8 +5,8 @@ namespace App\Controller\Config;
 
 use App\Controller\StoreBaseController;
 use App\Middleware\Auth\StoreAuthMiddleware;
-use App\Request\Store\Common\UUIDValidate;
-use App\Request\Store\Config\SettingValidate;
+use App\Request\Common\UUIDValidate;
+use App\Request\Config\SettingValidate;
 use App\Service\Config\PlatformSettingService;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;

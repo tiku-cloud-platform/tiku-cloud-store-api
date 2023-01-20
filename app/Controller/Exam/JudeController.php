@@ -5,8 +5,8 @@ namespace App\Controller\Exam;
 
 use App\Controller\StoreBaseController;
 use App\Middleware\Auth\StoreAuthMiddleware;
-use App\Request\Store\Common\UUIDValidate;
-use App\Request\Store\Exam\JudgeValidate;
+use App\Request\Common\UUIDValidate;
+use App\Request\Exam\JudgeValidate;
 use App\Service\Exam\JudeOptionService;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;

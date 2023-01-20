@@ -6,8 +6,8 @@ namespace App\Controller\File;
 
 use App\Controller\StoreBaseController;
 use App\Middleware\Auth\StoreAuthMiddleware;
-use App\Request\Store\Common\UUIDValidate;
-use App\Request\Store\File\FileValidate;
+use App\Request\Common\UUIDValidate;
+use App\Request\File\FileValidate;
 use App\Service\File\FileService;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;

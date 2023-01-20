@@ -5,8 +5,8 @@ namespace App\Controller\Subscribe;
 
 use App\Controller\StoreBaseController;
 use App\Middleware\Auth\StoreAuthMiddleware;
-use App\Request\Store\Common\UUIDValidate;
-use App\Request\Store\Subscribe\ConfigValidate;
+use App\Request\Common\UUIDValidate;
+use App\Request\Subscribe\ConfigValidate;
 use App\Service\Subscribe\ConfigService;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;

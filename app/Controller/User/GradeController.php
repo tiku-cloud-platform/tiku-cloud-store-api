@@ -5,9 +5,9 @@ namespace App\Controller\User;
 
 use App\Controller\StoreBaseController;
 use App\Middleware\Auth\StoreAuthMiddleware;
-use App\Request\Store\Common\UUIDValidate;
-use App\Request\Store\User\BindUserValidate;
-use App\Request\Store\User\UserGroupValidate;
+use App\Request\Common\UUIDValidate;
+use App\Request\User\BindUserValidate;
+use App\Request\User\UserGroupValidate;
 use App\Service\User\GradeService;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;

@@ -5,8 +5,8 @@ namespace App\Controller\Channel;
 
 use App\Controller\StoreBaseController;
 use App\Middleware\Auth\StoreAuthMiddleware;
-use App\Request\Store\Channel\GroupValidate;
-use App\Request\Store\Common\UUIDValidate;
+use App\Request\Channel\GroupValidate;
+use App\Request\Common\UUIDValidate;
 use App\Service\Channel\GroupService;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;
