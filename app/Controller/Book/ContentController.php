@@ -5,9 +5,9 @@ namespace App\Controller\Book;
 
 use App\Controller\StoreBaseController;
 use App\Middleware\Auth\StoreAuthMiddleware;
-use App\Request\Store\Book\ContentSearchValidate;
-use App\Request\Store\Book\ContentValidate;
-use App\Request\Store\Common\UUIDValidate;
+use App\Request\Book\ContentSearchValidate;
+use App\Request\Book\ContentValidate;
+use App\Request\Common\UUIDValidate;
 use App\Service\Book\ContentService;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;

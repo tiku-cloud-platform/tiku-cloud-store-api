@@ -6,7 +6,7 @@ namespace App\Controller\Store;
 use App\Controller\StoreBaseController;
 use App\Mapping\UserInfo;
 use App\Middleware\Auth\StoreAuthMiddleware;
-use App\Request\Store\User\StoreUserValidate;
+use App\Request\User\StoreUserValidate;
 use App\Service\Store\UserService;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;

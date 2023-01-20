@@ -5,8 +5,8 @@ namespace App\Controller\Message;
 
 use App\Controller\StoreBaseController;
 use App\Middleware\Auth\StoreAuthMiddleware;
-use App\Request\Store\Common\UUIDValidate;
-use App\Request\Store\Message\ContentValidate;
+use App\Request\Common\UUIDValidate;
+use App\Request\Message\ContentValidate;
 use App\Service\Message\ContentService;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;

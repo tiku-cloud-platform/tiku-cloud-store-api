@@ -6,8 +6,8 @@ namespace App\Controller\Article;
 
 use App\Controller\StoreBaseController;
 use App\Middleware\Auth\StoreAuthMiddleware;
-use App\Request\Store\Article\CategoryValidate;
-use App\Request\Store\Common\UUIDValidate;
+use App\Request\Article\CategoryValidate;
+use App\Request\Common\UUIDValidate;
 use App\Service\Article\CategoryService;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;

@@ -5,6 +5,7 @@ namespace App\Repository\Subscribe;
 
 use App\Model\Store\StoreWechatSubscribeConfig;
 use App\Repository\StoreRepositoryInterface;
+use Closure;
 use Hyperf\Di\Annotation\Inject;
 
 /**
@@ -16,36 +17,26 @@ use Hyperf\Di\Annotation\Inject;
 class ConfigRepository implements StoreRepositoryInterface
 {
     /**
-     * @Inject()
-     * @var StoreWechatSubscribeConfig
-     */
-    protected $configModel;
-
-    public function __construct()
-    {
-    }
-
-    /**
      * 查询数据
      *
-     * @param \Closure $closure
+     * @param Closure $closure
      * @param int $perSize 分页大小
      * @return array
      */
-    public function repositorySelect(\Closure $closure, int $perSize): array
+    public function repositorySelect(Closure $closure, int $perSize): array
     {
-        $items = $this->configModel::query()
+        $items = (new StoreWechatSubscribeConfig)::query()
             ->with(['coverFileInfo:uuid,file_url,file_name'])
             ->where($closure)
-            ->select($this->configModel->searchFields)
+            ->select((new StoreWechatSubscribeConfig)->searchFields)
             ->orderByDesc('id')
-            ->paginate((int)$perSize);
+            ->paginate($perSize);
 
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 
@@ -57,10 +48,9 @@ class ConfigRepository implements StoreRepositoryInterface
      */
     public function repositoryCreate(array $insertInfo): bool
     {
-        if (!empty($this->configModel::query()->create($insertInfo))) {
+        if (!empty((new StoreWechatSubscribeConfig)::query()->create($insertInfo))) {
             return true;
         }
-
         return false;
     }
 
@@ -78,16 +68,16 @@ class ConfigRepository implements StoreRepositoryInterface
     /**
      * 查询数据
      *
-     * @param \Closure $closure
+     * @param Closure $closure
      * @return array
      * @author kert
      */
-    public function repositoryFind(\Closure $closure): array
+    public function repositoryFind(Closure $closure): array
     {
-        $bean = $this->configModel::query()
+        $bean = (new StoreWechatSubscribeConfig)::query()
             ->with(['coverFileInfo:uuid,file_url,file_name'])
             ->where($closure)
-            ->first($this->configModel->searchFields);
+            ->first((new StoreWechatSubscribeConfig)->searchFields);
 
         if (!empty($bean)) return $bean->toArray();
         return [];
@@ -102,7 +92,7 @@ class ConfigRepository implements StoreRepositoryInterface
      */
     public function repositoryUpdate(array $updateWhere, array $updateInfo): int
     {
-        return $this->configModel::query()->where($updateWhere)->update($updateInfo);
+        return (new StoreWechatSubscribeConfig)::query()->where($updateWhere)->update($updateInfo);
     }
 
     /**
@@ -113,7 +103,7 @@ class ConfigRepository implements StoreRepositoryInterface
      */
     public function repositoryDelete(array $deleteWhere): int
     {
-        return $this->configModel::query()->where($deleteWhere)->delete();
+        return (new StoreWechatSubscribeConfig)::query()->where($deleteWhere)->delete();
     }
 
     /**
@@ -125,6 +115,6 @@ class ConfigRepository implements StoreRepositoryInterface
      */
     public function repositoryWhereInDelete(array $deleteWhere, string $field): int
     {
-        return $this->configModel::query()->whereIn($field, $deleteWhere)->delete();
+        return (new StoreWechatSubscribeConfig)::query()->whereIn($field, $deleteWhere)->delete();
     }
 }
