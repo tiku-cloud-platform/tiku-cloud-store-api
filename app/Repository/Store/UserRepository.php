@@ -45,7 +45,8 @@ class UserRepository implements StoreRepositoryInterface
                 'store_uuid',
                 'remember_token',
                 'company_name',
-                'company_tel']);
+                'company_tel'
+            ]);
 
         if (!empty($bean)) return $bean->toArray();
         return [];
