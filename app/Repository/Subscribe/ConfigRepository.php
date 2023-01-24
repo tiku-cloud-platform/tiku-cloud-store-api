@@ -27,8 +27,24 @@ class ConfigRepository implements StoreRepositoryInterface
     {
         $items = (new StoreWechatSubscribeConfig)::query()
             ->with(['coverFileInfo:uuid,file_url,file_name'])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->select((new StoreWechatSubscribeConfig)->searchFields)
+            ->select([
+                'uuid',
+                'title',
+                'template_id',
+                'page',
+                'data',
+                'miniprogram_state',
+                'lang',
+                'is_show',
+                'orders',
+                'file_uuid',
+                'description',
+                "store_uuid",
+                "create_id",
+                "created_at",
+            ])
             ->orderByDesc('id')
             ->paginate($perSize);
 
@@ -76,8 +92,24 @@ class ConfigRepository implements StoreRepositoryInterface
     {
         $bean = (new StoreWechatSubscribeConfig)::query()
             ->with(['coverFileInfo:uuid,file_url,file_name'])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->first((new StoreWechatSubscribeConfig)->searchFields);
+            ->first([
+                'uuid',
+                'title',
+                'template_id',
+                'page',
+                'data',
+                'miniprogram_state',
+                'lang',
+                'is_show',
+                'orders',
+                'file_uuid',
+                'description',
+                "store_uuid",
+                "create_id",
+                "created_at",
+            ]);
 
         if (!empty($bean)) return $bean->toArray();
         return [];

@@ -30,6 +30,7 @@ class StoreActivityPrize extends BaseModel
         'created_at',
         'updated_at',
         'deleted_at',
+        "create_id",
     ];
 
     /**

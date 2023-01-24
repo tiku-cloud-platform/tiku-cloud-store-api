@@ -36,15 +36,26 @@ class StoreArticle extends BaseModel
         "click_score",
         "collection_score",
         "read_expend_score",
+        "create_id",
     ];
+
+    protected $hidden = ["create_id"];
+
+    /**
+     * 创建人信息
+     * @return BelongsTo
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(StoreUser::class, "create_id", "id");
+    }
 
     /**
      * 文章封面
-     *
      * @return BelongsTo
      * @author kert
      */
-    public function coverFileInfo()
+    public function coverFileInfo(): BelongsTo
     {
         return $this->belongsTo(StorePlatformFile::class, 'file_uuid', 'uuid');
     }

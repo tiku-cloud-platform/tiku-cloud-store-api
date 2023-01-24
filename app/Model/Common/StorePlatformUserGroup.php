@@ -25,7 +25,19 @@ class StorePlatformUserGroup extends BaseModel
         "remark",
         "file_uuid",
         "score",
+        "create_id",
     ];
+
+    protected $hidden = ["create_id"];
+
+    /**
+     * 创建人信息
+     * @return BelongsTo
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(StoreUser::class, "create_id", "id");
+    }
 
     public function getRemarkAttribute($key): string
     {

@@ -26,7 +26,20 @@ class StoreExamJudgeOption extends BaseModel
         'tips_expend_score',
         'answer_income_score',
         'is_show',
+        "create_id",
     ];
+
+
+    protected $hidden = ["create_id"];
+
+    /**
+     * 创建人信息
+     * @return BelongsTo
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(StoreUser::class, "create_id", "id");
+    }
 
     public function getAnalysisAttribute($key): string
     {

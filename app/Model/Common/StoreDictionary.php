@@ -21,8 +21,20 @@ class StoreDictionary extends BaseModel
         "is_system",
         "is_show",
         "remark",
-        "value"
+        "value",
+        "create_id",
     ];
+
+    protected $hidden = ["create_id"];
+
+    /**
+     * 创建人信息
+     * @return BelongsTo
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(StoreUser::class, "create_id", "id");
+    }
 
     public function getRemarkAttribute($key): string
     {

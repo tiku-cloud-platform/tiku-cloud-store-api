@@ -19,8 +19,19 @@ class GradeRepository implements StoreRepositoryInterface
     {
         $items = (new StorePlatformUserGroup)::query()
             ->with(["icon:uuid,file_url,file_name"])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->select((new StorePlatformUserGroup)->searchFields)
+            ->select([
+                'title',
+                'uuid',
+                'created_at',
+                'is_show',
+                "is_default",
+                "remark",
+                "file_uuid",
+                "score",
+                "create_id",
+            ])
             ->paginate($perSize);
 
         return [
@@ -49,8 +60,19 @@ class GradeRepository implements StoreRepositoryInterface
     {
         $bean = (new StorePlatformUserGroup)::query()
             ->with(["icon:uuid,file_url,file_name"])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->first((new StorePlatformUserGroup)->searchFields);
+            ->first([
+                'title',
+                'uuid',
+                'created_at',
+                'is_show',
+                "is_default",
+                "remark",
+                "file_uuid",
+                "score",
+                "create_id",
+            ]);
 
         if (!empty($bean)) return $bean->toArray();
         return [];

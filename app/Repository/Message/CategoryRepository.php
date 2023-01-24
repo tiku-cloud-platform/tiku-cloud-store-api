@@ -17,16 +17,6 @@ use Hyperf\Di\Annotation\Inject;
 class CategoryRepository implements StoreRepositoryInterface
 {
     /**
-     * @Inject()
-     * @var StorePlatformMessageCategory
-     */
-    protected $categoryModel;
-
-    public function __construct()
-    {
-    }
-
-    /**
      * 查询数据
      *
      * @param int $perSize 分页大小
@@ -34,18 +24,27 @@ class CategoryRepository implements StoreRepositoryInterface
      */
     public function repositorySelect(\Closure $closure, int $perSize): array
     {
-        $items = $this->categoryModel::query()
+        $items = (new StorePlatformMessageCategory)::query()
             ->with(['coverFileInfo:uuid,file_url,file_name'])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->select($this->categoryModel->searchFields)
+            ->select([
+                'uuid',
+                'title',
+                'file_uuid',
+                'is_show',
+                'orders',
+                "create_id",
+                "created_at",
+            ])
             ->orderByDesc('orders')
-            ->paginate((int)$perSize);
+            ->paginate($perSize);
 
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 
@@ -57,7 +56,7 @@ class CategoryRepository implements StoreRepositoryInterface
      */
     public function repositoryCreate(array $insertInfo): bool
     {
-        if (!empty($this->categoryModel::query()->create($insertInfo))) {
+        if (!empty((new StorePlatformMessageCategory)::query()->create($insertInfo))) {
             return true;
         }
 
@@ -84,10 +83,19 @@ class CategoryRepository implements StoreRepositoryInterface
      */
     public function repositoryFind(\Closure $closure): array
     {
-        $bean = $this->categoryModel::query()
+        $bean = (new StorePlatformMessageCategory)::query()
             ->with(['coverFileInfo:uuid,file_url,file_name'])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->first($this->categoryModel->searchFields);
+            ->first([
+                'uuid',
+                'title',
+                'file_uuid',
+                'is_show',
+                'orders',
+                "create_id",
+                "created_at",
+            ]);
 
         if (!empty($bean)) return $bean->toArray();
         return [];
@@ -102,7 +110,7 @@ class CategoryRepository implements StoreRepositoryInterface
      */
     public function repositoryUpdate(array $updateWhere, array $updateInfo): int
     {
-        return $this->categoryModel::query()->where($updateWhere)->update($updateInfo);
+        return (new StorePlatformMessageCategory)::query()->where($updateWhere)->update($updateInfo);
     }
 
     /**
@@ -113,7 +121,7 @@ class CategoryRepository implements StoreRepositoryInterface
      */
     public function repositoryDelete(array $deleteWhere): int
     {
-        return $this->categoryModel::query()->where($deleteWhere)->delete();
+        return (new StorePlatformMessageCategory)::query()->where($deleteWhere)->delete();
     }
 
     /**
@@ -125,6 +133,6 @@ class CategoryRepository implements StoreRepositoryInterface
      */
     public function repositoryWhereInDelete(array $deleteWhere, string $field): int
     {
-        return $this->categoryModel::query()->whereIn($field, $deleteWhere)->delete();
+        return (new StorePlatformMessageCategory)::query()->whereIn($field, $deleteWhere)->delete();
     }
 }

@@ -11,13 +11,4 @@ namespace App\Model\Store;
  */
 class StorePlatformContent extends \App\Model\Common\StorePlatformContent
 {
-    public $searchFields = [
-        'uuid',
-        'position',
-        'content',
-        'is_show',
-        'content',
-        'title',
-        'orders',
-    ];
 }

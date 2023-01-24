@@ -14,16 +14,20 @@ class ConfigRepository implements StoreRepositoryInterface
 {
     public function repositorySelect(Closure $closure, int $perSize): array
     {
-        $items = (new StoreSignConfig())::query()->where($closure)->paginate($perSize, [
-            'uuid',
-            'num',
-            'score',
-            'is_show',
-            'store_uuid',
-            'remark',
-            "is_continue",
-            "created_at",
-        ]);
+        $items = (new StoreSignConfig())::query()
+            ->with(['creator:id,name'])
+            ->where($closure)
+            ->paginate($perSize, [
+                'uuid',
+                'num',
+                'score',
+                'is_show',
+                'store_uuid',
+                'remark',
+                "is_continue",
+                "created_at",
+                "create_id",
+            ]);
         return [
             'items' => $items->items(),
             'total' => $items->total(),
@@ -48,6 +52,7 @@ class ConfigRepository implements StoreRepositoryInterface
     public function repositoryFind(Closure $closure): array
     {
         $bean = (new StoreSignConfig)::query()
+            ->with(['creator:id,name'])
             ->with(['coverFileInfo:uuid,file_url,file_name'])
             ->where($closure)
             ->first([
@@ -59,6 +64,7 @@ class ConfigRepository implements StoreRepositoryInterface
                 'remark',
                 "is_continue",
                 "created_at",
+                "create_id",
             ]);
         if (!empty($bean)) return $bean->toArray();
         return [];

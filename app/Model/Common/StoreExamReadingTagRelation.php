@@ -20,5 +20,6 @@ class StoreExamReadingTagRelation extends BaseModel
         'store_uuid',
         'tag_uuid',
         'is_show',
+        "create_id",
     ];
 }

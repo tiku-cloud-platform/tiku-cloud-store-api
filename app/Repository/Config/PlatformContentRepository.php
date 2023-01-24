@@ -36,8 +36,19 @@ class PlatformContentRepository implements StoreRepositoryInterface
     public function repositorySelect(Closure $closure, int $perSize): array
     {
         $items = $this->contentModel::query()
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->select($this->contentModel->searchFields)
+            ->select([
+                'uuid',
+                'position',
+                'content',
+                'is_show',
+                'content',
+                'title',
+                'orders',
+                "create_id",
+                "created_at",
+            ])
             ->orderByDesc('id')
             ->paginate($perSize);
 
@@ -85,8 +96,19 @@ class PlatformContentRepository implements StoreRepositoryInterface
     public function repositoryFind(Closure $closure): array
     {
         $bean = $this->contentModel::query()
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->first($this->contentModel->searchFields);
+            ->first([
+                'uuid',
+                'position',
+                'content',
+                'is_show',
+                'content',
+                'title',
+                'orders',
+                "create_id",
+                "created_at",
+            ]);
 
         if (!empty($bean)) return $bean->toArray();
         return [];

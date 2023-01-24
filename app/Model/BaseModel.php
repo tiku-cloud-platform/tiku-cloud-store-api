@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Model;
 
@@ -19,6 +19,16 @@ use Hyperf\DbConnection\Model\Model;
 class BaseModel extends Model
 {
     use SoftDeletes;
+
+    protected $attributes = [
+        "create_id" => 0,// 添加数据创建人
+    ];
+
+    public function __construct(array $attributes = [])
+    {
+        $this->attributes["create_id"] = (UserInfo::getStoreUserInfo())["id"];
+        parent::__construct($attributes);
+    }
 
     protected function boot(): void
     {
@@ -160,7 +170,7 @@ class BaseModel extends Model
     public function fieldIncr(string $tableName, array $updateWhere, string $incrField, int $incrVal): int
     {
         return Db::table($tableName)->where($updateWhere)->update([
-            $incrField   => Db::raw("$incrField + $incrVal"),
+            $incrField => Db::raw("$incrField + $incrVal"),
             'updated_at' => date('Y-m-d H:i:s')
         ]);
     }
@@ -178,7 +188,7 @@ class BaseModel extends Model
     public function fieldDecr(string $tableName, array $updateWhere, string $decrField, int $decrVal): int
     {
         return Db::table($tableName)->where($updateWhere)->update([
-            $decrField   => Db::raw("$decrField - $decrVal"),
+            $decrField => Db::raw("$decrField - $decrVal"),
             'updated_at' => date('Y-m-d H:i:s')
         ]);
     }

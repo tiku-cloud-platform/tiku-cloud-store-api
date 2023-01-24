@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace App\Service\File;
 
 
+use App\Mapping\UserInfo;
 use App\Repository\File\FileRepository;
 use App\Service\Config\PlatformSettingService;
 use App\Service\StoreServiceInterface;
@@ -90,6 +91,7 @@ class FileService implements StoreServiceInterface
             $fileInfoArray[$key]['extension']       = $value['extension'];
             $fileInfoArray[$key]['file_hash']       = $value['hash_name'];
             $fileInfoArray[$key]['file_group_uuid'] = $requestParams['file_group_uuid'];
+            $fileInfoArray[$key]["create_id"]       = UserInfo::getStoreUserInfo()["id"];
         }
 
         return (new FileRepository)->repositoryCreate($fileInfoArray);

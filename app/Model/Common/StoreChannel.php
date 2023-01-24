@@ -20,8 +20,20 @@ class StoreChannel extends BaseModel
         'store_uuid',
         "channel_group_uuid",
         "file_uuid",
-        "remark"
+        "remark",
+        "create_id",
     ];
+
+    protected $hidden = ["create_id"];
+
+    /**
+     * 创建人信息
+     * @return BelongsTo
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(StoreUser::class, "create_id", "id");
+    }
 
     public function group(): BelongsTo
     {

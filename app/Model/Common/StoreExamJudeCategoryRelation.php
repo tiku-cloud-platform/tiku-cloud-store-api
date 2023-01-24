@@ -20,5 +20,6 @@ class StoreExamJudeCategoryRelation extends BaseModel
         'exam_uuid',
         'category_uuid',
         'is_show',
+        "create_id",
     ];
 }

@@ -22,11 +22,23 @@ class StoreBookCategory extends BaseModel
         "parent_uuid",
         "is_show",
         "orders",
+        "create_id",
     ];
 
     protected $appends = [
         "children"
     ];
+
+    protected $hidden = ["create_id"];
+
+    /**
+     * 创建人信息
+     * @return BelongsTo
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(StoreUser::class, "create_id", "id");
+    }
 
     public function book(): BelongsTo
     {

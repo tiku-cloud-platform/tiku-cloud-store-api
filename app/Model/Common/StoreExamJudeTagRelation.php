@@ -20,5 +20,6 @@ class StoreExamJudeTagRelation extends BaseModel
         'exam_uuid',
         'tag_uuid',
         'is_show',
+        "create_id",
     ];
 }

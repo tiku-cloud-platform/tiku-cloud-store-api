@@ -133,7 +133,6 @@ class UserService implements StoreServiceInterface
             }
             // 登录密码不正确
             if ($userInfo['password'] != md5(base64_decode($requestParams['password']) . env('PASSWORD_SALT'))) {
-                var_dump($userInfo['password'], md5(base64_decode($requestParams['password']) . env('PASSWORD_SALT')));
                 $data['code'] = 3;
                 $data['data'] = [
                     $userInfo['password'],

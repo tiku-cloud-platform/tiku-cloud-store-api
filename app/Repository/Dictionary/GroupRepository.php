@@ -18,7 +18,8 @@ class GroupRepository implements StoreRepositoryInterface
 {
     public function repositoryAllSelect(Closure $closure, int $perSize): array
     {
-        $items = (new StoreDictionaryGroup())::query()->where($closure)
+        $items = (new StoreDictionaryGroup())::query()
+            ->where($closure)
             ->paginate($perSize, ["uuid", "title"]);
 
         return [
@@ -31,8 +32,11 @@ class GroupRepository implements StoreRepositoryInterface
 
     public function repositorySelect(Closure $closure, int $perSize): array
     {
-        $items = (new StoreDictionaryGroup())::query()->where($closure)
-            ->paginate($perSize, ["uuid", "store_uuid", "title", "code", "is_system", "is_show", "created_at", "updated_at", "remark"]);
+        $items = (new StoreDictionaryGroup())::query()
+            ->with(['creator:id,name'])
+            ->where($closure)
+            ->paginate($perSize, ["uuid", "store_uuid", "title", "code", "is_system", "is_show", "created_at",
+                "updated_at", "remark", "create_id"]);
 
         return [
             "items" => $items->items(),
@@ -71,17 +75,20 @@ class GroupRepository implements StoreRepositoryInterface
 
     public function repositoryFind(Closure $closure): array
     {
-        $bean = (new StoreDictionaryGroup())::query()->where($closure)->first([
-            "uuid",
-            "store_uuid",
-            "title",
-            "code",
-            "is_system",
-            "is_show",
-            "created_at",
-            "updated_at",
-            "remark",
-        ]);
+        $bean = (new StoreDictionaryGroup())::query()
+            ->with(['creator:id,name'])
+            ->where($closure)->first([
+                "uuid",
+                "store_uuid",
+                "title",
+                "code",
+                "is_system",
+                "is_show",
+                "created_at",
+                "updated_at",
+                "remark",
+                "create_id",
+            ]);
         if (!empty($bean)) return $bean->toArray();
         return [];
     }

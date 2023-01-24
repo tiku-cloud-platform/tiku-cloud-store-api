@@ -11,18 +11,6 @@ namespace App\Model\Store;
  */
 class StoreExamOption extends \App\Model\Common\StoreExamOption
 {
-    public $searchFields = [
-        'uuid',
-        'title',
-        'file_uuid',
-        'answer',
-        'analysis',
-        'tips_expend_score',
-        'answer_income_score',
-        'is_show',
-        'level',
-    ];
-
     protected $appends = [
         'category',
         'tag',

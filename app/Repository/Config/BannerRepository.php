@@ -27,9 +27,21 @@ class BannerRepository implements StoreRepositoryInterface
             ->with(['coverFileInfo:uuid,file_url,file_name'])
             ->with(['client:title,uuid'])
             ->with(['position:title,uuid'])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->select((new StoreBanner)->searchFields)
-            ->orderByDesc('orders')
+            ->select([
+                'uuid',
+                'title',
+                'file_uuid',
+                'orders',
+                'url',
+                'position_position',
+                'is_show',
+                'type',
+                'client_position',
+                "create_id",
+                "created_at",
+            ])
             ->paginate($perSize);
 
         return [
@@ -76,8 +88,21 @@ class BannerRepository implements StoreRepositoryInterface
             ->with(['coverFileInfo:uuid,file_url,file_name'])
             ->with(['client:title,uuid'])
             ->with(['position:title,uuid'])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->first((new StoreBanner)->searchFields);
+            ->first([
+                'uuid',
+                'title',
+                'file_uuid',
+                'orders',
+                'url',
+                'position_position',
+                'is_show',
+                'type',
+                'client_position',
+                "create_id",
+                "created_at",
+            ]);
 
         if (!empty($bean)) return $bean->toArray();
         return [];

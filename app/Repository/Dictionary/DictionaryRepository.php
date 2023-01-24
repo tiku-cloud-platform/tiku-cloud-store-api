@@ -31,9 +31,10 @@ class DictionaryRepository implements StoreRepositoryInterface
     {
         $items = (new StoreDictionary())::query()
             ->with(["group:uuid,title"])
+            ->with(['creator:id,name'])
             ->where($closure)
             ->paginate($perSize, ["uuid", "title", "store_uuid", "is_system",
-                "group_uuid", "is_show", "created_at", "updated_at", "remark", "value"]);
+                "group_uuid", "is_show", "created_at", "updated_at", "remark", "value", "create_id"]);
 
         return [
             "items" => $items->items(),
@@ -61,9 +62,10 @@ class DictionaryRepository implements StoreRepositoryInterface
     {
         $bean = (new StoreDictionary())::query()
             ->with(["group:uuid,title"])
+            ->with(['creator:id,name'])
             ->where($closure)
             ->first(["uuid", "title", "store_uuid", "is_system",
-                "group_uuid", "is_show", "created_at", "updated_at", "remark", "value"]);
+                "group_uuid", "is_show", "created_at", "updated_at", "remark", "value", "create_id"]);
         if (!empty($bean)) {
             return $bean->toArray();
         }

@@ -17,16 +17,6 @@ use Hyperf\Di\Annotation\Inject;
 class ContentRepository implements StoreRepositoryInterface
 {
     /**
-     * @Inject()
-     * @var StorePlatformMessageContent
-     */
-    protected $contentModel;
-
-    public function __construct()
-    {
-    }
-
-    /**
      * 查询数据
      *
      * @param int $perSize 分页大小
@@ -34,18 +24,27 @@ class ContentRepository implements StoreRepositoryInterface
      */
     public function repositorySelect(\Closure $closure, int $perSize): array
     {
-        $items = $this->contentModel::query()
+        $items = (new StorePlatformMessageContent)::query()
             ->with(['category:uuid,title'])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->select($this->contentModel->searchFields)
+            ->select([
+                'uuid',
+                'platform_message_category_uuid',
+                'title',
+                'content',
+                'is_show',
+                "create_id",
+                "created_at",
+            ])
             ->orderByDesc('id')
-            ->paginate((int)$perSize);
+            ->paginate($perSize);
 
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 
@@ -57,7 +56,7 @@ class ContentRepository implements StoreRepositoryInterface
      */
     public function repositoryCreate(array $insertInfo): bool
     {
-        if (!empty($this->contentModel::query()->create($insertInfo))) {
+        if (!empty((new StorePlatformMessageContent)::query()->create($insertInfo))) {
             return true;
         }
 
@@ -84,10 +83,19 @@ class ContentRepository implements StoreRepositoryInterface
      */
     public function repositoryFind(\Closure $closure): array
     {
-        $bean = $this->contentModel::query()
+        $bean = (new StorePlatformMessageContent)::query()
             ->with(['category:uuid,title'])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->first($this->contentModel->searchFields);
+            ->first([
+                'uuid',
+                'platform_message_category_uuid',
+                'title',
+                'content',
+                'is_show',
+                "create_id",
+                "created_at",
+            ]);
 
         if (!empty($bean)) return $bean->toArray();
         return [];
@@ -102,7 +110,7 @@ class ContentRepository implements StoreRepositoryInterface
      */
     public function repositoryUpdate(array $updateWhere, array $updateInfo): int
     {
-        return $this->contentModel::query()->where($updateWhere)->update($updateInfo);
+        return (new StorePlatformMessageContent)::query()->where($updateWhere)->update($updateInfo);
     }
 
     /**
@@ -113,7 +121,7 @@ class ContentRepository implements StoreRepositoryInterface
      */
     public function repositoryDelete(array $deleteWhere): int
     {
-        return $this->contentModel::query()->where($deleteWhere)->delete();
+        return (new StorePlatformMessageContent)::query()->where($deleteWhere)->delete();
     }
 
     /**
@@ -125,6 +133,6 @@ class ContentRepository implements StoreRepositoryInterface
      */
     public function repositoryWhereInDelete(array $deleteWhere, string $field): int
     {
-        return $this->contentModel::query()->whereIn($field, $deleteWhere)->delete();
+        return (new StorePlatformMessageContent)::query()->whereIn($field, $deleteWhere)->delete();
     }
 }
