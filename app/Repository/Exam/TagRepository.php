@@ -6,6 +6,7 @@ namespace App\Repository\Exam;
 
 use App\Model\Store\StoreExamTag;
 use App\Repository\StoreRepositoryInterface;
+use Closure;
 use Hyperf\Di\Annotation\Inject;
 
 /**
@@ -22,10 +23,10 @@ class TagRepository implements StoreRepositoryInterface
      * @param int $perSize 分页大小
      * @return array
      */
-    public function repositorySelect(\Closure $closure, int $perSize): array
+    public function repositorySelect(Closure $closure, int $perSize): array
     {
         $items = (new StoreExamTag)::query()
-            ->with(['children:title,uuid,parent_uuid,remark,is_show,orders'])
+            ->with(['children:title,uuid,parent_uuid,remark,is_show,orders,create_id,created_at'])
             ->with(['creator:id,name'])
             ->where($closure)
             ->whereNull('parent_uuid')
@@ -37,6 +38,7 @@ class TagRepository implements StoreRepositoryInterface
                 'is_show',
                 'orders',
                 "create_id",
+                "created_at",
             ])
             ->orderByDesc('id')
             ->paginate($perSize);
@@ -52,18 +54,27 @@ class TagRepository implements StoreRepositoryInterface
     /**
      * 查询顶级分类
      *
-     * @param \Closure $closure
+     * @param Closure $closure
      * @param int $perSize
      * @return array
      */
-    public function repositoryParentSelect(\Closure $closure, int $perSize): array
+    public function repositoryParentSelect(Closure $closure, int $perSize): array
     {
         $items = (new StoreExamTag)::query()
             ->where($closure)
             ->whereNull('parent_uuid')
-            ->select((new StoreExamTag)->searchFields)
+            ->select([
+                'uuid',
+                'title',
+                'parent_uuid',
+                'remark',
+                'is_show',
+                'orders',
+                "create_id",
+                "created_at",
+            ])
             ->orderByDesc('id')
-            ->paginate((int)$perSize);
+            ->paginate($perSize);
 
         return [
             'items' => $items->items(),
@@ -99,11 +110,11 @@ class TagRepository implements StoreRepositoryInterface
     /**
      * 查询数据
      *
-     * @param \Closure $closure
+     * @param Closure $closure
      * @return array
      * @author kert
      */
-    public function repositoryFind(\Closure $closure): array
+    public function repositoryFind(Closure $closure): array
     {
         $bean = (new StoreExamTag)::query()
             ->with(['creator:id,name'])
@@ -116,6 +127,7 @@ class TagRepository implements StoreRepositoryInterface
                 'is_show',
                 'orders',
                 "create_id",
+                "created_at",
             ]);
 
         if (!empty($bean)) return $bean->toArray();

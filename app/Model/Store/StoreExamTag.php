@@ -15,6 +15,7 @@ class StoreExamTag extends \App\Model\Common\StoreExamTag
 {
     public function children(): HasMany
     {
-        return $this->hasMany(StoreExamTag::class, 'parent_uuid', 'uuid');
+        return $this->hasMany(StoreExamTag::class, 'parent_uuid', 'uuid')
+            ->with(['creator:id,name']);
     }
 }

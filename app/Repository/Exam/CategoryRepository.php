@@ -29,7 +29,7 @@ class CategoryRepository implements StoreRepositoryInterface
             ->with(['smallFileInfo:uuid,file_name,file_url'])
             ->with(['bigFileInfo:uuid,file_name,file_url'])
             ->with(['creator:id,name'])
-            ->with(['children:uuid,title,parent_uuid,remark,is_show,file_uuid,big_file_uuid,orders,is_recommend'])
+            ->with(['children:uuid,title,parent_uuid,remark,is_show,file_uuid,big_file_uuid,orders,is_recommend,created_at,create_id'])
             ->where($closure)
             ->whereNull('parent_uuid')
             ->select([
@@ -43,6 +43,7 @@ class CategoryRepository implements StoreRepositoryInterface
                 'orders',
                 'is_recommend',
                 "create_id",
+                "created_at",
             ])
             ->orderByDesc('id')
             ->paginate($perSize);
@@ -64,10 +65,10 @@ class CategoryRepository implements StoreRepositoryInterface
     public function repositoryAllSelect(array $searchWhere, int $perSize): array
     {
         $items = (new StoreExamCategory)::query()
-            ->with(['allChildren:uuid,title,parent_uuid,file_uuid,big_file_uuid'])
+            ->with(['allChildren:uuid,title,parent_uuid,file_uuid,big_file_uuid,created_at,create_id'])
             ->where($searchWhere)
             ->whereNull('parent_uuid')
-            ->select(['uuid', 'title', 'parent_uuid', 'file_uuid', 'big_file_uuid'])
+            ->select(['uuid', 'title', 'parent_uuid', 'file_uuid', 'big_file_uuid', "created_at", "create_id"])
             ->orderByDesc('orders')
             ->paginate($perSize);
 
@@ -93,7 +94,19 @@ class CategoryRepository implements StoreRepositoryInterface
             ->with(['bigFileInfo:uuid,file_name,file_url'])
             ->where($closure)
             ->whereNull('parent_uuid')
-            ->select((new StoreExamCategory)->searchFields)
+            ->select([
+                'uuid',
+                'title',
+                'parent_uuid',
+                'remark',
+                'is_show',
+                'file_uuid',
+                'big_file_uuid',
+                'orders',
+                'is_recommend',
+                "create_id",
+                "created_at",
+            ])
             ->orderByDesc('id')
             ->paginate($perSize);
 
@@ -153,6 +166,7 @@ class CategoryRepository implements StoreRepositoryInterface
                 'orders',
                 'is_recommend',
                 "create_id",
+                "created_at",
             ]);
 
         if (!empty($bean)) return $bean->toArray();
