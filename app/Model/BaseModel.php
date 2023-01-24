@@ -9,6 +9,9 @@ use App\Scopes\ClientScope;
 use Hyperf\Database\Model\SoftDeletes;
 use Hyperf\DbConnection\Db;
 use Hyperf\DbConnection\Model\Model;
+use Hyperf\Di\Annotation\Inject;
+use Hyperf\HttpServer\Contract\RequestInterface;
+use function Swoole\Coroutine\Http\request;
 
 /**
  * 基础模型
@@ -24,9 +27,19 @@ class BaseModel extends Model
         "create_id" => 0,// 添加数据创建人
     ];
 
+    /**
+     * @Inject()
+     * @var RequestInterface
+     */
+    protected $request;
+
     public function __construct(array $attributes = [])
     {
-        $this->attributes["create_id"] = (UserInfo::getStoreUserInfo())["id"];
+        if ($this->request->isMethod("post")) {
+            $userInfo                      = UserInfo::getStoreUserInfo();
+            $this->attributes["create_id"] = !empty($userInfo) ? $userInfo["id"] : 0;
+        }
+
         parent::__construct($attributes);
     }
 
