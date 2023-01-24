@@ -1,14 +1,6 @@
 <?php
+declare(strict_types = 1);
 
-declare(strict_types=1);
-/**
- * This file is part of api.
- *
- * @link     https://www.qqdeveloper.io
- * @document https://www.qqdeveloper.wiki
- * @contact  2665274677@qq.com
- * @license  Apache2.0
- */
 return [
     'default' => [
         'driver' => env('DB_DRIVER', 'mysql'),
@@ -26,7 +18,7 @@ return [
             'connect_timeout' => 20.0,
             'wait_timeout' => 3.0,
             'heartbeat' => -1,
-            'max_idle_time' => (float) env('DB_MAX_IDLE_TIME', 60),
+            'max_idle_time' => (float)env('DB_MAX_IDLE_TIME', 60),
         ],
         'cache' => [
             'handler' => Hyperf\ModelCache\Handler\RedisHandler::class,
