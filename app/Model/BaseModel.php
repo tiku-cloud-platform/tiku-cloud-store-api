@@ -27,8 +27,7 @@ class BaseModel extends Model
 
     public function __construct(array $attributes = [])
     {
-        $userInfo = Context::get("login_info");
-        var_dump("登录信息", $userInfo);
+        $userInfo                      = Context::get("login_info");
         $this->attributes["create_id"] = !empty($userInfo) ? $userInfo["id"] : 0;
 
         parent::__construct($attributes);
