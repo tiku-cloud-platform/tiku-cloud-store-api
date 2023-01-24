@@ -12,11 +12,14 @@ declare(strict_types = 1);
 
 namespace App\Middleware\Auth;
 
+use App\Constants\CacheKey;
 use App\Constants\ErrorCode;
 use App\Constants\HttpCode;
 use App\Mapping\HttpDataResponse;
+use App\Mapping\RedisClient;
 use App\Mapping\UserInfo;
 use Hyperf\Di\Annotation\Inject;
+use Hyperf\Utils\Context;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -48,12 +51,14 @@ class StoreAuthMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $userInfo = UserInfo::getStoreUserInfo();
-
-        if (!empty($userInfo)) {
-            return $handler->handle($request);
+        $authentication = $request->getHeader('Authentication', '');
+        if (!empty($authentication)) {
+            $userInfo = RedisClient::getInstance()->get(CacheKey::STORE_LOGIN_PREFIX . $authentication[0]);
+            if (!empty($userInfo)) {
+                Context::set("login_info", json_decode($userInfo, true));
+                return $handler->handle($request);
+            }
         }
-
-        return $this->httpResponse->response((string)ErrorCode::getMessage(ErrorCode::REQUEST_INVALID), (int)ErrorCode::REQUEST_INVALID, (array)[], (int)HttpCode::NO_AUTH);
+        return $this->httpResponse->response((string)ErrorCode::getMessage(ErrorCode::REQUEST_INVALID), ErrorCode::REQUEST_INVALID, [], HttpCode::NO_AUTH);
     }
 }

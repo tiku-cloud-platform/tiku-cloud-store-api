@@ -15,6 +15,7 @@ namespace App\Mapping;
 use App\Constants\CacheKey;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use Hyperf\Utils\Context;
 
 /**
  * 用户信息管理
@@ -29,11 +30,6 @@ class UserInfo
      */
     protected $request;
 
-    public function getStoreLoginToken(): string
-    {
-        return $this->request->header('Authentication', '');
-    }
-
     public function getWeChatLoginToken(): string
     {
         return $this->request->header('Authentication', '');
@@ -41,26 +37,23 @@ class UserInfo
 
     /**
      * 获取商户端登录信息
-     *
      * @return array
      */
     public static function getStoreUserInfo(): array
     {
-        $token = (new self())->getStoreLoginToken();
-        if (!empty($token)) return (new RedisClient)->get(CacheKey::STORE_LOGIN_PREFIX, $token);
+        $userInfo = Context::get("login_info");
+        if (!empty($userInfo)) return $userInfo;
         return [];
     }
 
     /**
      * 获取微信客户端登录信息
-     *
      * @return array
      */
     public static function getWeChatUserInfo(): array
     {
         $userAgent = (new self())->request->header('User-Agent', 'asdadsf');
-
-        $token = (new self())->getWeChatLoginToken();
+        $token     = (new self())->getWeChatLoginToken();
         if (!empty($token)) {
             $userInfo = (new RedisClient)->get(CacheKey::USER_LOGIN_PREFIX, $token);
             if (!empty($userInfo)) return $userInfo;
