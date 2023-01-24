@@ -182,7 +182,12 @@ class FileGroupRepository implements StoreRepositoryInterface
      */
     public function repositoryAllIn(array $searchWhere, string $field): array
     {
-        $items = $this->fileGroupMode::query()->whereIn($field, $searchWhere)->get($this->fileGroupMode->searchFields);
+        $items = $this->fileGroupMode::query()->whereIn($field, $searchWhere)->get([
+            'title',
+            'uuid',
+            'parent_uuid',
+            "create_id",
+        ]);
 
         if (!empty($items)) return $items->toArray();
         return [];
