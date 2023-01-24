@@ -54,6 +54,7 @@ class StoreAuthMiddleware implements MiddlewareInterface
         $authentication = $request->getHeader('Authentication', '');
         if (!empty($authentication)) {
             $userInfo = RedisClient::getInstance()->get(CacheKey::STORE_LOGIN_PREFIX . $authentication[0]);
+            var_dump($userInfo, $authentication);
             if (!empty($userInfo)) {
                 Context::set("login_info", json_decode($userInfo, true));
                 return $handler->handle($request);
