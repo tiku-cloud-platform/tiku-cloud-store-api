@@ -44,6 +44,7 @@ class ReadingRepository implements StoreRepositoryInterface
                 "is_search",
                 "orders",
                 "create_id",
+                "created_at",
             ])
             ->orderByDesc('id')
             ->paginate($perSize);
@@ -158,6 +159,7 @@ class ReadingRepository implements StoreRepositoryInterface
                 "is_search",
                 "orders",
                 "create_id",
+                "created_at",
             ]);
 
         if (!empty($bean)) return $bean->toArray();

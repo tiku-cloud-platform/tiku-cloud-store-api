@@ -41,6 +41,7 @@ class OptionRepository implements StoreRepositoryInterface
                 'is_show',
                 'level',
                 "create_id",
+                "created_at",
             ])
             ->orderByDesc('id')
             ->paginate($perSize);
@@ -157,6 +158,7 @@ class OptionRepository implements StoreRepositoryInterface
                 'is_show',
                 'level',
                 "create_id",
+                "created_at",
             ]);
 
         if (!empty($bean)) return $bean->toArray();
