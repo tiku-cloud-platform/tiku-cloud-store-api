@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Model\Common;
 
@@ -29,7 +29,19 @@ class StoreExamOption extends BaseModel
         'is_show',
         'store_uuid',
         'level',
+        "create_id",
     ];
+
+    protected $hidden = ["create_id"];
+
+    /**
+     * 创建人信息
+     * @return BelongsTo
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(StoreUser::class, "create_id", "id");
+    }
 
     public function getAnalysisAttribute($key): string
     {

@@ -26,8 +26,21 @@ class MenuRepository implements StoreRepositoryInterface
             ->with(['coverFileInfo:uuid,file_url,file_name'])
             ->with(['client:title,uuid'])
             ->with(['position:title,uuid'])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->select((new StoreMenu)->searchFields)
+            ->select([
+                'uuid',
+                'title',
+                'file_uuid',
+                'type',
+                'url',
+                'position_position',
+                'orders',
+                'is_show',
+                "client_position",
+                "create_id",
+                "created_at",
+            ])
             ->orderByDesc('orders')
             ->paginate($perSize);
 
@@ -75,8 +88,21 @@ class MenuRepository implements StoreRepositoryInterface
             ->with(['coverFileInfo:uuid,file_url,file_name'])
             ->with(['client:title,uuid'])
             ->with(['position:title,uuid'])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->first((new StoreMenu)->searchFields);
+            ->first([
+                'uuid',
+                'title',
+                'file_uuid',
+                'type',
+                'url',
+                'position_position',
+                'orders',
+                'is_show',
+                "client_position",
+                "create_id",
+                "created_at",
+            ]);
 
         if (!empty($bean)) return $bean->toArray();
         return [];

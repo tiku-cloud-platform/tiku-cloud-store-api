@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 /**
  * This file is part of api.
  *
@@ -9,9 +9,11 @@ declare(strict_types=1);
  * @contact  2665274677@qq.com
  * @license  Apache2.0
  */
+
 namespace App\Model\Common;
 
 use App\Model\BaseModel;
+use Hyperf\Database\Model\Relations\BelongsTo;
 
 /**
  * 平台文件组配置.
@@ -28,5 +30,17 @@ class StorePlatformFileGroup extends BaseModel
         'uuid',
         'is_show',
         'parent_uuid',
+        "create_id",
     ];
+
+    protected $hidden = ["create_id"];
+
+    /**
+     * 创建人信息
+     * @return BelongsTo
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(StoreUser::class, "create_id", "id");
+    }
 }

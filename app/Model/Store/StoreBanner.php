@@ -16,18 +16,6 @@ use function PHPStan\dumpType;
  */
 class StoreBanner extends \App\Model\Common\StoreBanner
 {
-    public $searchFields = [
-        'uuid',
-        'title',
-        'file_uuid',
-        'orders',
-        'url',
-        'position_position',
-        'is_show',
-        'type',
-        'client_position',
-    ];
-
     protected $casts = [
         'position_position' => 'string',
         'client_position' => 'string'

@@ -30,6 +30,7 @@ class PageRepository implements StoreRepositoryInterface
     public function repositorySelect(Closure $closure, int $perSize): array
     {
         $items = (new StorePage())::query()->where($closure)
+            ->with(['creator:id,name'])
             ->paginate($perSize, [
                 "uuid",
                 "store_uuid",
@@ -38,7 +39,8 @@ class PageRepository implements StoreRepositoryInterface
                 "remark",
                 "is_show",
                 "created_at",
-                "updated_at"
+                "updated_at",
+                "create_id",
             ]);
 
         return [
@@ -69,16 +71,20 @@ class PageRepository implements StoreRepositoryInterface
 
     public function repositoryFind(Closure $closure): array
     {
-        $bean = (new StorePage())::query()->where($closure)->first([
-            "uuid",
-            "store_uuid",
-            "title",
-            "path",
-            "remark",
-            "is_show",
-            "created_at",
-            "updated_at"
-        ]);
+        $bean = (new StorePage())::query()
+            ->with(['creator:id,name'])
+            ->where($closure)
+            ->first([
+                "uuid",
+                "store_uuid",
+                "title",
+                "path",
+                "remark",
+                "is_show",
+                "created_at",
+                "updated_at",
+                "create_id",
+            ]);
         if (!empty($bean)) return $bean->toArray();
         return [];
     }

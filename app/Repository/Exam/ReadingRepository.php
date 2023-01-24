@@ -17,12 +17,6 @@ use Hyperf\Di\Annotation\Inject;
 class ReadingRepository implements StoreRepositoryInterface
 {
     /**
-     * @Inject()
-     * @var StoreExamReading
-     */
-    protected $examModel;
-
-    /**
      * 查询数据
      *
      * @param \Closure $closure
@@ -31,9 +25,26 @@ class ReadingRepository implements StoreRepositoryInterface
      */
     public function repositorySelect(\Closure $closure, int $perSize): array
     {
-        $items = $this->examModel::query()
+        $items = (new StoreExamReading)::query()
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->select($this->examModel->searchFields)
+            ->select([
+                'uuid',
+                'store_uuid',
+                'title',
+                'content',
+                'tips_expend_score',
+                'answer_income_score',
+                'analysis',
+                'level',
+                'is_show',
+                'source_url',
+                'source_author',
+                'video_url',
+                "is_search",
+                "orders",
+                "create_id",
+            ])
             ->orderByDesc('id')
             ->paginate($perSize);
 
@@ -57,7 +68,7 @@ class ReadingRepository implements StoreRepositoryInterface
         // 处理试题与试卷、试题分类、试题知识点
         $result = false;
         Db::transaction(function () use ($insertInfo, &$result) {
-            $newModel = $this->examModel::query()->create(($insertInfo));
+            $newModel = (new StoreExamReading)::query()->create(($insertInfo));
             if (!empty($newModel)) {
                 /** @var string $uuid 试题uuid */
                 $uuid = $newModel->getAttribute('uuid');
@@ -128,9 +139,26 @@ class ReadingRepository implements StoreRepositoryInterface
      */
     public function repositoryFind(\Closure $closure): array
     {
-        $bean = $this->examModel::query()
+        $bean = (new StoreExamReading)::query()
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->first($this->examModel->searchFields);
+            ->first([
+                'uuid',
+                'store_uuid',
+                'title',
+                'content',
+                'tips_expend_score',
+                'answer_income_score',
+                'analysis',
+                'level',
+                'is_show',
+                'source_url',
+                'source_author',
+                'video_url',
+                "is_search",
+                "orders",
+                "create_id",
+            ]);
 
         if (!empty($bean)) return $bean->toArray();
         return [];
@@ -169,7 +197,7 @@ class ReadingRepository implements StoreRepositoryInterface
             unset($updateInfo['tag']);
             unset($updateInfo['category']);
 
-            $result = $this->examModel::query()->where($updateWhere)->update(($updateInfo));
+            $result = (new StoreExamReading)::query()->where($updateWhere)->update(($updateInfo));
         });
 
         return $result;
@@ -183,7 +211,7 @@ class ReadingRepository implements StoreRepositoryInterface
      */
     public function repositoryEdit(array $updateWhere, array $updateInfo): int
     {
-        return $this->examModel::query()->where($updateWhere)->update($updateInfo);
+        return (new StoreExamReading)::query()->where($updateWhere)->update($updateInfo);
     }
 
     /**
@@ -194,7 +222,7 @@ class ReadingRepository implements StoreRepositoryInterface
      */
     public function repositoryDelete(array $deleteWhere): int
     {
-        return $this->examModel::query()->where($deleteWhere)->delete();
+        return (new StoreExamReading)::query()->where($deleteWhere)->delete();
     }
 
     /**
@@ -210,7 +238,7 @@ class ReadingRepository implements StoreRepositoryInterface
         // 删除试卷管理、分类关联、知识点关联
         $result = 0;
         Db::transaction(function () use ($deleteWhere, $field, &$result) {
-            $result = $this->examModel::query()->whereIn($field, $deleteWhere)->delete();
+            $result = (new StoreExamReading)::query()->whereIn($field, $deleteWhere)->delete();
 
             $collectionRelationRepository = new ReadingCollectionRelationRepository();
             $collectionRelationRepository->repositoryWhereInDelete((array)$deleteWhere, (string)'exam_uuid');
@@ -233,7 +261,7 @@ class ReadingRepository implements StoreRepositoryInterface
      */
     public function repositoryCount(\Closure $closure): int
     {
-        return $this->examModel::query()->where($closure)->count();
+        return (new StoreExamReading)::query()->where($closure)->count();
     }
 
     /**
@@ -246,7 +274,7 @@ class ReadingRepository implements StoreRepositoryInterface
      */
     public function repositoryQuery(array $searchWhere, int $page = 1, int $perSize = 20, array $fields = ["uuid", "title"]): array
     {
-        $items = $this->examModel::query()
+        $items = (new StoreExamReading)::query()
             ->where($searchWhere)
             ->select($fields)
             ->orderByDesc('id')

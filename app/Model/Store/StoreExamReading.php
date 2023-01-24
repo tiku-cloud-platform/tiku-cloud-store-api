@@ -11,23 +11,6 @@ namespace App\Model\Store;
  */
 class StoreExamReading extends \App\Model\Common\StoreExamReading
 {
-    public $searchFields = [
-        'uuid',
-        'store_uuid',
-        'title',
-        'content',
-        'tips_expend_score',
-        'answer_income_score',
-        'analysis',
-        'level',
-        'is_show',
-        'source_url',
-        'source_author',
-        'video_url',
-        "is_search",
-        "orders",
-    ];
-
     protected $appends = [
         'category',
         'tag',

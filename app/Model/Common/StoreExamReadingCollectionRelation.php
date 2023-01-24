@@ -21,5 +21,6 @@ class StoreExamReadingCollectionRelation extends BaseModel
         'store_uuid',
         'collection_uuid',
         'is_show',
+        "create_id",
     ];
 }

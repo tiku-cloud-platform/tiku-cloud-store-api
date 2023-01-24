@@ -11,12 +11,4 @@ namespace App\Model\Store;
  */
 class StoreArticleCategory extends \App\Model\Common\StoreArticleCategory
 {
-    public $searchFields = [
-        'uuid',
-        'parent_uuid',
-        'title',
-        'file_uuid',
-        'orders',
-        'is_show',
-    ];
 }

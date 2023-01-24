@@ -13,17 +13,8 @@ use Hyperf\Database\Model\Relations\HasMany;
  */
 class StoreExamTag extends \App\Model\Common\StoreExamTag
 {
-    public $searchFields = [
-        'uuid',
-        'title',
-        'parent_uuid',
-        'remark',
-        'is_show',
-        'orders',
-    ];
-
     public function children(): HasMany
     {
-        return $this->hasMany(StoreExamTag::class,'parent_uuid','uuid');
+        return $this->hasMany(StoreExamTag::class, 'parent_uuid', 'uuid');
     }
 }

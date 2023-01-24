@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Model\Store;
 
@@ -10,20 +10,6 @@ namespace App\Model\Store;
  */
 class StoreExamJudgeOption extends \App\Model\Common\StoreExamJudgeOption
 {
-    public $searchFields = [
-        'uuid',
-        'store_uuid',
-        'title',
-        'answer',
-        'level',
-        'analysis',
-        'file_uuid',
-        'tips_expend_score',
-        'answer_income_score',
-        'is_show',
-        'created_at',
-    ];
-
     protected $appends = [
         'category',
         'tag',

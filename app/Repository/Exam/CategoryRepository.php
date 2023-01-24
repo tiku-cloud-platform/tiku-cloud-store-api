@@ -17,12 +17,6 @@ use Hyperf\Di\Annotation\Inject;
 class CategoryRepository implements StoreRepositoryInterface
 {
     /**
-     * @Inject()
-     * @var StoreExamCategory
-     */
-    protected $categoryModel;
-
-    /**
      * 查询数据
      *
      * @param \Closure $closure
@@ -31,21 +25,33 @@ class CategoryRepository implements StoreRepositoryInterface
      */
     public function repositorySelect(\Closure $closure, int $perSize): array
     {
-        $items = $this->categoryModel::query()
+        $items = (new StoreExamCategory)::query()
             ->with(['smallFileInfo:uuid,file_name,file_url'])
             ->with(['bigFileInfo:uuid,file_name,file_url'])
+            ->with(['creator:id,name'])
             ->with(['children:uuid,title,parent_uuid,remark,is_show,file_uuid,big_file_uuid,orders,is_recommend'])
             ->where($closure)
             ->whereNull('parent_uuid')
-            ->select($this->categoryModel->searchFields)
+            ->select([
+                'uuid',
+                'title',
+                'parent_uuid',
+                'remark',
+                'is_show',
+                'file_uuid',
+                'big_file_uuid',
+                'orders',
+                'is_recommend',
+                "create_id",
+            ])
             ->orderByDesc('id')
-            ->paginate((int)$perSize);
+            ->paginate($perSize);
 
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 
@@ -57,7 +63,7 @@ class CategoryRepository implements StoreRepositoryInterface
      */
     public function repositoryAllSelect(array $searchWhere, int $perSize): array
     {
-        $items = $this->categoryModel::query()
+        $items = (new StoreExamCategory)::query()
             ->with(['allChildren:uuid,title,parent_uuid,file_uuid,big_file_uuid'])
             ->where($searchWhere)
             ->whereNull('parent_uuid')
@@ -68,8 +74,8 @@ class CategoryRepository implements StoreRepositoryInterface
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 
@@ -82,20 +88,20 @@ class CategoryRepository implements StoreRepositoryInterface
      */
     public function repositoryParentSelect(\Closure $closure, int $perSize): array
     {
-        $items = $this->categoryModel::query()
+        $items = (new StoreExamCategory)::query()
             ->with(['smallFileInfo:uuid,file_name,file_url'])
             ->with(['bigFileInfo:uuid,file_name,file_url'])
             ->where($closure)
             ->whereNull('parent_uuid')
-            ->select($this->categoryModel->searchFields)
+            ->select((new StoreExamCategory)->searchFields)
             ->orderByDesc('id')
-            ->paginate((int)$perSize);
+            ->paginate($perSize);
 
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 
@@ -107,7 +113,7 @@ class CategoryRepository implements StoreRepositoryInterface
      */
     public function repositoryCreate(array $insertInfo): bool
     {
-        if ($this->categoryModel::query()->create(($insertInfo))) return true;
+        if ((new StoreExamCategory)::query()->create(($insertInfo))) return true;
         return false;
     }
 
@@ -131,11 +137,23 @@ class CategoryRepository implements StoreRepositoryInterface
      */
     public function repositoryFind(\Closure $closure): array
     {
-        $bean = $this->categoryModel::query()
+        $bean = (new StoreExamCategory)::query()
             ->with(['smallFileInfo:uuid,file_name,file_url'])
             ->with(['bigFileInfo:uuid,file_name,file_url'])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->first($this->categoryModel->searchFields);
+            ->first([
+                'uuid',
+                'title',
+                'parent_uuid',
+                'remark',
+                'is_show',
+                'file_uuid',
+                'big_file_uuid',
+                'orders',
+                'is_recommend',
+                "create_id",
+            ]);
 
         if (!empty($bean)) return $bean->toArray();
         return [];
@@ -150,7 +168,7 @@ class CategoryRepository implements StoreRepositoryInterface
      */
     public function repositoryUpdate(array $updateWhere, array $updateInfo): int
     {
-        return $this->categoryModel::query()->where($updateWhere)->update($updateInfo);
+        return (new StoreExamCategory)::query()->where($updateWhere)->update($updateInfo);
     }
 
     /**
@@ -161,7 +179,7 @@ class CategoryRepository implements StoreRepositoryInterface
      */
     public function repositoryDelete(array $deleteWhere): int
     {
-        return $this->categoryModel::query()->where($deleteWhere)->delete();
+        return (new StoreExamCategory)::query()->where($deleteWhere)->delete();
     }
 
     /**
@@ -173,7 +191,7 @@ class CategoryRepository implements StoreRepositoryInterface
      */
     public function repositoryWhereInDelete(array $deleteWhere, string $field): int
     {
-        return $this->categoryModel::query()->whereIn($field, $deleteWhere)->delete();
+        return (new StoreExamCategory)::query()->whereIn($field, $deleteWhere)->delete();
     }
 
     /**
@@ -184,18 +202,18 @@ class CategoryRepository implements StoreRepositoryInterface
      */
     public function repositorySecond(\Closure $closure, int $perSize = 20): array
     {
-        $items = $this->categoryModel::query()
+        $items = (new StoreExamCategory)::query()
             ->where($closure)
             ->whereNotNull('parent_uuid')
             ->select(['uuid', 'title'])
             ->orderByDesc('id')
-            ->paginate((int)$perSize);
+            ->paginate($perSize);
 
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 }

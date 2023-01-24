@@ -27,7 +27,19 @@ class StoreMenu extends BaseModel
         'is_show',
         'store_uuid',
         "client_position",
+        "create_id",
     ];
+
+    protected $hidden = ["create_id"];
+
+    /**
+     * 创建人信息
+     * @return BelongsTo
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(StoreUser::class, "create_id", "id");
+    }
 
     /**
      * 菜单图标地址

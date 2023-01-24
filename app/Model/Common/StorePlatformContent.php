@@ -5,6 +5,7 @@ namespace App\Model\Common;
 
 
 use App\Model\BaseModel;
+use Hyperf\Database\Model\Relations\BelongsTo;
 
 /**
  * 平台内容介绍
@@ -23,5 +24,17 @@ class StorePlatformContent extends BaseModel
         'store_uuid',
         'title',
         'orders',
+        "create_id",
     ];
+
+    protected $hidden = ["create_id"];
+
+    /**
+     * 创建人信息
+     * @return BelongsTo
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(StoreUser::class, "create_id", "id");
+    }
 }

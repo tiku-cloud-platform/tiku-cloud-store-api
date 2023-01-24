@@ -13,18 +13,6 @@ use Hyperf\Database\Model\Relations\BelongsTo;
  */
 class StoreMenu extends \App\Model\Common\StoreMenu
 {
-    public $searchFields = [
-        'uuid',
-        'title',
-        'file_uuid',
-        'type',
-        'url',
-        'position_position',
-        'orders',
-        'is_show',
-        "client_position",
-    ];
-
     /**
      * 客户端端口
      * @return BelongsTo

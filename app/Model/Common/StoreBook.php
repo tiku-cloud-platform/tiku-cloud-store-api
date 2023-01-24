@@ -30,11 +30,23 @@ class StoreBook extends BaseModel
         "score",
         "is_show",
         "orders",
+        "create_id",
     ];
 
     protected $appends = [
         "read_number",
     ];
+
+    protected $hidden = ["create_id"];
+
+    /**
+     * 创建人信息
+     * @return BelongsTo
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(StoreUser::class, "create_id", "id");
+    }
 
     public function getReadNumberAttribute(): int
     {

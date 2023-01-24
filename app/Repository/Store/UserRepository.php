@@ -32,7 +32,9 @@ class UserRepository implements StoreRepositoryInterface
         $bean = (new StoreUser)::query()
             ->where([['is_forbidden', '=', 1],])
             ->where($closure)
-            ->first(['uuid',
+            ->first([
+                "id",
+                'uuid',
                 'name',
                 'email',
                 'password',

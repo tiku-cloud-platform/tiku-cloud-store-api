@@ -47,7 +47,7 @@ class UserInfo
     public static function getStoreUserInfo(): array
     {
         $token = (new self())->getStoreLoginToken();
-        if (!empty($token)) return (new RedisClient)->get((string)CacheKey::STORE_LOGIN_PREFIX, (string)$token);
+        if (!empty($token)) return (new RedisClient)->get(CacheKey::STORE_LOGIN_PREFIX, $token);
         return [];
     }
 
@@ -62,7 +62,7 @@ class UserInfo
 
         $token = (new self())->getWeChatLoginToken();
         if (!empty($token)) {
-            $userInfo = (new RedisClient)->get((string)CacheKey::USER_LOGIN_PREFIX, (string)$token);
+            $userInfo = (new RedisClient)->get(CacheKey::USER_LOGIN_PREFIX, $token);
             if (!empty($userInfo)) return $userInfo;
             return [];
         }

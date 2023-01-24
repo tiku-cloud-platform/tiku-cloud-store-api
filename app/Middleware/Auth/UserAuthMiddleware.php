@@ -56,8 +56,8 @@ class UserAuthMiddleware implements MiddlewareInterface
 
 		return $this->httpResponse->response(
 			(string)ErrorCode::getMessage(ErrorCode::REQUEST_INVALID),
-			(int)ErrorCode::REQUEST_INVALID,
-			(array)[],
-			(int)HttpCode::NO_AUTH);
+            ErrorCode::REQUEST_INVALID,
+            [],
+            HttpCode::NO_AUTH);
 	}
 }

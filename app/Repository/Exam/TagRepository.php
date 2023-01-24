@@ -17,16 +17,6 @@ use Hyperf\Di\Annotation\Inject;
 class TagRepository implements StoreRepositoryInterface
 {
     /**
-     * @Inject()
-     * @var StoreExamTag
-     */
-    protected $tagModel;
-
-    public function __construct()
-    {
-    }
-
-    /**
      * 查询数据
      *
      * @param int $perSize 分页大小
@@ -34,19 +24,28 @@ class TagRepository implements StoreRepositoryInterface
      */
     public function repositorySelect(\Closure $closure, int $perSize): array
     {
-        $items = $this->tagModel::query()
+        $items = (new StoreExamTag)::query()
             ->with(['children:title,uuid,parent_uuid,remark,is_show,orders'])
+            ->with(['creator:id,name'])
             ->where($closure)
             ->whereNull('parent_uuid')
-            ->select($this->tagModel->searchFields)
+            ->select([
+                'uuid',
+                'title',
+                'parent_uuid',
+                'remark',
+                'is_show',
+                'orders',
+                "create_id",
+            ])
             ->orderByDesc('id')
-            ->paginate((int)$perSize);
+            ->paginate($perSize);
 
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 
@@ -59,10 +58,10 @@ class TagRepository implements StoreRepositoryInterface
      */
     public function repositoryParentSelect(\Closure $closure, int $perSize): array
     {
-        $items = $this->tagModel::query()
+        $items = (new StoreExamTag)::query()
             ->where($closure)
             ->whereNull('parent_uuid')
-            ->select($this->tagModel->searchFields)
+            ->select((new StoreExamTag)->searchFields)
             ->orderByDesc('id')
             ->paginate((int)$perSize);
 
@@ -82,7 +81,7 @@ class TagRepository implements StoreRepositoryInterface
      */
     public function repositoryCreate(array $insertInfo): bool
     {
-        if ($this->tagModel::query()->create(($insertInfo))) return true;
+        if ((new StoreExamTag)::query()->create(($insertInfo))) return true;
         return false;
     }
 
@@ -106,9 +105,18 @@ class TagRepository implements StoreRepositoryInterface
      */
     public function repositoryFind(\Closure $closure): array
     {
-        $bean = $this->tagModel::query()
+        $bean = (new StoreExamTag)::query()
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->first($this->tagModel->searchFields);
+            ->first([
+                'uuid',
+                'title',
+                'parent_uuid',
+                'remark',
+                'is_show',
+                'orders',
+                "create_id",
+            ]);
 
         if (!empty($bean)) return $bean->toArray();
         return [];
@@ -123,7 +131,7 @@ class TagRepository implements StoreRepositoryInterface
      */
     public function repositoryUpdate(array $updateWhere, array $updateInfo): int
     {
-        return $this->tagModel::query()->where($updateWhere)->update($updateInfo);
+        return (new StoreExamTag)::query()->where($updateWhere)->update($updateInfo);
     }
 
     /**
@@ -134,7 +142,7 @@ class TagRepository implements StoreRepositoryInterface
      */
     public function repositoryDelete(array $deleteWhere): int
     {
-        return $this->tagModel::query()->where($deleteWhere)->delete();
+        return (new StoreExamTag)::query()->where($deleteWhere)->delete();
     }
 
     /**
@@ -146,6 +154,6 @@ class TagRepository implements StoreRepositoryInterface
      */
     public function repositoryWhereInDelete(array $deleteWhere, string $field): int
     {
-        return $this->tagModel::query()->whereIn($field, $deleteWhere)->delete();
+        return (new StoreExamTag)::query()->whereIn($field, $deleteWhere)->delete();
     }
 }

@@ -5,6 +5,7 @@ namespace App\Model\Common;
 
 
 use App\Model\BaseModel;
+use Hyperf\Database\Model\Relations\BelongsTo;
 
 /**
  * 平台文件
@@ -26,6 +27,18 @@ class StorePlatformFile extends BaseModel
         'file_size',
         'file_type',
         'extension',
-        'is_show'
+        'is_show',
+        "create_id",
     ];
+
+    protected $hidden = ["create_id"];
+
+    /**
+     * 创建人信息
+     * @return BelongsTo
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(StoreUser::class, "create_id", "id");
+    }
 }

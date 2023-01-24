@@ -5,6 +5,7 @@ namespace App\Model\Common;
 
 
 use App\Model\BaseModel;
+use Hyperf\Database\Model\Relations\BelongsTo;
 
 /**
  * 单选试题选项
@@ -21,5 +22,17 @@ class StoreExamOptionItem extends BaseModel
         'store_uuid',
         'option_uuid',
         'title',
+        "create_id",
     ];
+
+    protected $hidden = ["create_id"];
+
+    /**
+     * 创建人信息
+     * @return BelongsTo
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(StoreUser::class, "create_id", "id");
+    }
 }

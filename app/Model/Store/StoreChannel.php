@@ -10,18 +10,6 @@ namespace App\Model\Store;
  */
 class StoreChannel extends \App\Model\Common\StoreChannel
 {
-    public $searchFields = [
-        "id",
-        "uuid",
-        "title",
-        "is_show",
-        "store_uuid",
-        "channel_group_uuid",
-        "created_at",
-        "file_uuid",
-        "remark",
-    ];
-
     protected $appends = [
         "register"
     ];

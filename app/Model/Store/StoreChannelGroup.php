@@ -10,14 +10,6 @@ namespace App\Model\Store;
  */
 class StoreChannelGroup extends \App\Model\Common\StoreChannelGroup
 {
-    public $searchFields = [
-        "id",
-        "uuid",
-        "title",
-        "is_show",
-        "created_at",
-    ];
-
     protected $appends = [
         "register"
     ];

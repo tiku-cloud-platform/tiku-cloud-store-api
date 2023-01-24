@@ -43,17 +43,24 @@ class FileGroupRepository implements StoreRepositoryInterface
     {
         $items = $this->fileGroupMode::query()
             ->with(['children:parent_uuid,uuid,title,is_show'])
+            ->with(['creator:id,name'])
             ->where($closure)
             ->whereNull('parent_uuid')
-            ->select($this->fileGroupMode->searchFields)
+            ->select([
+                'title',
+                'uuid',
+                'is_show',
+                'parent_uuid',
+                "create_id",
+            ])
             ->orderByDesc('id')
-            ->paginate((int)$perSize);
+            ->paginate($perSize);
 
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 
@@ -71,13 +78,13 @@ class FileGroupRepository implements StoreRepositoryInterface
             ->whereNull('parent_uuid')
             ->select($this->fileGroupMode->searchFields)
             ->orderByDesc('id')
-            ->paginate((int)$perSize);
+            ->paginate($perSize);
 
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 
@@ -116,7 +123,16 @@ class FileGroupRepository implements StoreRepositoryInterface
      */
     public function repositoryFind(\Closure $closure): array
     {
-        $bean = $this->fileGroupMode::query()->where($closure)->first($this->fileGroupMode->searchFields);
+        $bean = $this->fileGroupMode::query()
+            ->with(['creator:id,name'])
+            ->where($closure)
+            ->first([
+                'title',
+                'uuid',
+                'is_show',
+                'parent_uuid',
+                "create_id",
+            ]);
 
         if (!empty($bean)) return $bean->toArray();
         return [];

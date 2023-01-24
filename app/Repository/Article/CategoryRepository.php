@@ -36,16 +36,25 @@ class CategoryRepository implements StoreRepositoryInterface
     {
         $items = $this->categoryModel::query()
             ->with(['coverFileInfo:uuid,file_url,file_name'])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->select($this->categoryModel->searchFields)
-            ->orderByDesc('id')
-            ->paginate((int)$perSize);
+            ->select([
+                'uuid',
+                'parent_uuid',
+                'title',
+                'file_uuid',
+                'orders',
+                'is_show',
+                "create_id",
+                "created_at",
+            ])
+            ->paginate($perSize);
 
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 
@@ -86,8 +95,18 @@ class CategoryRepository implements StoreRepositoryInterface
     {
         $bean = $this->categoryModel::query()
             ->with(['coverFileInfo:uuid,file_url,file_name'])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->first($this->categoryModel->searchFields);
+            ->first([
+                'uuid',
+                'parent_uuid',
+                'title',
+                'file_uuid',
+                'orders',
+                'is_show',
+                "create_id",
+                "created_at",
+            ]);
 
         if (!empty($bean)) return $bean->toArray();
         return [];

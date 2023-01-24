@@ -14,16 +14,11 @@ use Hyperf\Di\Annotation\Inject;
  */
 class BookRepository implements StoreRepositoryInterface
 {
-    /**
-     * @Inject()
-     * @var StoreBook
-     */
-    protected $bookModel;
-
     public function repositorySelect(Closure $closure, int $perSize): array
     {
-        $items = $this->bookModel::query()
+        $items = (new StoreBook)::query()
             ->with(['coverFileInfo:uuid,file_url,file_name'])
+            ->with(['creator:id,name'])
             ->where($closure)
             ->select([
                 "uuid",
@@ -42,6 +37,7 @@ class BookRepository implements StoreRepositoryInterface
                 "created_at",
                 "updated_at",
                 "click_number",
+                "create_id",
             ])
             ->orderByDesc('id')
             ->paginate($perSize);
@@ -56,7 +52,7 @@ class BookRepository implements StoreRepositoryInterface
 
     public function repositoryCreate(array $insertInfo): bool
     {
-        if (!empty($this->bookModel::query()->create($insertInfo))) {
+        if (!empty((new StoreBook)::query()->create($insertInfo))) {
             return true;
         }
 
@@ -70,8 +66,9 @@ class BookRepository implements StoreRepositoryInterface
 
     public function repositoryFind(Closure $closure): array
     {
-        $bean = $this->bookModel::query()
+        $bean = (new StoreBook)::query()
             ->with(['coverFileInfo:uuid,file_url,file_name'])
+            ->with(['creator:id,name'])
             ->select([
                 "uuid",
                 "file_uuid",
@@ -89,6 +86,7 @@ class BookRepository implements StoreRepositoryInterface
                 "created_at",
                 "updated_at",
                 "click_number",
+                "create_id",
             ])
             ->where($closure)
             ->first();
@@ -101,16 +99,16 @@ class BookRepository implements StoreRepositoryInterface
 
     public function repositoryUpdate(array $updateWhere, array $updateInfo): int
     {
-        return $this->bookModel::query()->where($updateWhere)->update($updateInfo);
+        return (new StoreBook)::query()->where($updateWhere)->update($updateInfo);
     }
 
     public function repositoryDelete(array $deleteWhere): int
     {
-        return $this->bookModel::query()->where($deleteWhere)->delete();
+        return (new StoreBook)::query()->where($deleteWhere)->delete();
     }
 
     public function repositoryWhereInDelete(array $deleteWhere, string $field): int
     {
-        return $this->bookModel::query()->whereIn($field, $deleteWhere)->delete();
+        return (new StoreBook)::query()->whereIn($field, $deleteWhere)->delete();
     }
 }

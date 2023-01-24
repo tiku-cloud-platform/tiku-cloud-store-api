@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Repository\Exam;
 
@@ -16,16 +16,6 @@ use Hyperf\Di\Annotation\Inject;
 class JudeOptionRepository implements StoreRepositoryInterface
 {
     /**
-     * @Inject()
-     * @var StoreExamJudgeOption
-     */
-    protected $judeOptionMode;
-
-    public function __construct()
-    {
-    }
-
-    /**
      * 查询数据
      *
      * @param \Closure $closure
@@ -34,18 +24,32 @@ class JudeOptionRepository implements StoreRepositoryInterface
      */
     public function repositorySelect(\Closure $closure, int $perSize): array
     {
-        $items = $this->judeOptionMode::query()
+        $items = (new StoreExamJudgeOption)::query()
             ->with(['coverFileInfo:uuid,file_name,file_url'])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->select($this->judeOptionMode->searchFields)
+            ->select([
+                'uuid',
+                'store_uuid',
+                'title',
+                'answer',
+                'level',
+                'analysis',
+                'file_uuid',
+                'tips_expend_score',
+                'answer_income_score',
+                'is_show',
+                'created_at',
+                "create_id",
+            ])
             ->orderByDesc('id')
-            ->paginate((int)$perSize);
+            ->paginate($perSize);
 
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 
@@ -60,7 +64,7 @@ class JudeOptionRepository implements StoreRepositoryInterface
         // 添加判断试题、标签关联、试卷、分类关联
         $result = false;
         Db::transaction(function () use ($insertInfo, &$result) {
-            $newModel = $this->judeOptionMode::query()->create($insertInfo);
+            $newModel = (new StoreExamJudgeOption)::query()->create($insertInfo);
             if (!empty($newModel)) {
                 $uuid = $newModel->getAttribute('uuid');
                 // 试题分类关联
@@ -70,8 +74,8 @@ class JudeOptionRepository implements StoreRepositoryInterface
                     foreach ($categoryArray as $key => $value) {
                         $examCategoryArray[$key] = [
                             'category_uuid' => $value,
-                            'exam_uuid'          => $uuid,
-                            'store_uuid'         => $insertInfo['store_uuid']
+                            'exam_uuid' => $uuid,
+                            'store_uuid' => $insertInfo['store_uuid']
                         ];
                     }
                     (new JudeCategoryRelationRepository())->repositoryCreate((array)$examCategoryArray);
@@ -83,8 +87,8 @@ class JudeOptionRepository implements StoreRepositoryInterface
                     foreach ($tagArray as $key => $value) {
                         $examTagArray[$key] = [
                             'tag_uuid' => $value,
-                            'exam_uuid'     => $uuid,
-                            'store_uuid'    => $insertInfo['store_uuid']
+                            'exam_uuid' => $uuid,
+                            'store_uuid' => $insertInfo['store_uuid']
                         ];
                     }
                     (new JudeTagRelationRepository())->repositoryCreate((array)$examTagArray);
@@ -96,8 +100,8 @@ class JudeOptionRepository implements StoreRepositoryInterface
                     foreach ($collectionArray as $key => $value) {
                         $examCollectionArray[$key] = [
                             'collection_uuid' => $value,
-                            'exam_uuid'            => $uuid,
-                            'store_uuid'           => $insertInfo['store_uuid']
+                            'exam_uuid' => $uuid,
+                            'store_uuid' => $insertInfo['store_uuid']
                         ];
                     }
                     (new JudeCollectionRelationRepository())->repositoryCreate((array)$examCollectionArray);
@@ -128,11 +132,25 @@ class JudeOptionRepository implements StoreRepositoryInterface
      */
     public function repositoryFind(\Closure $closure): array
     {
-        $bean = $this->judeOptionMode::query()
+        $bean = (new StoreExamJudgeOption)::query()
             ->with(['coverFileInfo:uuid,file_name,file_url'])
             ->with(['optionItem:uuid,option_uuid,is_check,check,title'])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->first($this->judeOptionMode->searchFields);
+            ->first([
+                'uuid',
+                'store_uuid',
+                'title',
+                'answer',
+                'level',
+                'analysis',
+                'file_uuid',
+                'tips_expend_score',
+                'answer_income_score',
+                'is_show',
+                'created_at',
+                "create_id",
+            ]);
 
         if (!empty($bean)) return $bean->toArray();
         return [];

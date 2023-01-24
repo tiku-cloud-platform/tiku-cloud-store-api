@@ -15,12 +15,6 @@ use Hyperf\Di\Annotation\Inject;
 class ChannelRepository implements StoreRepositoryInterface
 {
     /**
-     * @Inject()
-     * @var StoreChannel
-     */
-    protected $channelModel;
-
-    /**
      * 查询数据
      *
      * @param \Closure $closure
@@ -29,18 +23,30 @@ class ChannelRepository implements StoreRepositoryInterface
      */
     public function repositorySelect(\Closure $closure, int $perSize): array
     {
-        $items = $this->channelModel::query()
+        $items = (new StoreChannel)::query()
             ->with(['fileInfo:uuid,file_url,file_name'])
             ->with(["group:title,uuid"])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->select($this->channelModel->searchFields)
+            ->select([
+                "id",
+                "uuid",
+                "title",
+                "is_show",
+                "store_uuid",
+                "channel_group_uuid",
+                "created_at",
+                "file_uuid",
+                "remark",
+                "create_id",
+            ])
             ->paginate($perSize);
 
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 
@@ -52,7 +58,7 @@ class ChannelRepository implements StoreRepositoryInterface
      */
     public function repositoryCreate(array $insertInfo): bool
     {
-        if (!empty($this->channelModel::query()->create($insertInfo))) {
+        if (!empty((new StoreChannel)::query()->create($insertInfo))) {
             return true;
         }
 
@@ -79,10 +85,22 @@ class ChannelRepository implements StoreRepositoryInterface
      */
     public function repositoryFind(\Closure $closure): array
     {
-        $bean = $this->channelModel::query()
+        $bean = (new StoreChannel)::query()
             ->with(['fileInfo:uuid,file_url,file_name'])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->first($this->channelModel->searchFields);
+            ->first([
+                "id",
+                "uuid",
+                "title",
+                "is_show",
+                "store_uuid",
+                "channel_group_uuid",
+                "created_at",
+                "file_uuid",
+                "remark",
+                "create_id",
+            ]);
 
         if (!empty($bean)) {
             return $bean->toArray();
@@ -99,7 +117,7 @@ class ChannelRepository implements StoreRepositoryInterface
      */
     public function repositoryUpdate(array $updateWhere, array $updateInfo): int
     {
-        return $this->channelModel::query()->where($updateWhere)->update($updateInfo);
+        return (new StoreChannel)::query()->where($updateWhere)->update($updateInfo);
     }
 
     /**
@@ -110,7 +128,7 @@ class ChannelRepository implements StoreRepositoryInterface
      */
     public function repositoryDelete(array $deleteWhere): int
     {
-        return $this->channelModel::query()->where($deleteWhere)->delete();
+        return (new StoreChannel)::query()->where($deleteWhere)->delete();
     }
 
     /**
@@ -122,6 +140,6 @@ class ChannelRepository implements StoreRepositoryInterface
      */
     public function repositoryWhereInDelete(array $deleteWhere, string $field): int
     {
-        return $this->channelModel::query()->whereIn($field, $deleteWhere)->delete();
+        return (new StoreChannel)::query()->whereIn($field, $deleteWhere)->delete();
     }
 }

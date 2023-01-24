@@ -17,6 +17,7 @@ class CategoryRepository implements StoreRepositoryInterface
     {
         $items = (new StoreBookCategory)::query()
 //			->with(["book:uuid,title"])
+            ->with(['creator:id,name'])
             ->where($closure)
             ->where("parent_uuid", "=", "")
             ->select([
@@ -24,6 +25,7 @@ class CategoryRepository implements StoreRepositoryInterface
 //				"store_book_uuid",
                 "title",
                 "parent_uuid",
+                "create_id",
 //				"is_show",
 //				"orders",
 //				"created_at",
@@ -73,11 +75,13 @@ class CategoryRepository implements StoreRepositoryInterface
     {
         $bean = (new StoreBookCategory)::query()
 //            ->with(["book:uuid,title"])
+            ->with(['creator:id,name'])
             ->select([
                 "uuid",
 //                "store_book_uuid",
                 "title",
                 "parent_uuid",
+                "create_id",
 //                "is_show",
 //                "orders",
 //                "created_at",

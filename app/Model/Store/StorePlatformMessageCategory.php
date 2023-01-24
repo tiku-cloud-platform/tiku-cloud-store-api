@@ -11,11 +11,5 @@ namespace App\Model\Store;
  */
 class StorePlatformMessageCategory extends \App\Model\Common\StorePlatformMessageCategory
 {
-    public $searchFields = [
-        'uuid',
-        'title',
-        'file_uuid',
-        'is_show',
-        'orders',
-    ];
+
 }

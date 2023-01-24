@@ -17,16 +17,6 @@ use Hyperf\Di\Annotation\Inject;
 class FileRepository implements StoreRepositoryInterface
 {
     /**
-     * @Inject()
-     * @var StorePlatformFile
-     */
-    protected $fileModel;
-
-    public function __construct()
-    {
-    }
-
-    /**
      * 查询数据
      *
      * @param int $perSize 分页大小
@@ -34,17 +24,29 @@ class FileRepository implements StoreRepositoryInterface
      */
     public function repositorySelect(\Closure $closure, int $perSize): array
     {
-        $items = $this->fileModel::query()
+        $items = (new StorePlatformFile)::query()
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->select($this->fileModel->searchFields)
+            ->select([
+                'uuid',
+                'storage',
+                'file_url',
+                'file_name',
+                'file_hash',
+                'file_size',
+                'file_type',
+                'extension',
+                'is_show',
+                "create_id",
+            ])
             ->orderByDesc('id')
-            ->paginate((int)$perSize);
+            ->paginate($perSize);
 
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 
@@ -56,7 +58,7 @@ class FileRepository implements StoreRepositoryInterface
      */
     public function repositoryCreate(array $insertInfo): bool
     {
-        return $this->fileModel->batchInsert((string)$this->fileModel->getTable(), $insertInfo);
+        return (new StorePlatformFile)->batchInsert((new StorePlatformFile)->getTable(), $insertInfo);
     }
 
     /**
@@ -79,7 +81,21 @@ class FileRepository implements StoreRepositoryInterface
      */
     public function repositoryFind(\Closure $closure): array
     {
-        $bean = $this->fileModel::query()->where($closure)->first($this->fileModel->searchFields);
+        $bean = (new StorePlatformFile)::query()
+            ->with(['creator:id,name'])
+            ->where($closure)
+            ->first([
+                'uuid',
+                'storage',
+                'file_url',
+                'file_name',
+                'file_hash',
+                'file_size',
+                'file_type',
+                'extension',
+                'is_show',
+                "create_id",
+            ]);
 
         if (!empty($bean)) return $bean->toArray();
         return [];
@@ -94,7 +110,7 @@ class FileRepository implements StoreRepositoryInterface
      */
     public function repositoryUpdate(array $updateWhere, array $updateInfo): int
     {
-        return $this->fileModel::query()->where($updateWhere)->update($updateInfo);
+        return (new StorePlatformFile)::query()->where($updateWhere)->update($updateInfo);
     }
 
     /**
@@ -105,7 +121,7 @@ class FileRepository implements StoreRepositoryInterface
      */
     public function repositoryDelete(array $deleteWhere): int
     {
-        return $this->fileModel::query()->where($deleteWhere)->delete();
+        return (new StorePlatformFile)::query()->where($deleteWhere)->delete();
     }
 
     /**
@@ -117,6 +133,6 @@ class FileRepository implements StoreRepositoryInterface
      */
     public function repositoryWhereInDelete(array $deleteWhere, string $field): int
     {
-        return $this->fileModel::query()->whereIn($field, $deleteWhere)->delete();
+        return (new StorePlatformFile)::query()->whereIn($field, $deleteWhere)->delete();
     }
 }

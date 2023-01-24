@@ -19,13 +19,6 @@ namespace App\Model\Store;
  */
 class StorePlatformFileGroup extends \App\Model\Common\StorePlatformFileGroup
 {
-    public $searchFields = [
-        'title',
-        'uuid',
-        'is_show',
-        'parent_uuid',
-    ];
-
     public function children()
     {
         return $this->hasMany(StorePlatformFileGroup::class, 'parent_uuid', 'uuid');

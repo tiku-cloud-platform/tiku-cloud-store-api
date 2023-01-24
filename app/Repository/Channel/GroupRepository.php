@@ -15,12 +15,6 @@ use Hyperf\Di\Annotation\Inject;
 class GroupRepository implements StoreRepositoryInterface
 {
     /**
-     * @Inject()
-     * @var StoreChannelGroup
-     */
-    protected $groupModel;
-
-    /**
      * 查询数据
      *
      * @param \Closure $closure
@@ -29,16 +23,24 @@ class GroupRepository implements StoreRepositoryInterface
      */
     public function repositorySelect(\Closure $closure, int $perSize): array
     {
-        $items = $this->groupModel::query()
+        $items = (new StoreChannelGroup)::query()
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->select($this->groupModel->searchFields)
+            ->select([
+                "id",
+                "uuid",
+                "title",
+                "is_show",
+                "created_at",
+                "create_id",
+            ])
             ->paginate($perSize);
 
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 
@@ -50,7 +52,7 @@ class GroupRepository implements StoreRepositoryInterface
      */
     public function repositoryCreate(array $insertInfo): bool
     {
-        if (!empty($this->groupModel::query()->create($insertInfo))) {
+        if (!empty((new StoreChannelGroup)::query()->create($insertInfo))) {
             return true;
         }
 
@@ -77,9 +79,17 @@ class GroupRepository implements StoreRepositoryInterface
      */
     public function repositoryFind(\Closure $closure): array
     {
-        $bean = $this->groupModel::query()
+        $bean = (new StoreChannelGroup)::query()
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->first($this->groupModel->searchFields);
+            ->first([
+                "id",
+                "uuid",
+                "title",
+                "is_show",
+                "created_at",
+                "create_id",
+            ]);
 
         if (!empty($bean)) {
             return $bean->toArray();
@@ -96,7 +106,7 @@ class GroupRepository implements StoreRepositoryInterface
      */
     public function repositoryUpdate(array $updateWhere, array $updateInfo): int
     {
-        return $this->groupModel::query()->where($updateWhere)->update($updateInfo);
+        return (new StoreChannelGroup)::query()->where($updateWhere)->update($updateInfo);
     }
 
     /**
@@ -107,7 +117,7 @@ class GroupRepository implements StoreRepositoryInterface
      */
     public function repositoryDelete(array $deleteWhere): int
     {
-        return $this->groupModel::query()->where($deleteWhere)->delete();
+        return (new StoreChannelGroup)::query()->where($deleteWhere)->delete();
     }
 
     /**
@@ -119,6 +129,6 @@ class GroupRepository implements StoreRepositoryInterface
      */
     public function repositoryWhereInDelete(array $deleteWhere, string $field): int
     {
-        return $this->groupModel::query()->whereIn($field, $deleteWhere)->delete();
+        return (new StoreChannelGroup)::query()->whereIn($field, $deleteWhere)->delete();
     }
 }

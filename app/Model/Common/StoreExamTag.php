@@ -1,10 +1,11 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Model\Common;
 
 
 use App\Model\BaseModel;
+use Hyperf\Database\Model\Relations\BelongsTo;
 
 /**
  * 试题知识点
@@ -24,7 +25,19 @@ class StoreExamTag extends BaseModel
         'is_show',
         'orders',
         'store_uuid',
+        "create_id",
     ];
+
+    protected $hidden = ["create_id"];
+
+    /**
+     * 创建人信息
+     * @return BelongsTo
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(StoreUser::class, "create_id", "id");
+    }
 
     public function setParentUuidAttribute($value)
     {

@@ -18,16 +18,6 @@ use Hyperf\Di\Annotation\Inject;
 class ArticleRepository implements StoreRepositoryInterface
 {
     /**
-     * @Inject()
-     * @var StoreArticle
-     */
-    protected $articleModel;
-
-    public function __construct()
-    {
-    }
-
-    /**
      * 查询数据
      *
      * @param int $perSize 分页大小
@@ -35,12 +25,34 @@ class ArticleRepository implements StoreRepositoryInterface
      */
     public function repositorySelect(Closure $closure, int $perSize): array
     {
-        $items = $this->articleModel::query()
+        $items = (new StoreArticle)::query()
             ->with(['categoryInfo:uuid,title'])
             ->with(['coverFileInfo:uuid,file_url,file_name'])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->select($this->articleModel->searchFields)
-            ->orderByDesc('id')
+            ->select([
+                'uuid',
+                'article_category_uuid',
+                'title',
+                'file_uuid',
+                'content',
+                'publish_date',
+                'author',
+                'source',
+                'read_number',
+                'orders',
+                'is_show',
+                'is_top',
+                'is_publish',
+                "read_score",
+                "share_score",
+                "click_score",
+                "collection_score",
+                "read_expend_score",
+                "create_id",
+                "created_at",
+            ])
+            ->orderByDesc("id")
             ->paginate($perSize);
 
         return [
@@ -59,7 +71,7 @@ class ArticleRepository implements StoreRepositoryInterface
      */
     public function repositoryCreate(array $insertInfo): bool
     {
-        if (!empty($this->articleModel::query()->create($insertInfo))) {
+        if (!empty((new StoreArticle)::query()->create($insertInfo))) {
             return true;
         }
 
@@ -86,10 +98,32 @@ class ArticleRepository implements StoreRepositoryInterface
      */
     public function repositoryFind(Closure $closure): array
     {
-        $bean = $this->articleModel::query()
+        $bean = (new StoreArticle)::query()
             ->with(['coverFileInfo:uuid,file_url,file_name'])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->first($this->articleModel->searchFields);
+            ->first([
+                'uuid',
+                'article_category_uuid',
+                'title',
+                'file_uuid',
+                'content',
+                'publish_date',
+                'author',
+                'source',
+                'read_number',
+                'orders',
+                'is_show',
+                'is_top',
+                'is_publish',
+                "read_score",
+                "share_score",
+                "click_score",
+                "collection_score",
+                "read_expend_score",
+                "create_id",
+                "created_at",
+            ]);
 
         if (!empty($bean)) return $bean->toArray();
         return [];
@@ -104,7 +138,7 @@ class ArticleRepository implements StoreRepositoryInterface
      */
     public function repositoryUpdate(array $updateWhere, array $updateInfo): int
     {
-        return $this->articleModel::query()->where($updateWhere)->update($updateInfo);
+        return (new StoreArticle)::query()->where($updateWhere)->update($updateInfo);
     }
 
     /**
@@ -115,7 +149,7 @@ class ArticleRepository implements StoreRepositoryInterface
      */
     public function repositoryDelete(array $deleteWhere): int
     {
-        return $this->articleModel::query()->where($deleteWhere)->delete();
+        return (new StoreArticle)::query()->where($deleteWhere)->delete();
     }
 
     /**
@@ -127,7 +161,7 @@ class ArticleRepository implements StoreRepositoryInterface
      */
     public function repositoryWhereInDelete(array $deleteWhere, string $field): int
     {
-        return $this->articleModel::query()->whereIn($field, $deleteWhere)->delete();
+        return (new StoreArticle)::query()->whereIn($field, $deleteWhere)->delete();
     }
 
     /**
@@ -140,6 +174,6 @@ class ArticleRepository implements StoreRepositoryInterface
      */
     public function repositoryWhereInUpdate(array $updateWhere, string $field, array $updateValue): int
     {
-        return $this->articleModel::query()->whereIn($field, $updateWhere)->update($updateValue);
+        return (new StoreArticle)::query()->whereIn($field, $updateWhere)->update($updateValue);
     }
 }

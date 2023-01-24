@@ -5,6 +5,7 @@ namespace App\Model\Common;
 
 
 use App\Model\BaseModel;
+use Hyperf\Database\Model\Relations\BelongsTo;
 
 /**
  * 平台消息内容
@@ -23,7 +24,19 @@ class StorePlatformMessageContent extends BaseModel
         'content',
         'is_show',
         'store_uuid',
+        "create_id",
     ];
+
+    protected $hidden = ["create_id"];
+
+    /**
+     * 创建人信息
+     * @return BelongsTo
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(StoreUser::class, "create_id", "id");
+    }
 
     public function category()
     {

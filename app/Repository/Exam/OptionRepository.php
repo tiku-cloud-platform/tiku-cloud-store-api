@@ -18,16 +18,6 @@ use Hyperf\Di\Annotation\Inject;
 class OptionRepository implements StoreRepositoryInterface
 {
     /**
-     * @Inject()
-     * @var StoreExamOption
-     */
-    protected $optionsModel;
-
-    public function __construct()
-    {
-    }
-
-    /**
      * 查询数据
      *
      * @param \Closure $closure
@@ -36,18 +26,30 @@ class OptionRepository implements StoreRepositoryInterface
      */
     public function repositorySelect(\Closure $closure, int $perSize): array
     {
-        $items = $this->optionsModel::query()
+        $items = (new StoreExamOption)::query()
             ->with(['coverFileInfo:uuid,file_name,file_url'])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->select($this->optionsModel->searchFields)
+            ->select([
+                'uuid',
+                'title',
+                'file_uuid',
+                'answer',
+                'analysis',
+                'tips_expend_score',
+                'answer_income_score',
+                'is_show',
+                'level',
+                "create_id",
+            ])
             ->orderByDesc('id')
-            ->paginate((int)$perSize);
+            ->paginate($perSize);
 
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 
@@ -63,13 +65,13 @@ class OptionRepository implements StoreRepositoryInterface
         // 处理试题与试卷、试题分类、试题知识点
         $result = false;
         Db::transaction(function () use ($insertInfo, &$result) {
-            $newModel = $this->optionsModel::query()->create(($insertInfo));
+            $newModel = (new StoreExamOption)::query()->create(($insertInfo));
             if (!empty($newModel)) {
                 /** @var string $uuid 试题uuid */
                 $uuid = $newModel->getAttribute('uuid');
                 // 试题选项
                 (new OptionItemRepository())->repositoryCreate((array)[
-                    'option'      => $insertInfo['option_item'],
+                    'option' => $insertInfo['option_item'],
                     'option_uuid' => $uuid,
                 ]);
                 // 试题分类关联
@@ -79,8 +81,8 @@ class OptionRepository implements StoreRepositoryInterface
                     foreach ($categoryArray as $key => $value) {
                         $examCategoryArray[$key] = [
                             'exam_category_uuid' => $value,
-                            'exam_uuid'          => $uuid,
-                            'store_uuid'         => $insertInfo['store_uuid']
+                            'exam_uuid' => $uuid,
+                            'store_uuid' => $insertInfo['store_uuid']
                         ];
                     }
                     (new CategoryRelationRepository())->repositoryCreate((array)$examCategoryArray);
@@ -92,8 +94,8 @@ class OptionRepository implements StoreRepositoryInterface
                     foreach ($tagArray as $key => $value) {
                         $examTagArray[$key] = [
                             'exam_tag_uuid' => $value,
-                            'exam_uuid'     => $uuid,
-                            'store_uuid'    => $insertInfo['store_uuid']
+                            'exam_uuid' => $uuid,
+                            'store_uuid' => $insertInfo['store_uuid']
                         ];
                     }
                     (new TagRelationRepository())->repositoryCreate((array)$examTagArray);
@@ -105,8 +107,8 @@ class OptionRepository implements StoreRepositoryInterface
                     foreach ($collectionArray as $key => $value) {
                         $examCollectionArray[$key] = [
                             'exam_collection_uuid' => $value,
-                            'exam_uuid'            => $uuid,
-                            'store_uuid'           => $insertInfo['store_uuid']
+                            'exam_uuid' => $uuid,
+                            'store_uuid' => $insertInfo['store_uuid']
                         ];
                     }
                     (new CollectionRelationRepository())->repositoryCreate((array)$examCollectionArray);
@@ -139,11 +141,23 @@ class OptionRepository implements StoreRepositoryInterface
      */
     public function repositoryFind(\Closure $closure): array
     {
-        $bean = $this->optionsModel::query()
+        $bean = (new StoreExamOption)::query()
             ->with(['coverFileInfo:uuid,file_name,file_url'])
             ->with(['optionItem:uuid,option_uuid,is_check,check,title'])
+            ->with(['creator:id,name'])
             ->where($closure)
-            ->first($this->optionsModel->searchFields);
+            ->first([
+                'uuid',
+                'title',
+                'file_uuid',
+                'answer',
+                'analysis',
+                'tips_expend_score',
+                'answer_income_score',
+                'is_show',
+                'level',
+                "create_id",
+            ]);
 
         if (!empty($bean)) return $bean->toArray();
         return [];
@@ -177,8 +191,8 @@ class OptionRepository implements StoreRepositoryInterface
                 foreach ($categoryArray as $key => $value) {
                     $examCategoryArray[$key] = [
                         'exam_category_uuid' => $value,
-                        'exam_uuid'          => $uuid,
-                        'store_uuid'         => $storeId
+                        'exam_uuid' => $uuid,
+                        'store_uuid' => $storeId
                     ];
                 }
                 $categoryRelationRepository->repositoryCreate((array)$examCategoryArray);
@@ -193,8 +207,8 @@ class OptionRepository implements StoreRepositoryInterface
                 foreach ($tagArray as $key => $value) {
                     $examTagArray[$key] = [
                         'exam_tag_uuid' => $value,
-                        'exam_uuid'     => $uuid,
-                        'store_uuid'    => $storeId
+                        'exam_uuid' => $uuid,
+                        'store_uuid' => $storeId
                     ];
                 }
                 $tagRelationRepository->repositoryCreate((array)$examTagArray);
@@ -209,8 +223,8 @@ class OptionRepository implements StoreRepositoryInterface
                 foreach ($collectionArray as $key => $value) {
                     $examCollectionArray[$key] = [
                         'exam_collection_uuid' => $value,
-                        'exam_uuid'            => $uuid,
-                        'store_uuid'           => $storeId
+                        'exam_uuid' => $uuid,
+                        'store_uuid' => $storeId
                     ];
                 }
                 var_dump("先试卷uuid", $examCollectionArray);
@@ -223,7 +237,7 @@ class OptionRepository implements StoreRepositoryInterface
             unset($updateInfo['category']);
             unset($updateInfo['option_item']);
 
-            $result = $this->optionsModel::query()->where($updateWhere)->update(($updateInfo));
+            $result = (new StoreExamOption)::query()->where($updateWhere)->update(($updateInfo));
         });
 
         return $result;
@@ -237,7 +251,7 @@ class OptionRepository implements StoreRepositoryInterface
      */
     public function repositoryDelete(array $deleteWhere): int
     {
-        return $this->optionsModel::query()->where($deleteWhere)->delete();
+        return (new StoreExamOption)::query()->where($deleteWhere)->delete();
     }
 
     /**
@@ -253,7 +267,7 @@ class OptionRepository implements StoreRepositoryInterface
         // 删除试卷管理、分类关联、知识点关联
         $result = 0;
         Db::transaction(function () use ($deleteWhere, $field, &$result) {
-            $result = $this->optionsModel::query()->whereIn($field, $deleteWhere)->delete();
+            $result = (new StoreExamOption)::query()->whereIn($field, $deleteWhere)->delete();
 
             $collectionRelationRepository = new CollectionRelationRepository();
             $collectionRelationRepository->repositoryWhereInDelete((array)$deleteWhere, (string)'exam_uuid');
@@ -276,6 +290,6 @@ class OptionRepository implements StoreRepositoryInterface
      */
     public function repositoryCount(\Closure $closure): int
     {
-        return $this->optionsModel::query()->where($closure)->count();
+        return (new StoreExamOption)::query()->where($closure)->count();
     }
 }

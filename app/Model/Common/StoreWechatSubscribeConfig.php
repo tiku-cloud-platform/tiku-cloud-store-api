@@ -28,12 +28,24 @@ class StoreWechatSubscribeConfig extends BaseModel
         'is_show',
         'orders',
         'file_uuid',
-        'description'
+        'description',
+        "create_id",
     ];
 
     protected $casts = [
         'data' => 'array'
     ];
+
+    protected $hidden = ["create_id"];
+
+    /**
+     * 创建人信息
+     * @return BelongsTo
+     */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(StoreUser::class, "create_id", "id");
+    }
 
     /**
      * 图标封面

@@ -20,5 +20,6 @@ class StoreExamCategoryRelation extends BaseModel
         'exam_category_uuid',
         'exam_uuid',
         'store_uuid',
+        "create_id",
     ];
 }

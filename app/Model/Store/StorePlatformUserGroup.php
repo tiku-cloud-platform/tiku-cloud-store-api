@@ -11,14 +11,5 @@ namespace App\Model\Store;
  */
 class StorePlatformUserGroup extends \App\Model\Common\StorePlatformUserGroup
 {
-    public $searchFields = [
-        'title',
-        'uuid',
-        'created_at',
-        'is_show',
-        "is_default",
-        "remark",
-        "file_uuid",
-        "score",
-    ];
+
 }

@@ -11,24 +11,4 @@ namespace App\Model\Store;
  */
 class StoreArticle extends \App\Model\Common\StoreArticle
 {
-    public $searchFields = [
-        'uuid',
-        'article_category_uuid',
-        'title',
-        'file_uuid',
-        'content',
-        'publish_date',
-        'author',
-        'source',
-        'read_number',
-        'orders',
-        'is_show',
-        'is_top',
-        'is_publish',
-        "read_score",
-        "share_score",
-        "click_score",
-        "collection_score",
-        "read_expend_score",
-    ];
 }

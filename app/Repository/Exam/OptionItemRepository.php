@@ -17,16 +17,6 @@ use Hyperf\Di\Annotation\Inject;
 class OptionItemRepository implements StoreRepositoryInterface
 {
     /**
-     * @Inject()
-     * @var StoreExamOptionItem
-     */
-    protected $optionItemModel;
-
-    public function __construct()
-    {
-    }
-
-    /**
      * 查询数据
      *
      * @param \Closure $closure
@@ -46,9 +36,9 @@ class OptionItemRepository implements StoreRepositoryInterface
      */
     public function repositoryCreate(array $insertInfo): bool
     {
-        return $this->optionItemModel->batchInsert((string)$this->optionItemModel->getTable(),
+        return (new StoreExamOptionItem)->batchInsert((new StoreExamOptionItem)->getTable(),
             (array)$insertInfo['option'],
-            (string)'option_uuid',
+            'option_uuid',
             (string)$insertInfo['option_uuid']
         );
     }
@@ -85,10 +75,10 @@ class OptionItemRepository implements StoreRepositoryInterface
      */
     public function repositoryUpdate(array $updateWhere, array $updateInfo): int
     {
-        $updateResult = $this->optionItemModel->batchUpdateOrCreate(
-            (string)$this->optionItemModel->getTable(),
-            (array)$updateInfo,
-            (string)'option_uuid',
+        $updateResult = (new StoreExamOptionItem)->batchUpdateOrCreate(
+            (new StoreExamOptionItem)->getTable(),
+            $updateInfo,
+            'option_uuid',
             (string)$updateWhere[0][2]);
 
         return $updateResult ? 1 : 0;
