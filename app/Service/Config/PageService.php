@@ -53,7 +53,7 @@ class PageService implements StoreServiceInterface
     public function serviceUpdate(array $requestParams): int
     {
         $uuid = $requestParams["uuid"];
-        unset($requestParams["uuid"]);
+        unset($requestParams["uuid"], $requestParams["creator"]);
         return (new PageRepository())->repositoryUpdate([
             ["uuid", "=", $uuid]
         ], $requestParams);

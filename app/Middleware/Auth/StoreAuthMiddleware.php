@@ -55,6 +55,7 @@ class StoreAuthMiddleware implements MiddlewareInterface
         if (!empty($authentication)) {
             $userInfo = RedisClient::getInstance()->get(CacheKey::STORE_LOGIN_PREFIX . $authentication[0]);
             if (!empty($userInfo)) {
+                // TODO 验证商户账号是否到期
                 Context::set("login_info", json_decode($userInfo, true));
                 return $handler->handle($request);
             }
