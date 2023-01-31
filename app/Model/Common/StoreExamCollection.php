@@ -38,6 +38,7 @@ class StoreExamCollection extends BaseModel
         "max_reading_total",
         "resource_url",
         "create_id",
+        "exam_year",
     ];
 
     protected $appends = [
@@ -88,6 +89,11 @@ class StoreExamCollection extends BaseModel
     }
 
     public function getContentAttribute($key): string
+    {
+        return empty($key) ? '' : $key;
+    }
+
+    public function getExamYearAttribute($key): string
     {
         return empty($key) ? '' : $key;
     }
