@@ -12,6 +12,19 @@ use Closure;
  */
 class ConfigRepository implements StoreRepositoryInterface
 {
+    /**
+     * 查询所有数据
+     * @param Closure $closure
+     * @param array $searchFields
+     * @return array
+     */
+    public function repositoryAll(Closure $closure, array $searchFields = ["id"]): array
+    {
+        $items = (new StoreSignConfig())::query()->where($closure)->get($searchFields);
+        if (!empty($items)) return $items->toArray();
+        return [];
+    }
+
     public function repositorySelect(Closure $closure, int $perSize): array
     {
         $items = (new StoreSignConfig())::query()
