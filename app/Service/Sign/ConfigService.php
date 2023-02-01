@@ -59,6 +59,7 @@ class ConfigService implements StoreServiceInterface
 
     public function serviceUpdate(array $requestParams): int
     {
+        unset($requestParams["creator"]);
         $uuid = $requestParams["uuid"];
         unset($requestParams["uuid"], $requestParams["creator"]);
         if ((new ConfigRepository)->repositoryUpdate([['uuid', '=', $uuid]], $requestParams)) {

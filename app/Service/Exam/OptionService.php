@@ -89,7 +89,7 @@ class OptionService implements StoreServiceInterface
     public function serviceUpdate(array $requestParams): int
     {
         $requestParams['answer'] = implode(',', self::getAnswerFormOption($requestParams));
-
+        unset($requestParams["creator"]);
         return (new OptionRepository)->repositoryUpdate([
             ['uuid', '=', $requestParams['uuid']],
             ['store_uuid', '=', UserInfo::getStoreUserInfo()['store_uuid']]// 绑定关联使用

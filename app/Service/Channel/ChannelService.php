@@ -85,6 +85,7 @@ class ChannelService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
+        unset($requestParams["creator"]);
         return (new ChannelRepository)->repositoryUpdate([
             ['uuid', '=', $requestParams['uuid'] ?? ""],
         ], [

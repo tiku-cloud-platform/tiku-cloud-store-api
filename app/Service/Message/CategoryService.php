@@ -67,6 +67,7 @@ class CategoryService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
+        unset($requestParams["creator"]);
         return (new CategoryRepository)->repositoryUpdate([
             ['uuid', '=', trim($requestParams['uuid'])],
         ], [

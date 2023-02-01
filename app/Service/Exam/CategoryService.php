@@ -98,6 +98,7 @@ class CategoryService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
+        unset($requestParams["creator"]);
         $requestParams['parent_uuid'] = empty($requestParams['parent_uuid']) ? null : $requestParams['parent_uuid'];
         $updateRows                   = (new CategoryRepository)->repositoryUpdate([
             ['uuid', '=', $requestParams['uuid']]

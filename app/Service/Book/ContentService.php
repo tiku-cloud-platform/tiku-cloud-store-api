@@ -63,6 +63,7 @@ class ContentService implements StoreServiceInterface
 
     public function serviceUpdate(array $requestParams): int
     {
+        unset($requestParams["creator"]);
         if (!isset($requestParams["uuid"])) return 0;
         $requestParams = $this->formatter($requestParams);
         $uuid          = $requestParams["uuid"];

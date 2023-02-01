@@ -71,6 +71,7 @@ class GradeService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
+        unset($requestParams["creator"]);
         return (new GradeRepository)->repositoryUpdate([['uuid', '=', $requestParams['uuid']]], [
             'title' => trim($requestParams['title']),
             'is_show' => $requestParams['is_show'],

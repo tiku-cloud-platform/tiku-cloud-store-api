@@ -62,6 +62,7 @@ class JudeOptionService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
+        unset($requestParams["creator"]);
         (new JudeOptionRepository)->repositoryUpdate([
             ['uuid', '=', $requestParams['uuid']],
             ['store_uuid', '=', UserInfo::getStoreUserInfo()['store_uuid']]// 绑定关联使用

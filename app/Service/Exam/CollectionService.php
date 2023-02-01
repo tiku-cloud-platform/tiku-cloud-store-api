@@ -93,6 +93,7 @@ class CollectionService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
+        unset($requestParams["creator"]);
         return (new CollectionRepository)->repositoryUpdate([
             ['uuid', '=', $requestParams['uuid']]
         ], $requestParams);

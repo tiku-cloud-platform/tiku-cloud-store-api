@@ -54,6 +54,7 @@ class DictService implements StoreServiceInterface
 
     public function serviceUpdate(array $requestParams): int
     {
+        unset($requestParams["creator"]);
         $uuid = $requestParams["uuid"];
         unset($requestParams["uuid"]);
         return (new DictionaryRepository())->repositoryUpdate([

@@ -57,6 +57,7 @@ class UserService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
+        unset($requestParams["creator"]);
         $userInfo   = UserInfo::getStoreUserInfo();
         $updateInfo = [
             'name' => $requestParams['name'],
