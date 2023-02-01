@@ -81,6 +81,7 @@ class BannerService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
+        unset($requestParams["creator"]);
         return (new BannerRepository)->repositoryUpdate([
             ['uuid', '=', trim($requestParams['uuid'])],
         ], [

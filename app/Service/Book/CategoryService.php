@@ -47,6 +47,7 @@ class CategoryService implements StoreServiceInterface
 
     public function serviceUpdate(array $requestParams): int
     {
+        unset($requestParams["creator"]);
         if (!isset($requestParams["uuid"])) return 0;
         $uuid = $requestParams["uuid"];
         unset($requestParams["uuid"]);

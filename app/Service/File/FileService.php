@@ -105,7 +105,7 @@ class FileService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
-
+        unset($requestParams["creator"]);
     }
 
     /**

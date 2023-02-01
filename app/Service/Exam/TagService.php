@@ -89,6 +89,7 @@ class TagService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
+        unset($requestParams["creator"]);
         $requestParams['parent_uuid'] = empty($requestParams['parent_uuid']) ? null : $requestParams['parent_uuid'];
         return (new TagRepository)->repositoryUpdate([
             ['uuid', '=', $requestParams['uuid']]

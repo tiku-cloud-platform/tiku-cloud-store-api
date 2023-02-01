@@ -82,6 +82,7 @@ class FileGroupService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
+        unset($requestParams["creator"]);
         return (new FileGroupRepository)->repositoryUpdate([
             ['uuid', '=', trim($requestParams['uuid'])],
         ], [

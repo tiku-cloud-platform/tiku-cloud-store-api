@@ -81,6 +81,7 @@ class MenuService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
+        unset($requestParams["creator"]);
         return (new MenuRepository)->repositoryUpdate([
             ['uuid', '=', trim($requestParams['uuid'])],
         ], [

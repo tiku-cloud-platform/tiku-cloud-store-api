@@ -77,6 +77,7 @@ class ContentService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
+        unset($requestParams["creator"]);
         $imageArray = ImageSrcSearch::searchImageUrl((string)$requestParams['content']);
         if (!empty($imageArray)) {
             $remoteFileArray          = (new FileUpload())->fileUpload($imageArray);

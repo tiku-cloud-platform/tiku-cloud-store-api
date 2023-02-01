@@ -77,6 +77,7 @@ class PlatformSettingService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
+        unset($requestParams["creator"]);
         (new PlatformSettingRepository)->repositoryUpdate([
             ['uuid', '=', trim($requestParams['uuid'])],
         ], [

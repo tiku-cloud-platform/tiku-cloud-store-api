@@ -73,6 +73,7 @@ class GroupService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
+        unset($requestParams["creator"]);
         return (new GroupRepository)->repositoryUpdate([
             ['uuid', '=', $requestParams['uuid'] ?? ""],
         ], [

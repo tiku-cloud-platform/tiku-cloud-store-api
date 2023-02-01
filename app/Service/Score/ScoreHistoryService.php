@@ -87,6 +87,7 @@ class ScoreHistoryService implements StoreServiceInterface
      */
     public function serviceUpdate(array $requestParams): int
     {
+        unset($requestParams["creator"]);
         return 1;
     }
 
