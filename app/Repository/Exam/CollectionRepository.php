@@ -50,6 +50,7 @@ class CollectionRepository implements StoreRepositoryInterface
                 "resource_url",
                 "create_id",
                 "created_at",
+                "exam_year",
             ])
             ->orderByDesc('id')
             ->paginate($perSize);
@@ -144,6 +145,7 @@ class CollectionRepository implements StoreRepositoryInterface
                 "resource_url",
                 "create_id",
                 "created_at",
+                "exam_year",
             ]);
 
         if (!empty($bean)) return $bean->toArray();

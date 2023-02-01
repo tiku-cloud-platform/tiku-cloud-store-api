@@ -57,4 +57,9 @@ class CacheKey extends AbstractConstants
      * @Message("云文件存储token前缀")
      */
     const  CLOUD_PLATFORM_FILE_TOKEN = "cloud_platform_file_token:";
+
+    /**
+     * @Message("签到天数配置")
+     */
+    const  SIGN_CONFIG = "sign_config:";
 }
