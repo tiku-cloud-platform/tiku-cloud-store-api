@@ -19,7 +19,7 @@ use Hyperf\HttpServer\Annotation\PutMapping;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * 单选试题
+ * 问答试题
  *
  * @Middlewares({
  *     @Middleware(StoreAuthMiddleware::class)

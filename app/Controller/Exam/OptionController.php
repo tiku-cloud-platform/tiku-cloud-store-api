@@ -35,7 +35,7 @@ class OptionController extends StoreBaseController
      * @GetMapping(path="list")
      * @return ResponseInterface
      */
-    public function index()
+    public function index(): ResponseInterface
     {
         $items = (new OptionService)->serviceSelect($this->request->all());
         return $this->httpResponse->success($items);
@@ -46,7 +46,7 @@ class OptionController extends StoreBaseController
      * @param UUIDValidate $validate
      * @return ResponseInterface
      */
-    public function show(UUIDValidate $validate)
+    public function show(UUIDValidate $validate): ResponseInterface
     {
         $bean = (new OptionService)->serviceFind($this->request->all());
         return $this->httpResponse->success($bean);
@@ -57,7 +57,7 @@ class OptionController extends StoreBaseController
      * @param OptionValidate $validate
      * @return ResponseInterface
      */
-    public function create(OptionValidate $validate)
+    public function create(OptionValidate $validate): ResponseInterface
     {
         // 验证单选题数
         $verifyResult = (new OptionService)->verifyCollectionSum((array)$this->request->all()["collection"]);
@@ -74,7 +74,7 @@ class OptionController extends StoreBaseController
      * @param OptionValidate $validate
      * @return ResponseInterface
      */
-    public function update(OptionValidate $validate)
+    public function update(OptionValidate $validate): ResponseInterface
     {
         // 验证单选题数
         $verifyResult = (new OptionService)->verifyCollectionSum((array)$this->request->all()["collection"], (string)$this->request->all()["uuid"]);
@@ -90,7 +90,7 @@ class OptionController extends StoreBaseController
      * @DeleteMapping(path="delete")
      * @return ResponseInterface
      */
-    public function destroy()
+    public function destroy(): ResponseInterface
     {
         $deleteResult = (new OptionService)->serviceDelete($this->request->all());
         return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();

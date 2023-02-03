@@ -40,7 +40,6 @@ class CollectionRepository implements StoreRepositoryInterface
                 'submit_number',
                 'exam_category_uuid',
                 'exam_time',
-                'content',
                 'level',
                 'author',
                 'audit_author',

@@ -84,7 +84,7 @@ class ReadingRepository implements StoreRepositoryInterface
                             'store_uuid' => $insertInfo['store_uuid']
                         ];
                     }
-                    (new ReadingCategoryRelationRepository())->repositoryCreate((array)$examCategoryArray);
+                    (new ReadingCategoryRelationRepository())->repositoryCreate($examCategoryArray);
                 }
                 // 知识点关联
                 if (!empty($insertInfo['tag'])) {
@@ -97,7 +97,7 @@ class ReadingRepository implements StoreRepositoryInterface
                             'store_uuid' => $insertInfo['store_uuid']
                         ];
                     }
-                    (new ReadingTagRelationRepository())->repositoryCreate((array)$examTagArray);
+                    (new ReadingTagRelationRepository())->repositoryCreate($examTagArray);
                 }
                 // 试卷关联
                 if (!empty($insertInfo['collection'])) {
@@ -110,7 +110,7 @@ class ReadingRepository implements StoreRepositoryInterface
                             'store_uuid' => $insertInfo['store_uuid']
                         ];
                     }
-                    (new ReadingCollectionRelationRepository())->repositoryCreate((array)$examCollectionArray);
+                    (new ReadingCollectionRelationRepository())->repositoryCreate($examCollectionArray);
                 }
             }
 
