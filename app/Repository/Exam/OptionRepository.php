@@ -32,7 +32,6 @@ class OptionRepository implements StoreRepositoryInterface
             ->where($closure)
             ->select([
                 'uuid',
-                'title',
                 'file_uuid',
                 'answer',
                 'analysis',

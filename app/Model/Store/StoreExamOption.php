@@ -17,7 +17,7 @@ class StoreExamOption extends \App\Model\Common\StoreExamOption
         'collection',
     ];
 
-    public function getCategoryAttribute()
+    public function getCategoryAttribute(): array
     {
         $categoryItems = StoreExamCategoryRelation::query()->where([
             ['exam_uuid', '=', $this->attributes['uuid']]
@@ -30,7 +30,7 @@ class StoreExamOption extends \App\Model\Common\StoreExamOption
         return [];
     }
 
-    public function getTagAttribute()
+    public function getTagAttribute(): array
     {
         $tagItems = StoreExamTagRelation::query()->where([
             ['exam_uuid', '=', $this->attributes['uuid']]
@@ -43,7 +43,7 @@ class StoreExamOption extends \App\Model\Common\StoreExamOption
         return [];
     }
 
-    public function getCollectionAttribute()
+    public function getCollectionAttribute(): array
     {
         $collectionItems = StoreExamCollectionRelation::query()->where([
             ['exam_uuid', '=', $this->attributes['uuid']]
