@@ -20,10 +20,6 @@ use App\Service\StoreServiceInterface;
  */
 class ArticleService implements StoreServiceInterface
 {
-    public function __construct()
-    {
-    }
-
     /**
      * 格式化查询条件
      *
