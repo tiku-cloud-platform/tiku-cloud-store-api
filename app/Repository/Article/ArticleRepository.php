@@ -35,7 +35,6 @@ class ArticleRepository implements StoreRepositoryInterface
                 'article_category_uuid',
                 'title',
                 'file_uuid',
-                'content',
                 'publish_date',
                 'author',
                 'source',
