@@ -18,7 +18,6 @@ class StorePlatformContent extends BaseModel
 
     protected $fillable = [
         'uuid',
-        'position',
         'content',
         'is_show',
         'store_uuid',
