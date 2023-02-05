@@ -95,7 +95,6 @@ class PlatformContentService implements StoreServiceInterface
         ], [
             'title' => trim($requestParams['title']),
             'is_show' => in_array($requestParams['is_show'], [1, 2]) ? $requestParams["is_show"] : 2,
-            'position' => $requestParams['position'],
             'content' => $requestParams['content'],
         ]);
     }

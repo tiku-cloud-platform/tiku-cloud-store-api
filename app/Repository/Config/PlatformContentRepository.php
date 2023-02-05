@@ -18,32 +18,19 @@ use Hyperf\Di\Annotation\Inject;
 class PlatformContentRepository implements StoreRepositoryInterface
 {
     /**
-     * @Inject()
-     * @var StorePlatformContent
-     */
-    protected $contentModel;
-
-    public function __construct()
-    {
-    }
-
-    /**
      * 查询数据
-     *
+     * @param Closure $closure
      * @param int $perSize 分页大小
      * @return array
      */
     public function repositorySelect(Closure $closure, int $perSize): array
     {
-        $items = $this->contentModel::query()
+        $items = (new StorePlatformContent)::query()
             ->with(['creator:id,name'])
             ->where($closure)
             ->select([
                 'uuid',
-                'position',
-                'content',
                 'is_show',
-                'content',
                 'title',
                 'orders',
                 "create_id",
@@ -68,7 +55,7 @@ class PlatformContentRepository implements StoreRepositoryInterface
      */
     public function repositoryCreate(array $insertInfo): bool
     {
-        if (!empty($this->contentModel::query()->create($insertInfo))) {
+        if (!empty((new StorePlatformContent)::query()->create($insertInfo))) {
             return true;
         }
 
@@ -95,15 +82,13 @@ class PlatformContentRepository implements StoreRepositoryInterface
      */
     public function repositoryFind(Closure $closure): array
     {
-        $bean = $this->contentModel::query()
+        $bean = (new StorePlatformContent)::query()
             ->with(['creator:id,name'])
             ->where($closure)
             ->first([
                 'uuid',
-                'position',
                 'content',
                 'is_show',
-                'content',
                 'title',
                 'orders',
                 "create_id",
@@ -123,7 +108,7 @@ class PlatformContentRepository implements StoreRepositoryInterface
      */
     public function repositoryUpdate(array $updateWhere, array $updateInfo): int
     {
-        return $this->contentModel::query()->where($updateWhere)->update($updateInfo);
+        return (new StorePlatformContent)::query()->where($updateWhere)->update($updateInfo);
     }
 
     /**
@@ -134,7 +119,7 @@ class PlatformContentRepository implements StoreRepositoryInterface
      */
     public function repositoryDelete(array $deleteWhere): int
     {
-        return $this->contentModel::query()->where($deleteWhere)->delete();
+        return (new StorePlatformContent)::query()->where($deleteWhere)->delete();
     }
 
     /**
@@ -146,6 +131,6 @@ class PlatformContentRepository implements StoreRepositoryInterface
      */
     public function repositoryWhereInDelete(array $deleteWhere, string $field): int
     {
-        return $this->contentModel::query()->whereIn($field, $deleteWhere)->delete();
+        return (new StorePlatformContent)::query()->whereIn($field, $deleteWhere)->delete();
     }
 }
