@@ -32,6 +32,7 @@ class StoreExamReading extends BaseModel
         "is_search",
         "orders",
         "create_id",
+        "remark",
     ];
 
     protected $hidden = ["create_id"];
