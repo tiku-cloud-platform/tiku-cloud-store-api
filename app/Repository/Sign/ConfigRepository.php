@@ -30,6 +30,7 @@ class ConfigRepository implements StoreRepositoryInterface
         $items = (new StoreSignConfig())::query()
             ->with(['creator:id,name'])
             ->where($closure)
+            ->orderByDesc("num")
             ->paginate($perSize, [
                 'uuid',
                 'num',

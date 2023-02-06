@@ -17,36 +17,33 @@ use Hyperf\Di\Annotation\Inject;
 class ScoreHistoryRepository implements StoreRepositoryInterface
 {
     /**
-     * @Inject()
-     * @var StoreUserScoreHistory
-     */
-    protected $scoreHistoryModel;
-
-    public function __construct()
-    {
-    }
-
-    /**
      * 查询数据
      *
+     * @param \Closure $closure
      * @param int $perSize 分页大小
      * @return array
      */
     public function repositorySelect(\Closure $closure, int $perSize): array
     {
-        $items = $this->scoreHistoryModel::query()
-            ->with(['keyInfo:uuid,title,describe,value'])
+        $items = (new StoreUserScoreHistory)::query()
             ->with(['user:uuid,real_name'])
             ->where($closure)
-            ->select($this->scoreHistoryModel->searchFileds)
+            ->select([
+                "title",
+                "client_type",
+                "type",
+                "score",
+                "created_at",
+                "user_uuid",
+            ])
             ->orderByDesc('id')
-            ->paginate((int)$perSize);
+            ->paginate($perSize);
 
         return [
             'items' => $items->items(),
             'total' => $items->total(),
-            'size'  => $items->perPage(),
-            'page'  => $items->currentPage(),
+            'size' => $items->perPage(),
+            'page' => $items->currentPage(),
         ];
     }
 
@@ -126,7 +123,7 @@ class ScoreHistoryRepository implements StoreRepositoryInterface
     public function repositorySum(array $searchWhere, array $searchFields): array
     {
         foreach ($searchFields as $value) {
-            $searchFields[$value] = $this->scoreHistoryModel::query()->where($searchWhere)->sum($value);
+            $searchFields[$value] = (new StoreUserScoreHistory)::query()->where($searchWhere)->sum($value);
         }
 
         return $searchFields;
