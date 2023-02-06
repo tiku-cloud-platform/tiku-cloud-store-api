@@ -17,16 +17,6 @@ class StoreUserScoreHistory extends BaseModel
 {
     protected $table = 'store_user_score_history';
 
-    protected $fillable = [
-        'uuid',
-        'type',
-        'title',
-        'score',
-        'user_uuid',
-        'score_key',
-        'store_uuid'
-    ];
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(StorePlatformUser::class, 'user_uuid', 'uuid');

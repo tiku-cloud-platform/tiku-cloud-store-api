@@ -51,23 +51,10 @@ class ScoreHistoryService implements StoreServiceInterface
      */
     public function serviceSelect(array $requestParams): array
     {
-        $items = (new ScoreHistoryRepository)->repositorySelect(
+        return (new ScoreHistoryRepository)->repositorySelect(
             self::searchWhere($requestParams),
-            (int)$requestParams['size'] ?? 20
+            (int)($requestParams['size'] ?? 20)
         );
-
-        // 查询积分汇总
-        if (!empty($requestParams['user_id'])) {
-            $income = (new ScoreHistoryRepository)->repositorySum([['user_uuid', '=', $requestParams['user_id']], ['type', '=', 1]], ['score']);
-            $expend = (new ScoreHistoryRepository)->repositorySum([['user_uuid', '=', $requestParams['user_id']], ['type', '=', 2]], ['score']);
-        } else {
-            $income = (new ScoreHistoryRepository)->repositorySum([['type', '=', 1]], ['score']);
-            $expend = (new ScoreHistoryRepository)->repositorySum([['type', '=', 2]], ['score']);
-        }
-        $items['income'] = $income['score'] ?? "0.00";
-        $items['expend'] = $expend['score'] ?? "0.00";
-
-        return $items;
     }
 
     /**

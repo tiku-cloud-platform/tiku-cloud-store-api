@@ -19,7 +19,7 @@ use Psr\Http\Message\ResponseInterface;
  * @Middlewares({
  *     @Middleware(StoreAuthMiddleware::class)
  *     })
- * @Controller(prefix="store/score/history")
+ * @Controller(prefix="score/history")
  * Class HistoryController
  * @package App\Controller\Store\Score
  */

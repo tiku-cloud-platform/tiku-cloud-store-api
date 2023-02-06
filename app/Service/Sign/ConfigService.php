@@ -44,7 +44,8 @@ class ConfigService implements StoreServiceInterface
     {
         $requestParams['uuid']       = UUID::getUUID();
         $requestParams['store_uuid'] = UserInfo::getStoreUserInfo()['store_uuid'];
-        if ((new ConfigRepository)->repositoryCreate($requestParams) && $requestParams["is_show"] === 1) {
+        $createResult                = (new ConfigRepository)->repositoryCreate($requestParams);
+        if ($createResult && $requestParams["is_show"] === 1) {
             $updateResult = RedisClient::getInstance()->hSet(CacheKey::SIGN_CONFIG . UserInfo::getStoreUserInfo()["store_uuid"],
                 (string)$requestParams["num"], json_encode([
                     "score" => $requestParams["score"],
@@ -54,7 +55,7 @@ class ConfigService implements StoreServiceInterface
                 return true;
             }
         }
-        return false;
+        return $createResult;
     }
 
     public function serviceUpdate(array $requestParams): int
