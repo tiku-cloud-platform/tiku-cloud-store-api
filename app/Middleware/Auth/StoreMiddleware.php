@@ -52,11 +52,10 @@ class StoreMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        var_dump('商户端中间件');
         if ($this->request->header('Client-Type', '') == 'web_store') {
             return $handler->handle($request);
         }
 
-        return $this->httpResponse->response((string)'客户端类型错误');
+        return $this->httpResponse->response('客户端类型错误');
     }
 }

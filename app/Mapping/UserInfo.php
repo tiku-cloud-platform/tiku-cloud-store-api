@@ -30,11 +30,6 @@ class UserInfo
      */
     protected $request;
 
-    public function getWeChatLoginToken(): string
-    {
-        return $this->request->header('Authentication', '');
-    }
-
     /**
      * 获取商户端登录信息
      * @return array
@@ -46,20 +41,17 @@ class UserInfo
         return [];
     }
 
-    /**
-     * 获取微信客户端登录信息
-     * @return array
-     */
-    public static function getWeChatUserInfo(): array
+    public static function getStoreUserUuid(): string
     {
-        $userAgent = (new self())->request->header('User-Agent', 'asdadsf');
-        $token     = (new self())->getWeChatLoginToken();
-        if (!empty($token)) {
-            $userInfo = (new RedisClient)->get(CacheKey::USER_LOGIN_PREFIX, $token);
-            if (!empty($userInfo)) return $userInfo;
-            return [];
-        }
+        $userInfo = Context::get("login_info");
+        if (!empty($userInfo)) return $userInfo["uuid"];
+        return "";
+    }
 
-        return [];
+    public static function getStoreUserStoreUuid(): string
+    {
+        $userInfo = Context::get("login_info");
+        if (!empty($userInfo)) return $userInfo["store_uuid"];
+        return "";
     }
 }
