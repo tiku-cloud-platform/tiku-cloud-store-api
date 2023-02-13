@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace App\Service\Config;
 
 use App\Constants\CacheKey;
+use App\Library\Encrypt\AesEncrypt;
 use App\Mapping\RedisClient;
 use App\Mapping\UserInfo;
 use App\Mapping\UUID;
@@ -62,7 +63,18 @@ class PlatformSettingService implements StoreServiceInterface
         $requestParams['uuid']       = UUID::getUUID();
         $userInfo                    = UserInfo::getStoreUserInfo();
         $requestParams['store_uuid'] = $userInfo['store_uuid'];
-
+        $value                       = json_decode($requestParams["values"], true);
+        $value["mini_secret"]        = $this->configEncrypt([
+            "type" => "wechat_miniprogram",
+            "app_key" => trim($value["app_key"]),
+            "app_secret" => trim($value["app_secret"])
+        ]);
+        $value["office_secret"]      = $this->configEncrypt([
+            "type" => "office",
+            "app_key" => trim($value["offical_app_key"]),
+            "app_secret" => trim($value["offical_app_secret"])
+        ]);
+        $requestParams["values"]     = json_encode($value, JSON_UNESCAPED_UNICODE);
         (new PlatformSettingRepository)->repositoryCreate($requestParams);
 
         return $this->updateWxSetting((string)$userInfo['store_uuid'], $requestParams);
@@ -78,6 +90,18 @@ class PlatformSettingService implements StoreServiceInterface
     public function serviceUpdate(array $requestParams): int
     {
         unset($requestParams["creator"]);
+        $value                   = json_decode($requestParams["values"], true);
+        $value["mini_secret"]    = $this->configEncrypt([
+            "type" => "wechat_miniprogram",
+            "app_key" => trim($value["app_key"]),
+            "app_secret" => trim($value["app_secret"])
+        ]);
+        $value["office_secret"]  = $this->configEncrypt([
+            "type" => "office",
+            "app_key" => trim($value["offical_app_key"]),
+            "app_secret" => trim($value["offical_app_secret"])
+        ]);
+        $requestParams["values"] = json_encode($value, JSON_UNESCAPED_UNICODE);
         (new PlatformSettingRepository)->repositoryUpdate([
             ['uuid', '=', trim($requestParams['uuid'])],
         ], [
@@ -158,5 +182,16 @@ class PlatformSettingService implements StoreServiceInterface
             return false;
         }
         return false;
+    }
+
+    /**
+     * 加密微信开发参数
+     * @param array $secret
+     * @return string
+     */
+    private function configEncrypt(array $secret): string
+    {
+        $values = json_encode($secret, JSON_UNESCAPED_UNICODE);
+        return AesEncrypt::getInstance()->aesEncrypt($values);
     }
 }

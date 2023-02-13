@@ -19,7 +19,6 @@ use Psr\Http\Message\ResponseInterface;
 
 /**
  * 平台参数配置
- *
  * @Middlewares({
  *     @Middleware(StoreAuthMiddleware::class)
  *     })
@@ -53,8 +52,9 @@ class SettingController extends StoreBaseController
      * @PostMapping(path="setting/create")
      * @param SettingValidate $validate
      * @return ResponseInterface
+     * @throws \RedisException
      */
-    public function create(SettingValidate $validate)
+    public function create(SettingValidate $validate): ResponseInterface
     {
         $createResult = (new PlatformSettingService)->serviceCreate($this->request->all());
         return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();

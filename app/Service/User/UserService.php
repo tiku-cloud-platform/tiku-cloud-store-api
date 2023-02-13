@@ -17,6 +17,9 @@ class UserService implements StoreServiceInterface
     {
         return function ($query) use ($requestParams) {
             extract($requestParams);
+            if (!empty($user_uuid)) {
+                $query->where("uuid", "=", $user_uuid);
+            }
         };
     }
 
@@ -49,6 +52,8 @@ class UserService implements StoreServiceInterface
 
     public function serviceFind(array $requestParams): array
     {
-
+        $bean               = (new UserRepository())->repositoryAllFind(self::searchWhere($requestParams));
+        $bean["created_at"] = date("Y-m-d", strtotime($bean["created_at"]));
+        return $bean;
     }
 }
