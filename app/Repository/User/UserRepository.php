@@ -6,6 +6,7 @@ namespace App\Repository\User;
 use App\Model\Store\StorePlatformUser;
 use App\Repository\StoreRepositoryInterface;
 use Closure;
+use Hyperf\DbConnection\Db;
 
 /**
  * 平台用户
@@ -63,6 +64,31 @@ class UserRepository implements StoreRepositoryInterface
                 "age",
                 "birthday",
                 "remark",
+            ]);
+
+        if (!empty($bean)) return $bean->toArray();
+        return [];
+    }
+
+    public function repositoryAllFind(Closure $closure): array
+    {
+        $bean = (new StorePlatformUser)::query()
+            ->with(['group:uuid,title'])
+            ->with(['score:uuid,score,user_uuid'])
+            ->where($closure)
+            ->first([
+                "id",
+                "uuid",
+                'real_name',
+                'mobile',
+                "created_at",
+                'updated_at',
+                'store_platform_user_group_uuid',
+                'channel_uuid',
+                "age",
+                "birthday",
+                "remark",
+                "gender",
             ]);
 
         if (!empty($bean)) return $bean->toArray();

@@ -35,8 +35,8 @@ class ScoreHistoryService implements StoreServiceInterface
             if (!empty($end_time)) {
                 $query->where('created_at', '<=', $end_time);
             }
-            if (!empty($user_id)) {
-                $query->where('user_uuid', '=', $user_id);
+            if (!empty($user_uuid)) {
+                $query->where('user_uuid', '=', $user_uuid);
             }
             if (!empty($client_type)) {
                 $query->where('client_type', '=', $client_type);
