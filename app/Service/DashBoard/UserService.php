@@ -38,8 +38,8 @@ class UserService
 
         return [
             "increment" => [// 会员新增指标
-                "yesterday" => 2156,//$incrementYesterday,
-                "current_month" => 35642,//$incrementCurrentMonth,
+                "yesterday" => $incrementYesterday,
+                "current_month" => $incrementCurrentMonth,
                 "yesterday_circular_ratio" => 10.01,
                 "current_month_circular_ratio" => 08.91,
             ],
