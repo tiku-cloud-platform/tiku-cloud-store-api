@@ -23,7 +23,7 @@ class ImageSrcSearch
         $pattern_imgTag = '/<img\b.*?(?:\>|\/>)/i';
         preg_match_all($pattern_imgTag, $content, $matchIMG);
         if (isset($matchIMG[0])) {
-            foreach ($matchIMG[0] as $key => $imgTag) {
+            foreach ($matchIMG[0] as $imgTag) {
                 $pattern_src = '/\bsrc\b\s*=\s*[\'\"]?([^\'\"]*)[\'\"]?/i';
                 preg_match_all($pattern_src, $imgTag, $matchSrc);
                 if (isset($matchSrc[1])) {
@@ -49,6 +49,7 @@ class ImageSrcSearch
         $originImageArray = array_column($realImageArray, 'origin');
         $remoteImageArray = array_column($realImageArray, 'remote');
 
-        return str_replace($originImageArray, $remoteImageArray, $content);
+        $content = str_replace($originImageArray, $remoteImageArray, $content);
+        return preg_replace("/<img/i", "<img width='100%' ", $content);
     }
 }

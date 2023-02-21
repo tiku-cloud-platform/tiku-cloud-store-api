@@ -65,14 +65,16 @@ class PlatformSettingService implements StoreServiceInterface
         $requestParams['store_uuid'] = $userInfo['store_uuid'];
         $value                       = json_decode($requestParams["values"], true);
         $value["mini_secret"]        = $this->configEncrypt([
-            "type" => "wechat_miniprogram",
+            "client" => "wechat_miniprogram",
             "app_key" => trim($value["app_key"]),
-            "app_secret" => trim($value["app_secret"])
+            "app_secret" => trim($value["app_secret"]),
+            "store_uuid" => $userInfo["store_uuid"],
         ]);
         $value["office_secret"]      = $this->configEncrypt([
-            "type" => "office",
+            "client" => "office",
             "app_key" => trim($value["offical_app_key"]),
-            "app_secret" => trim($value["offical_app_secret"])
+            "app_secret" => trim($value["offical_app_secret"]),
+            "store_uuid" => $userInfo["store_uuid"],
         ]);
         $requestParams["values"]     = json_encode($value, JSON_UNESCAPED_UNICODE);
         (new PlatformSettingRepository)->repositoryCreate($requestParams);
@@ -92,14 +94,16 @@ class PlatformSettingService implements StoreServiceInterface
         unset($requestParams["creator"]);
         $value                   = json_decode($requestParams["values"], true);
         $value["mini_secret"]    = $this->configEncrypt([
-            "type" => "wechat_miniprogram",
+            "client" => "wechat_miniprogram",
             "app_key" => trim($value["app_key"]),
-            "app_secret" => trim($value["app_secret"])
+            "app_secret" => trim($value["app_secret"]),
+            "store_uuid" => UserInfo::getStoreUserStoreUuid(),
         ]);
         $value["office_secret"]  = $this->configEncrypt([
-            "type" => "office",
+            "client" => "office",
             "app_key" => trim($value["offical_app_key"]),
-            "app_secret" => trim($value["offical_app_secret"])
+            "app_secret" => trim($value["offical_app_secret"]),
+            "store_uuid" => UserInfo::getStoreUserStoreUuid(),
         ]);
         $requestParams["values"] = json_encode($value, JSON_UNESCAPED_UNICODE);
         (new PlatformSettingRepository)->repositoryUpdate([
@@ -191,7 +195,12 @@ class PlatformSettingService implements StoreServiceInterface
      */
     private function configEncrypt(array $secret): string
     {
-        $values = json_encode($secret, JSON_UNESCAPED_UNICODE);
+        // 商户开发配置
+        $bean            = (new DevelopService())->serviceFind([
+            "store_uuid" => $secret["store_uuid"],
+        ]);
+        $secret["appid"] = $bean["appid"];
+        $values          = json_encode($secret, JSON_UNESCAPED_UNICODE);
         return AesEncrypt::getInstance()->aesEncrypt($values);
     }
 }
