@@ -33,7 +33,7 @@ class ArticleController extends StoreBaseController
      * @GetMapping(path="list")
      * @return ResponseInterface
      */
-    public function index()
+    public function index(): ResponseInterface
     {
         $items = (new ArticleService)->serviceSelect($this->request->all());
         return $this->httpResponse->success($items);
@@ -44,7 +44,7 @@ class ArticleController extends StoreBaseController
      * @param UUIDValidate $validate
      * @return ResponseInterface
      */
-    public function show(UUIDValidate $validate)
+    public function show(UUIDValidate $validate): ResponseInterface
     {
         $bean = (new ArticleService)->serviceFind($this->request->all());
         return $this->httpResponse->success($bean);
@@ -55,7 +55,7 @@ class ArticleController extends StoreBaseController
      * @param ArticleValidate $validate
      * @return ResponseInterface
      */
-    public function create(ArticleValidate $validate)
+    public function create(ArticleValidate $validate): ResponseInterface
     {
         $createResult = (new ArticleService)->serviceCreate($this->request->all());
         return $createResult ? $this->httpResponse->success() : $this->httpResponse->error();
@@ -66,7 +66,7 @@ class ArticleController extends StoreBaseController
      * @param ArticleValidate $validate
      * @return ResponseInterface
      */
-    public function update(ArticleValidate $validate)
+    public function update(ArticleValidate $validate): ResponseInterface
     {
         $updateResult = (new ArticleService)->serviceUpdate($this->request->all());
         return $updateResult ? $this->httpResponse->success() : $this->httpResponse->error();
@@ -76,7 +76,7 @@ class ArticleController extends StoreBaseController
      * @DeleteMapping(path="delete")
      * @return ResponseInterface
      */
-    public function destroy()
+    public function destroy(): ResponseInterface
     {
         $deleteResult = (new ArticleService)->serviceDelete($this->request->all());
         return $deleteResult ? $this->httpResponse->success() : $this->httpResponse->error();
@@ -86,7 +86,7 @@ class ArticleController extends StoreBaseController
      * @PostMapping(path="publish")
      * @return ResponseInterface
      */
-    public function publish()
+    public function publish(): ResponseInterface
     {
         $updateResult = (new ArticleService)->servicePublish($this->request->all());
 
