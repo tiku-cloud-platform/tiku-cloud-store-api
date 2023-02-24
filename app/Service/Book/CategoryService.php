@@ -9,10 +9,6 @@ use App\Repository\Book\CategoryRepository;
 use App\Service\StoreServiceInterface;
 use Closure;
 
-/**
- * 请描述该类是干什么的?
- * @package App\Service\Store\Book
- */
 class CategoryService implements StoreServiceInterface
 {
     public static function searchWhere(array $requestParams): Closure
@@ -27,6 +23,11 @@ class CategoryService implements StoreServiceInterface
                 $query->where('title', 'like', '%' . $title . '%');
             }
         };
+    }
+
+    public function serviceAllSelect(array $requestParams): array
+    {
+        return (new CategoryRepository())->repositoryAll(self::searchWhere($requestParams));
     }
 
     public function serviceSelect(array $requestParams): array

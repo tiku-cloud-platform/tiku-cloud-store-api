@@ -49,6 +49,6 @@ class StoreBookCategory extends BaseModel
     {
         return (new self())::query()->where([
             ["parent_uuid", "=", $this->getAttribute("uuid")]
-        ])->get(["uuid", "title"]);
+        ])->orderBy("orders")->get(["uuid", "title", "parent_uuid", "orders"]);
     }
 }

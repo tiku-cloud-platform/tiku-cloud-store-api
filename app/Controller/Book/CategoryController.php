@@ -21,7 +21,7 @@ use Psr\Http\Message\ResponseInterface;
  * @Middlewares({
  *     @Middleware(StoreAuthMiddleware::class)
  *     })
- * @Controller(prefix="store/book_cateogry")
+ * @Controller(prefix="book_category")
  * Class CategoryController
  * @package App\Controller\Store\Book
  */
@@ -35,6 +35,15 @@ class CategoryController extends StoreBaseController
     {
         $items = (new CategoryService)->serviceSelect($this->request->all());
         return $this->httpResponse->success($items);
+    }
+
+    /**
+     * @GetMapping(path="parent_all")
+     * @return ResponseInterface
+     */
+    public function parentAll(): ResponseInterface
+    {
+        return $this->httpResponse->success((new CategoryService())->serviceAllSelect($this->request->all()));
     }
 
     /**
