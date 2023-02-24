@@ -63,20 +63,22 @@ class PlatformSettingService implements StoreServiceInterface
         $requestParams['uuid']       = UUID::getUUID();
         $userInfo                    = UserInfo::getStoreUserInfo();
         $requestParams['store_uuid'] = $userInfo['store_uuid'];
-        $value                       = json_decode($requestParams["values"], true);
-        $value["mini_secret"]        = $this->configEncrypt([
-            "client" => "wechat_miniprogram",
-            "app_key" => trim($value["app_key"]),
-            "app_secret" => trim($value["app_secret"]),
-            "store_uuid" => $userInfo["store_uuid"],
-        ]);
-        $value["office_secret"]      = $this->configEncrypt([
-            "client" => "office",
-            "app_key" => trim($value["offical_app_key"]),
-            "app_secret" => trim($value["offical_app_secret"]),
-            "store_uuid" => $userInfo["store_uuid"],
-        ]);
-        $requestParams["values"]     = json_encode($value, JSON_UNESCAPED_UNICODE);
+        if ($requestParams["type"] == "wx_setting") {
+            $value                   = json_decode($requestParams["values"], true);
+            $value["mini_secret"]    = $this->configEncrypt([
+                "client" => "wechat_miniprogram",
+                "app_key" => trim($value["app_key"]),
+                "app_secret" => trim($value["app_secret"]),
+                "store_uuid" => $userInfo["store_uuid"],
+            ]);
+            $value["office_secret"]  = $this->configEncrypt([
+                "client" => "office",
+                "app_key" => trim($value["offical_app_key"]),
+                "app_secret" => trim($value["offical_app_secret"]),
+                "store_uuid" => $userInfo["store_uuid"],
+            ]);
+            $requestParams["values"] = json_encode($value, JSON_UNESCAPED_UNICODE);
+        }
         (new PlatformSettingRepository)->repositoryCreate($requestParams);
 
         return $this->updateWxSetting((string)$userInfo['store_uuid'], $requestParams);
@@ -92,20 +94,22 @@ class PlatformSettingService implements StoreServiceInterface
     public function serviceUpdate(array $requestParams): int
     {
         unset($requestParams["creator"]);
-        $value                   = json_decode($requestParams["values"], true);
-        $value["mini_secret"]    = $this->configEncrypt([
-            "client" => "wechat_miniprogram",
-            "app_key" => trim($value["app_key"]),
-            "app_secret" => trim($value["app_secret"]),
-            "store_uuid" => UserInfo::getStoreUserStoreUuid(),
-        ]);
-        $value["office_secret"]  = $this->configEncrypt([
-            "client" => "office",
-            "app_key" => trim($value["offical_app_key"]),
-            "app_secret" => trim($value["offical_app_secret"]),
-            "store_uuid" => UserInfo::getStoreUserStoreUuid(),
-        ]);
-        $requestParams["values"] = json_encode($value, JSON_UNESCAPED_UNICODE);
+        if ($requestParams["type"] == "wx_setting") {
+            $value                   = json_decode($requestParams["values"], true);
+            $value["mini_secret"]    = $this->configEncrypt([
+                "client" => "wechat_miniprogram",
+                "app_key" => trim($value["app_key"]),
+                "app_secret" => trim($value["app_secret"]),
+                "store_uuid" => UserInfo::getStoreUserStoreUuid(),
+            ]);
+            $value["office_secret"]  = $this->configEncrypt([
+                "client" => "office",
+                "app_key" => trim($value["offical_app_key"]),
+                "app_secret" => trim($value["offical_app_secret"]),
+                "store_uuid" => UserInfo::getStoreUserStoreUuid(),
+            ]);
+            $requestParams["values"] = json_encode($value, JSON_UNESCAPED_UNICODE);
+        }
         (new PlatformSettingRepository)->repositoryUpdate([
             ['uuid', '=', trim($requestParams['uuid'])],
         ], [
@@ -113,6 +117,7 @@ class PlatformSettingService implements StoreServiceInterface
             'type' => trim($requestParams['type']),
             'values' => trim($requestParams['values']),
         ]);
+
 
         if ($this->updateWxSetting((string)UserInfo::getStoreUserInfo()['store_uuid'], $requestParams)) {
             return 1;
@@ -185,7 +190,7 @@ class PlatformSettingService implements StoreServiceInterface
             if ($publicResult && $miniResult && $devConfigResult) return true;
             return false;
         }
-        return false;
+        return true;
     }
 
     /**
