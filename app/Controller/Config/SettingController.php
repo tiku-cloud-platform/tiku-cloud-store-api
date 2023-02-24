@@ -64,6 +64,7 @@ class SettingController extends StoreBaseController
      * @PutMapping(path="setting/update")
      * @param SettingValidate $validate
      * @return ResponseInterface
+     * @throws \RedisException
      */
     public function update(SettingValidate $validate)
     {
