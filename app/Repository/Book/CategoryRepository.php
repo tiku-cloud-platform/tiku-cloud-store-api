@@ -13,6 +13,18 @@ use Closure;
  */
 class CategoryRepository implements StoreRepositoryInterface
 {
+    public function repositoryAll(Closure $closure): array
+    {
+        $items = (new StoreBookCategory())::query()
+            ->where($closure)
+            ->where([
+                ["parent_uuid", "=", ""],
+                ["is_show", "=", 1]
+            ])->get(["uuid", "title"]);
+
+        return !empty($items) ? $items->toArray() : [];
+    }
+
     public function repositorySelect(Closure $closure, int $perSize): array
     {
         $items = (new StoreBookCategory)::query()
@@ -27,11 +39,11 @@ class CategoryRepository implements StoreRepositoryInterface
                 "parent_uuid",
                 "create_id",
 //				"is_show",
-//				"orders",
+                "orders",
 //				"created_at",
 //				"updated_at",
             ])
-            ->orderBy('id')
+            ->orderBy('orders')
             ->paginate($perSize);
 
         return [
