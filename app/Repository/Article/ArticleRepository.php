@@ -122,6 +122,7 @@ class ArticleRepository implements StoreRepositoryInterface
                 "read_expend_score",
                 "create_id",
                 "created_at",
+                "content_desc",
             ]);
 
         if (!empty($bean)) return $bean->toArray();

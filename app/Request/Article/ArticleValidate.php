@@ -24,6 +24,7 @@ class ArticleValidate extends FormRequest
     {
         return [
             'title' => 'required|max:32',
+            'content_desc' => 'required|max:100',
             'article_category_uuid' => 'required|uuid|exists:store_article_category,uuid',
             'file_uuid' => 'sometimes|uuid|exists:store_platform_file,uuid',
             'content' => 'required',
@@ -46,6 +47,8 @@ class ArticleValidate extends FormRequest
         return [
             'title.required' => '标题不能为空',
             'title.max' => '标题长度超过32个字符',
+            "content_desc.required" => "文章简介不能为空",
+            "content_desc.max" => "文章简介长度超过100个字符",
             'article_category_uuid.required' => '分类不能为空',
             'article_category_uuid.uuid' => '分类格式不正确',
             'article_category_uuid.exists' => '分类不存在',

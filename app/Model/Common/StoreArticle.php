@@ -37,6 +37,7 @@ class StoreArticle extends BaseModel
         "collection_score",
         "read_expend_score",
         "create_id",
+        "content_desc",
     ];
 
     protected $hidden = ["create_id"];
