@@ -76,10 +76,11 @@ class BookService implements StoreServiceInterface
 
     private function formatter(array $requestParams): array
     {
-        $requestParams["tags"]   = !empty($requestParams["tags"]) ? str_replace("，", ",", $requestParams["tags"]) : "暂无标签";
-        $requestParams["intro"]  = !empty($requestParams["intro"]) ? trim($requestParams["intro"]) : "暂无简介";
-        $requestParams["title"]  = trim($requestParams["title"]);
-        $requestParams["author"] = trim($requestParams["author"]);
+        $requestParams["tags"]         = !empty($requestParams["tags"]) ? str_replace("，", ",", $requestParams["tags"]) : "暂无标签";
+        $requestParams["intro"]        = !empty($requestParams["intro"]) ? trim($requestParams["intro"]) : "暂无简介";
+        $requestParams["title"]        = trim($requestParams["title"]);
+        $requestParams["author"]       = trim($requestParams["author"]);
+        $requestParams["content_desc"] = trim($requestParams["content_desc"]);
 
         return $requestParams;
     }

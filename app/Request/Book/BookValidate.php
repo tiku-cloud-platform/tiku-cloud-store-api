@@ -23,6 +23,7 @@ class BookValidate extends FormRequest
             'title' => 'required|max:32',
             'file_uuid' => 'sometimes|uuid|exists:store_platform_file,uuid',
             'intro' => 'nullable|max:65535',
+            "content_desc" => "required|max:64",
             'author' => 'required|max:100',
             "tags" => "nullable|max:100",
             'source' => 'required|max:100',
@@ -37,6 +38,8 @@ class BookValidate extends FormRequest
         return [
             'title.required' => '书籍名称不能为空',
             'title.max' => '书籍名称长度超过32个字符',
+            "content_desc.required" => "书籍概要不能为空",
+            "content_desc.max" => "书籍概要不能超过64个字符",
             'file_uuid.uuid' => '书籍封面格式不正确',
             'file_uuid.exists' => '书籍封面不存在',
             "intro.max" => "书籍简介过长",

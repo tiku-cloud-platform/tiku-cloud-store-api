@@ -87,6 +87,7 @@ class BookRepository implements StoreRepositoryInterface
                 "updated_at",
                 "click_number",
                 "create_id",
+                "content_desc",
             ])
             ->where($closure)
             ->first();
