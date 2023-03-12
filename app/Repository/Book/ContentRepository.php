@@ -75,6 +75,7 @@ class ContentRepository implements StoreRepositoryInterface
             ->select([
                 "uuid",
                 "store_book_category_uuid",
+                "store_book_uuid",
                 "title",
                 "intro",
                 "content",
