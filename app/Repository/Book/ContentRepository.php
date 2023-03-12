@@ -71,13 +71,9 @@ class ContentRepository implements StoreRepositoryInterface
     public function repositoryFind(Closure $closure): array
     {
         $bean = (new StoreBookContent)::query()
-            ->with(["book:uuid,title"])
-            ->with(['creator:id,name'])
             ->where($closure)
             ->select([
                 "uuid",
-                "store_uuid",
-                "store_book_uuid",
                 "store_book_category_uuid",
                 "title",
                 "intro",
@@ -85,26 +81,19 @@ class ContentRepository implements StoreRepositoryInterface
                 "author",
                 "publish_time",
                 "tags",
-                "read_number",
-                "click_number",
-                "collection_number",
                 "source",
                 "is_show",
                 "orders",
-                "created_at",
-                "updated_at",
                 "read_score",
                 "share_score",
                 "click_score",
                 "collection_score",
                 "read_expend_score",
                 "create_id",
+                "content_type",
             ])->first();
 
-        if (!empty($bean)) {
-            return $bean->toArray();
-        }
-        return [];
+        return !empty($bean) ? $bean->toArray() : [];
     }
 
     public function repositoryUpdate(array $updateWhere, array $updateInfo): int

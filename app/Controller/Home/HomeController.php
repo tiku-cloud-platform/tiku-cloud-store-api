@@ -5,6 +5,7 @@ namespace App\Controller\Home;
 
 use App\Controller\StoreBaseController;
 use App\Middleware\Auth\StoreAuthMiddleware;
+use App\Service\DashBoard\UserService;
 use App\Service\Exam\CollectionService;
 use App\Service\Exam\OptionService;
 use App\Service\Exam\ReadingService;
@@ -23,23 +24,17 @@ use Psr\Http\Message\ResponseInterface;
  *     })
  * @Controller(prefix="store/home")
  * Class HomeController
- * @deprecated
  * @package App\Controller\Store\User
  */
 class HomeController extends StoreBaseController
 {
-    public function __construct(\App\Controller\Store\Home\UserService $userService)
-    {
-        parent::__construct($userService);
-    }
-
     /**
      * @GetMapping(path="index")
      * @return ResponseInterface
      */
     public function index()
     {
-        $userService          = new \App\Controller\Store\Home\UserService();
+        $userService          = new UserService();
         $currentDayStartTime  = date('Y-m-d') . ' 00:00:00';
         $currentDayEndTime    = date('Y-m-d') . ' 23:59:59';
         $collectionService    = new CollectionService();
@@ -48,8 +43,8 @@ class HomeController extends StoreBaseController
         $readinigService      = new ReadingService();
 
         $data = [
-            'now_incr_number' => $userService->serviceCount((array)['start_time' => $currentDayStartTime, 'end_time' => $currentDayEndTime]),// 新增人数
-            'register_number' => $userService->serviceCount(),// 注册人数
+            'now_incr_number' => 1,//$userService->serviceCount((array)['start_time' => $currentDayStartTime, 'end_time' => $currentDayEndTime]),// 新增人数
+            'register_number' => 2,//$userService->serviceCount(),// 注册人数
             'exam_number' => $optionService->serviceCount() + $readinigService->serviceCount(), // 试题总数
             'exam_submit_number' => $collectionService->serviceSum(), // 答题人数
             'register_people_number_list' => [
@@ -70,9 +65,9 @@ class HomeController extends StoreBaseController
             'end_time' => date('Y-m-t') . ' 23:59:59'
         ];
         /** @var array $everyDayArray 每日用户注册 */
-        $everyDayRegisterArray = $userService->serviceEveryDayRegister((array)$monthStartAndEnd);
+        $everyDayRegisterArray = 1;//$userService->serviceEveryDayRegister((array)$monthStartAndEnd);
         /** @var array $everDateTotal 每日用户总数 */
-        $everDateTotalArray = $userService->serviceEveryDayTotal((array)$everyDayRegisterArray);
+        $everDateTotalArray = 1;//$userService->serviceEveryDayTotal((array)$everyDayRegisterArray);
         /** @var array $everyDayExamArray 每日答题总数 */
         $everyDayExamArray = $submitHistoryService->serviceEveryDayRegister((array)$monthStartAndEnd);
         /** @var array $everyDayExamTotalArray 每日系统当前总数 */
