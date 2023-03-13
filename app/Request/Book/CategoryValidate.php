@@ -21,7 +21,7 @@ class CategoryValidate extends FormRequest
     {
         return [
             'store_book_uuid' => 'required|uuid|exists:store_book,uuid',
-            'parent_uuid' => 'sometimes|exists:store_book_category,uuid',
+            'parent_uuid' => 'nullable|exists:store_book_category,uuid',
             'title' => 'required|max:32',
             'is_show' => ['required', 'integer', Rule::in([2, 1])],
             'orders' => 'required|integer|max:100000000',
