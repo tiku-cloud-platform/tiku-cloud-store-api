@@ -40,8 +40,9 @@ class CategoryService implements StoreServiceInterface
 
     public function serviceCreate(array $requestParams): bool
     {
-        $requestParams["uuid"]       = UUID::getUUID();
-        $requestParams['store_uuid'] = UserInfo::getStoreUserInfo()['store_uuid'];
+        $requestParams["uuid"]        = UUID::getUUID();
+        $requestParams['store_uuid']  = UserInfo::getStoreUserInfo()['store_uuid'];
+        $requestParams["parent_uuid"] = empty($requestParams["parent_uuid"]) ? null : $requestParams["parent_uuid"];
 
         return (new CategoryRepository)->repositoryCreate($requestParams);
     }
@@ -52,7 +53,7 @@ class CategoryService implements StoreServiceInterface
         if (!isset($requestParams["uuid"])) return 0;
         $uuid = $requestParams["uuid"];
         unset($requestParams["uuid"]);
-
+        $requestParams["parent_uuid"] = empty($requestParams["parent_uuid"]) ? null : $requestParams["parent_uuid"];
         return (new CategoryRepository)->repositoryUpdate([
             ['uuid', '=', $uuid],
         ], $requestParams);
