@@ -40,6 +40,10 @@ class StoreBookContent extends BaseModel
         "content_type",
     ];
 
+    protected $casts = [
+        "content_type" => "string",
+    ];
+
     protected $hidden = ["create_id"];
 
     /**
