@@ -8,7 +8,6 @@ use Hyperf\Utils\Context;
 
 /**
  * 用户信息管理
- *
  * Class UserInfo
  */
 class UserInfo
