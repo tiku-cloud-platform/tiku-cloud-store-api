@@ -38,6 +38,8 @@ class BookRepository implements StoreRepositoryInterface
                 "updated_at",
                 "click_number",
                 "create_id",
+                "is_recommend",
+                "version",
             ])
             ->orderByDesc('id')
             ->paginate($perSize);
@@ -88,6 +90,8 @@ class BookRepository implements StoreRepositoryInterface
                 "click_number",
                 "create_id",
                 "content_desc",
+                "is_recommend",
+                "version",
             ])
             ->where($closure)
             ->first();

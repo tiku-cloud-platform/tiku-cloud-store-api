@@ -33,6 +33,8 @@ class StoreBook extends BaseModel
         "create_id",
         "content_desc",
         "content_type",
+        "is_recommend",
+        "version",
     ];
 
     protected $appends = [
