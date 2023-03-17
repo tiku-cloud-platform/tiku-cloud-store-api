@@ -16,6 +16,7 @@ class CateRepository implements StoreRepositoryInterface
     {
         return (new StoreBookCate())::query()
             ->where("is_show", "=", 1)
+            ->whereNull("parent_uuid")
             ->get(["uuid", "parent_uuid", "title"])
             ->toArray();
     }
