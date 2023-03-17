@@ -35,6 +35,7 @@ class StoreBook extends BaseModel
         "content_type",
         "is_recommend",
         "version",
+        "cate_uuid"
     ];
 
     protected $appends = [
@@ -43,13 +44,14 @@ class StoreBook extends BaseModel
 
     protected $hidden = ["create_id"];
 
-    /**
-     * 创建人信息
-     * @return BelongsTo
-     */
     public function creator(): BelongsTo
     {
         return $this->belongsTo(StoreUser::class, "create_id", "id");
+    }
+
+    public function cate(): BelongsTo
+    {
+        return $this->belongsTo(StoreBookCate::class, "cate_uuid", "uuid");
     }
 
     public function getReadNumberAttribute(): int

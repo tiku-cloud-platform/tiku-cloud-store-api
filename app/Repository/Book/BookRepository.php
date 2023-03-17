@@ -19,6 +19,7 @@ class BookRepository implements StoreRepositoryInterface
         $items = (new StoreBook)::query()
             ->with(['coverFileInfo:uuid,file_url,file_name'])
             ->with(['creator:id,name'])
+            ->with(["cate:uuid,title"])
             ->where($closure)
             ->select([
                 "uuid",
@@ -40,6 +41,7 @@ class BookRepository implements StoreRepositoryInterface
                 "create_id",
                 "is_recommend",
                 "version",
+                "cate_uuid"
             ])
             ->orderByDesc('id')
             ->paginate($perSize);
@@ -92,6 +94,7 @@ class BookRepository implements StoreRepositoryInterface
                 "content_desc",
                 "is_recommend",
                 "version",
+                "cate_uuid"
             ])
             ->where($closure)
             ->first();
