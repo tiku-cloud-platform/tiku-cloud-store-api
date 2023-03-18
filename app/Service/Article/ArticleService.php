@@ -52,7 +52,7 @@ class ArticleService implements StoreServiceInterface
     {
         return (new ArticleRepository)->repositorySelect(
             self::searchWhere($requestParams),
-            (int)$requestParams['size'] ?? 20
+            (int)($requestParams['size'] ?? 20)
         );
     }
 
@@ -96,6 +96,7 @@ class ArticleService implements StoreServiceInterface
             'title' => trim($requestParams['title']),
             'file_uuid' => trim($requestParams['file_uuid']),
             'content' => $requestParams['content'],
+            'content_desc' => $requestParams['content_desc'],
             'publish_date' => trim($requestParams['publish_date']),
             'author' => trim($requestParams['author']),
             'orders' => $requestParams['orders'],
