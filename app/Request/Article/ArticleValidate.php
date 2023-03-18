@@ -33,7 +33,7 @@ class ArticleValidate extends FormRequest
             'source' => 'required|max:20',
             'is_show' => ['required', 'integer', Rule::in([2, 1])],
             'is_top' => ['required', 'integer', Rule::in([2, 1])],
-            'content_type' => ['required', 'integer', Rule::in([2, 1])],
+//            'content_type' => ['required', 'integer', Rule::in([2, 1])],
             'orders' => 'required|integer',
             "read_score" => "required|max:1000|min:0.01",
             "share_score" => "required|max:1000|min:0.01",
