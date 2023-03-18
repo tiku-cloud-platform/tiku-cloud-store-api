@@ -6,7 +6,7 @@ use Hyperf\Server\Server;
 use Swoole\Constant;
 
 return [
-    'mode' => SWOOLE_BASE,
+    'mode' => SWOOLE_PROCESS,
     'servers' => [
         [
             'name' => 'http',
