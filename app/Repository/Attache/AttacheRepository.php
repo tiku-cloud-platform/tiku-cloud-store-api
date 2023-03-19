@@ -48,8 +48,11 @@ class AttacheRepository implements StoreRepositoryInterface
 
     public function repositoryFind(Closure $closure): array
     {
-        $bean = (new StoreAttache())::query()->where($closure)->first(["uuid", "cate_uuid", "title", "content", "type",
-            "download_number", "is_show", "orders", "created_at", "file_uuid", "create_id", "attache_content"]);
+        $bean = (new StoreAttache())::query()
+            ->with(['cover:uuid,file_url,file_name'])
+            ->where($closure)
+            ->first(["uuid", "cate_uuid", "title", "content", "type",
+                "download_number", "is_show", "orders", "created_at", "file_uuid", "create_id", "attache_content"]);
 
         return !empty($bean) ? $bean->toArray() : [];
     }
