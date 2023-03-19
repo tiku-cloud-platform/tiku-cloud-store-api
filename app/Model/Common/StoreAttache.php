@@ -24,7 +24,8 @@ class StoreAttache extends BaseModel
         "is_show",
         "orders",
         "create_id",
-        "file_uuid"
+        "file_uuid",
+        "attache_content",
     ];
 
     protected $hidden = ["create_id"];
@@ -42,5 +43,10 @@ class StoreAttache extends BaseModel
     public function creator(): BelongsTo
     {
         return $this->belongsTo(StoreUser::class, "create_id", "id");
+    }
+
+    public function getAttacheContentAttribute($key): string
+    {
+        return !empty($key) ? $key : "";
     }
 }
