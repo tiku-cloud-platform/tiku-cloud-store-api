@@ -22,6 +22,9 @@ class AttacheService implements StoreServiceInterface
             if (!empty($is_show)) {
                 $query->where("is_show", "=", $is_show);
             }
+            if (!empty($uuid)) {
+                $query->where("uuid", "=", $uuid);
+            }
         };
     }
 
@@ -64,6 +67,6 @@ class AttacheService implements StoreServiceInterface
 
     public function serviceFind(array $requestParams): array
     {
-        return [];
+        return (new AttacheRepository())->repositoryFind(self::searchWhere($requestParams));
     }
 }

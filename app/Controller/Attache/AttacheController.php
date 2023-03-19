@@ -5,6 +5,7 @@ namespace App\Controller\Attache;
 
 use App\Controller\StoreBaseController;
 use App\Request\Attache\AttacheValidate;
+use App\Request\Attache\UuidValidate;
 use App\Service\Attache\AttacheService;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;
@@ -47,6 +48,16 @@ class AttacheController extends StoreBaseController
             return $this->httpResponse->success();
         }
         return $this->httpResponse->error();
+    }
+
+    /**
+     * @GetMapping(path="show")
+     * @param UuidValidate $validate
+     * @return ResponseInterface
+     */
+    public function show(UuidValidate $validate): ResponseInterface
+    {
+        return $this->httpResponse->success((new AttacheService())->serviceFind($this->request->all()));
     }
 
     /**
