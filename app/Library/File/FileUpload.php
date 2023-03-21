@@ -70,9 +70,14 @@ class FileUpload
         $result        = [];
         foreach ($fileArray as $value) {
             // 检测云平台的配置域名是否和文件的域名一致，如果一致的不进行重传，针对GitHub图片使用file_get_contents()获取超时，默认就不处理了，直接返回。
-            if ((parse_url($value)["host"] == parse_url($this->configArray["domain"])["host"]) || (in_array(parse_url($value)["host"], ["raw.githubusercontent.com"]))) {
+            if ((parse_url($value)["host"] == parse_url($this->configArray["domain"])["host"])) {
                 $result[] = [
-                    'remote' => $value,
+                    'remote' => $value,// 云平台地址
+                    'origin' => $value,// 原图片地址
+                ];
+            } else if (in_array(parse_url($value)["host"], ["raw.githubusercontent.com"])) {
+                $result[] = [
+                    'remote' => $this->configArray["domain"] . "/" . basename($value),
                     'origin' => $value,
                 ];
             } else {
