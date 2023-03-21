@@ -26,6 +26,8 @@ class StoreAttache extends BaseModel
         "create_id",
         "file_uuid",
         "attache_content",
+        "score",
+        "url"
     ];
 
     protected $hidden = ["create_id"];
@@ -46,6 +48,11 @@ class StoreAttache extends BaseModel
     }
 
     public function getAttacheContentAttribute($key): string
+    {
+        return !empty($key) ? $key : "";
+    }
+
+    public function getUrlAttribute($key): string
     {
         return !empty($key) ? $key : "";
     }

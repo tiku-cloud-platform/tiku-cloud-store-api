@@ -52,7 +52,9 @@ class AttacheService implements StoreServiceInterface
             "content" => $requestParams["content"],
             "download_number" => $requestParams["download_number"],
             "file_uuid" => $requestParams["file_uuid"],
-            "attache_content" => $requestParams["attache_content"]
+            "attache_content" => $requestParams["attache_content"],
+            "score" => $requestParams["score"],
+            "url" => $requestParams["url"]
         ]);
     }
 

@@ -21,7 +21,7 @@ class AttacheRepository implements StoreRepositoryInterface
             ->with(["creator:id,name"])
             ->where($closure)
             ->orderByDesc("id")
-            ->paginate($perSize, ["uuid", "cate_uuid", "title", "content", "type",
+            ->paginate($perSize, ["uuid", "cate_uuid", "title", "content", "type", "score", "url",
                 "download_number", "is_show", "orders", "created_at", "file_uuid", "create_id"]);
 
         return [
@@ -51,7 +51,7 @@ class AttacheRepository implements StoreRepositoryInterface
         $bean = (new StoreAttache())::query()
             ->with(['cover:uuid,file_url,file_name'])
             ->where($closure)
-            ->first(["uuid", "cate_uuid", "title", "content", "type",
+            ->first(["uuid", "cate_uuid", "title", "content", "type", "score", "url",
                 "download_number", "is_show", "orders", "created_at", "file_uuid", "create_id", "attache_content"]);
 
         return !empty($bean) ? $bean->toArray() : [];

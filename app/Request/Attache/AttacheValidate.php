@@ -29,6 +29,8 @@ class AttacheValidate extends FormRequest
             'is_show' => ['required', 'integer', Rule::in([2, 1])],
             'orders' => 'required|integer|max:100000000',
             "attache_content" => "required|max:65535",
+            "score" => "required|between:1,1000",
+            "url" => "nullable|max:255",
         ];
     }
 
@@ -57,6 +59,9 @@ class AttacheValidate extends FormRequest
             'orders.max' => '排序数字过大',
             "attache_content.required" => "附件介绍不能为空",
             "attache_content.max" => "附件介绍最大长度65535",
+            "score" => "积分不能为空",
+            "score.between" => "积分值只能在1-1000之间",
+            "url.max" => "跳转地址最大长度255",
         ];
     }
 }
