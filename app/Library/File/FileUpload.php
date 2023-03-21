@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace App\Library\File;
 
 use App\Service\File\TokenService;
+use Exception;
 use Qiniu\Storage\UploadManager;
 
 /**
@@ -48,6 +49,7 @@ class FileUpload
      *
      * @param array $fileArray 待上传文件
      * @return array 上传之后的真实路径
+     * @throws Exception
      */
     public function fileUpload(array $fileArray): array
     {
@@ -58,18 +60,17 @@ class FileUpload
 
     /**
      * 七牛云文件上传
-     *
      * @param array $fileArray 待上传文件的真实路径
      * @return array 上传之后的真实路径
-     * @throws \Exception
+     * @throws Exception
      */
     private function QiNiuCloud(array $fileArray): array
     {
         $uploadManager = new UploadManager();
         $result        = [];
         foreach ($fileArray as $value) {
-            // 检测云平台的配置域名是否和文件的域名一致，如果一致的不进行重传，直接返回。
-            if (parse_url($value)["host"] == parse_url($this->configArray["domain"])["host"]) {
+            // 检测云平台的配置域名是否和文件的域名一致，如果一致的不进行重传，针对GitHub图片使用file_get_contents()获取超时，默认就不处理了，直接返回。
+            if ((parse_url($value)["host"] == parse_url($this->configArray["domain"])["host"]) || (in_array(parse_url($value)["host"], ["raw.githubusercontent.com"]))) {
                 $result[] = [
                     'remote' => $value,
                     'origin' => $value,

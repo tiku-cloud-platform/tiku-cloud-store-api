@@ -96,10 +96,15 @@ class ContentService implements StoreServiceInterface
         $requestParams["title"]        = trim($requestParams["title"]);
         $requestParams["author"]       = trim($requestParams["author"]);
         $requestParams["publish_time"] = date("Y-m-d H:i:s");
-        $imageArray                    = ImageSrcSearch::searchImageUrl((string)$requestParams['content']);
+        $imageArray                    = [];
+        if ($requestParams["content_type"] == 1) {
+            $imageArray = ImageSrcSearch::searchImageUrl((string)$requestParams['content']);
+        } else if ($requestParams["content_type"]) {
+            $imageArray = ImageSrcSearch::searchMarkDownIMageUrl((string)$requestParams["content"]);
+        }
         if (!empty($imageArray)) {
             $remoteFileArray          = (new FileUpload())->fileUpload($imageArray);
-            $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], $remoteFileArray);
+            $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], $remoteFileArray, (int)$requestParams["content_type"]);
         }
 
         return $requestParams;
