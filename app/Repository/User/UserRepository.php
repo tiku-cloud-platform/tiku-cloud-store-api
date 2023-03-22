@@ -75,6 +75,7 @@ class UserRepository implements StoreRepositoryInterface
         $bean = (new StorePlatformUser)::query()
             ->with(['group:uuid,title'])
             ->with(['score:uuid,score,user_uuid'])
+            ->with(["mini:user_uuid,register_ip,login_ip,avatar_url"])
             ->where($closure)
             ->first([
                 "id",

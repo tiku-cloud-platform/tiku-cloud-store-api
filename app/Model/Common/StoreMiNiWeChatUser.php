@@ -44,4 +44,14 @@ class StoreMiNiWeChatUser extends BaseModel
     {
         return $this->hasOne(StoreChannel::class, "uuid", "channel_uuid");
     }
+
+    public function getRegisterIpAttribute($key): string
+    {
+        return !empty($key) ? $key : "";
+    }
+
+    public function getLoginIpAttribute($key): string
+    {
+        return !empty($key) ? $key : "";
+    }
 }

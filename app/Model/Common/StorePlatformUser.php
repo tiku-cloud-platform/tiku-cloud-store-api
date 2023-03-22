@@ -13,6 +13,7 @@ declare(strict_types = 1);
 namespace App\Model\Common;
 
 use App\Model\BaseModel;
+use Hyperf\Database\Model\Relations\HasOne;
 
 /**
  * 微信用户
@@ -43,5 +44,10 @@ class StorePlatformUser extends BaseModel
     public function getMobileAttribute($key)
     {
         return !empty($key) ? $key : '';
+    }
+
+    public function mini(): HasOne
+    {
+        return $this->hasOne(StoreMiNiWeChatUser::class, "user_uuid", "uuid");
     }
 }
