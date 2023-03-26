@@ -15,13 +15,13 @@ class AesEncrypt
      * 加密key
      * @var string
      */
-    private static $key = "L0Y7Z34661BP65ZQ";
+    private static $key = "";
 
     /**
      * 加解密向量
      * @var string
      */
-    private static $iv = "L0Y7Z34661BP65ZQ";
+    private static $iv = "";
 
     public static $aes;
 
