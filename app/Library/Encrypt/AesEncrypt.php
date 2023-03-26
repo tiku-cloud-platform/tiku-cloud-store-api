@@ -27,6 +27,8 @@ class AesEncrypt
 
     private function __construct()
     {
+        self::$iv  = env("AES_IV", "");
+        self::$key = env("AES_KEY", "");
     }
 
     public static function getInstance(): AesEncrypt
