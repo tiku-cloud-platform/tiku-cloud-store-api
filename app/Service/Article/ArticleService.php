@@ -81,15 +81,19 @@ class ArticleService implements StoreServiceInterface
      *
      * @param array $requestParams 请求参数
      * @return int 更新行数
+     * @throws \Exception
      */
     public function serviceUpdate(array $requestParams): int
     {
         unset($requestParams["creator"]);
-        $imageArray = ImageSrcSearch::searchImageUrl((string)$requestParams['content']);
-        if (!empty($imageArray)) {
-            $remoteFileArray          = (new FileUpload())->fileUpload($imageArray);
-            $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], $remoteFileArray);
+        if ($requestParams["content_type"] == 1) {
+            $imageArray = ImageSrcSearch::searchImageUrl((string)$requestParams['content']);
+            if (!empty($imageArray)) {
+                $remoteFileArray          = (new FileUpload())->fileUpload($imageArray);
+                $requestParams['content'] = ImageSrcSearch::replaceImageUrl((string)$requestParams['content'], $remoteFileArray);
+            }
         }
+
         return (new ArticleRepository)->repositoryUpdate([
             ['uuid', '=', trim($requestParams['uuid'])],
         ], [
@@ -109,6 +113,7 @@ class ArticleService implements StoreServiceInterface
             "click_score" => $requestParams["click_score"],
             "collection_score" => $requestParams["collection_score"],
             "read_expend_score" => $requestParams["read_expend_score"],
+            "content_type" => $requestParams["content_type"]
         ]);
     }
 

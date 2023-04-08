@@ -50,6 +50,7 @@ class ArticleRepository implements StoreRepositoryInterface
                 "read_expend_score",
                 "create_id",
                 "created_at",
+                "content_type",
             ])
             ->orderByDesc("id")
             ->paginate($perSize);
@@ -123,6 +124,7 @@ class ArticleRepository implements StoreRepositoryInterface
                 "create_id",
                 "created_at",
                 "content_desc",
+                "content_type",
             ]);
 
         if (!empty($bean)) return $bean->toArray();

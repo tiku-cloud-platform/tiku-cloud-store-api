@@ -60,7 +60,6 @@ class ImageSrcSearch
 
     /**
      * 替换文本中的图片路径
-     *
      * @param string $content 替换字符串
      * @param array $realImageArray 图片真实路径[['origin' => '原图片地址', 'remote' => '实际图片地址']]
      * @param int $contentType 文档类型，1富文本，2markdown
